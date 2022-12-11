@@ -22,8 +22,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import it.softsamurai.core.data.DataItemTypeRepository
-import it.softsamurai.core.data.DefaultDataItemTypeRepository
+import it.softsamurai.core.data.FalesiaItemRepository
+import it.softsamurai.core.data.DefaultFalesiaItemRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -33,17 +33,17 @@ interface DataModule {
 
     @Singleton
     @Binds
-    fun bindsDataItemTypeRepository(
-        dataItemTypeRepository: DefaultDataItemTypeRepository
-    ): DataItemTypeRepository
+    fun bindsFalesiaItemRepository(
+        falesiaItemRepository: DefaultFalesiaItemRepository
+    ): FalesiaItemRepository
 }
 
-class FakeDataItemTypeRepository @Inject constructor() : DataItemTypeRepository {
-    override val dataItemTypes: Flow<List<String>> = flowOf(fakeDataItemTypes)
+class FakeFalesiaItemRepository @Inject constructor() : FalesiaItemRepository {
+    override val falesiaItems: Flow<List<String>> = flowOf(fakeFalesiaItems)
 
     override suspend fun add(name: String) {
         throw NotImplementedError()
     }
 }
 
-val fakeDataItemTypes = listOf("One", "Two", "Three")
+val fakeFalesiaItems = listOf("One", "Two", "Three")

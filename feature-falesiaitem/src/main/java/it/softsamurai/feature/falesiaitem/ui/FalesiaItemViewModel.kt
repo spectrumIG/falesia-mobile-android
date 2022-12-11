@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package it.softsamurai.feature.dataitemtype.ui
+package it.softsamurai.feature.falesiaitem.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,31 +25,31 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import it.softsamurai.core.data.DataItemTypeRepository
-import it.softsamurai.feature.dataitemtype.ui.DataItemTypeUiState.Error
-import it.softsamurai.feature.dataitemtype.ui.DataItemTypeUiState.Loading
-import it.softsamurai.feature.dataitemtype.ui.DataItemTypeUiState.Success
+import it.softsamurai.core.data.FalesiaItemRepository
+import it.softsamurai.feature.falesiaitem.ui.FalesiaItemUiState.Error
+import it.softsamurai.feature.falesiaitem.ui.FalesiaItemUiState.Loading
+import it.softsamurai.feature.falesiaitem.ui.FalesiaItemUiState.Success
 import javax.inject.Inject
 
 @HiltViewModel
-class DataItemTypeViewModel @Inject constructor(
-    private val dataItemTypeRepository: DataItemTypeRepository
+class FalesiaItemViewModel @Inject constructor(
+    private val falesiaItemRepository: FalesiaItemRepository
 ) : ViewModel() {
 
-    val uiState: StateFlow<DataItemTypeUiState> = dataItemTypeRepository
-        .dataItemTypes.map { Success(data = it) }
+    val uiState: StateFlow<FalesiaItemUiState> = falesiaItemRepository
+        .falesiaItems.map { Success(data = it) }
         .catch { Error(it) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Loading)
 
-    fun addDataItemType(name: String) {
+    fun addFalesiaItem(name: String) {
         viewModelScope.launch {
-            dataItemTypeRepository.add(name)
+            falesiaItemRepository.add(name)
         }
     }
 }
 
-sealed interface DataItemTypeUiState {
-    object Loading : DataItemTypeUiState
-    data class Error(val throwable: Throwable) : DataItemTypeUiState
-    data class Success(val data: List<String>) : DataItemTypeUiState
+sealed interface FalesiaItemUiState {
+    object Loading : FalesiaItemUiState
+    data class Error(val throwable: Throwable) : FalesiaItemUiState
+    data class Success(val data: List<String>) : FalesiaItemUiState
 }

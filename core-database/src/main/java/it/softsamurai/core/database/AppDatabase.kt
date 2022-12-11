@@ -19,7 +19,7 @@ package it.softsamurai.core.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 
-@Database(entities = [DataItemType::class], version = 1)
+@Database(entities = [FalesiaItem::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun dataItemTypeDao(): DataItemTypeDao
+    abstract fun falesiaItemDao(): FalesiaItemDao
 }

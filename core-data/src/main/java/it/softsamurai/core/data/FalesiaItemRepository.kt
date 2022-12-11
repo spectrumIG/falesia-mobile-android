@@ -18,24 +18,24 @@ package it.softsamurai.core.data
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import it.softsamurai.core.database.DataItemType
-import it.softsamurai.core.database.DataItemTypeDao
+import it.softsamurai.core.database.FalesiaItem
+import it.softsamurai.core.database.FalesiaItemDao
 import javax.inject.Inject
 
-interface DataItemTypeRepository {
-    val dataItemTypes: Flow<List<String>>
+interface FalesiaItemRepository {
+    val falesiaItems: Flow<List<String>>
 
     suspend fun add(name: String)
 }
 
-class DefaultDataItemTypeRepository @Inject constructor(
-    private val dataItemTypeDao: DataItemTypeDao
-) : DataItemTypeRepository {
+class DefaultFalesiaItemRepository @Inject constructor(
+    private val falesiaItemDao: FalesiaItemDao
+) : FalesiaItemRepository {
 
-    override val dataItemTypes: Flow<List<String>> =
-        dataItemTypeDao.getDataItemTypes().map { items -> items.map { it.name } }
+    override val falesiaItems: Flow<List<String>> =
+        falesiaItemDao.getFalesiaItems().map { items -> items.map { it.name } }
 
     override suspend fun add(name: String) {
-        dataItemTypeDao.insertDataItemType(DataItemType(name = name))
+        falesiaItemDao.insertFalesiaItem(FalesiaItem(name = name))
     }
 }

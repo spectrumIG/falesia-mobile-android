@@ -22,7 +22,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Rule
 import org.junit.Test
-import it.softsamurai.core.data.di.fakeDataItemTypes
+import it.softsamurai.core.data.di.fakeFalesiaItems
 
 @HiltAndroidTest
 class NavigationTest {
@@ -36,7 +36,7 @@ class NavigationTest {
     @Test
     fun test1() {
         // TODO: Add navigation tests
-        composeTestRule.onNodeWithText(fakeDataItemTypes.first(), substring = true).assertExists()
+        composeTestRule.onNodeWithText(fakeFalesiaItems.first(), substring = true).assertExists()
     }
 }
 

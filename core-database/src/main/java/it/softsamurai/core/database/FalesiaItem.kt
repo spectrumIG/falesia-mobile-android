@@ -24,7 +24,7 @@ import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 @Entity
-data class DataItemType(
+data class FalesiaItem(
     val name: String
 ) {
     @PrimaryKey(autoGenerate = true)
@@ -32,10 +32,10 @@ data class DataItemType(
 }
 
 @Dao
-interface DataItemTypeDao {
-    @Query("SELECT * FROM dataitemtype ORDER BY uid DESC LIMIT 10")
-    fun getDataItemTypes(): Flow<List<DataItemType>>
+interface FalesiaItemDao {
+    @Query("SELECT * FROM falesiaitem ORDER BY uid DESC LIMIT 10")
+    fun getFalesiaItems(): Flow<List<FalesiaItem>>
 
     @Insert
-    suspend fun insertDataItemType(item: DataItemType)
+    suspend fun insertFalesiaItem(item: FalesiaItem)
 }

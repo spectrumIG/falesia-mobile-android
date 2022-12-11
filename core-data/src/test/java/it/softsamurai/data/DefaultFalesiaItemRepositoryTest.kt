@@ -23,36 +23,36 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import it.softsamurai.core.data.DefaultDataItemTypeRepository
-import it.softsamurai.core.database.DataItemType
-import it.softsamurai.core.database.DataItemTypeDao
+import it.softsamurai.core.data.DefaultFalesiaItemRepository
+import it.softsamurai.core.database.FalesiaItem
+import it.softsamurai.core.database.FalesiaItemDao
 
 /**
- * Unit tests for [DefaultDataItemTypeRepository].
+ * Unit tests for [DefaultFalesiaItemRepository].
  */
 @OptIn(ExperimentalCoroutinesApi::class) // TODO: Remove when stable
-class DefaultDataItemTypeRepositoryTest {
+class DefaultFalesiaItemRepositoryTest {
 
     @Test
-    fun dataItemTypes_newItemSaved_itemIsReturned() = runTest {
-        val repository = DefaultDataItemTypeRepository(FakeDataItemTypeDao())
+    fun falesiaItems_newItemSaved_itemIsReturned() = runTest {
+        val repository = DefaultFalesiaItemRepository(FakeFalesiaItemDao())
 
         repository.add("Repository")
 
-        assertEquals(repository.dataItemTypes.first().size, 1)
+        assertEquals(repository.falesiaItems.first().size, 1)
     }
 
 }
 
-private class FakeDataItemTypeDao : DataItemTypeDao {
+private class FakeFalesiaItemDao : FalesiaItemDao {
 
-    private val data = mutableListOf<DataItemType>()
+    private val data = mutableListOf<FalesiaItem>()
 
-    override fun getDataItemTypes(): Flow<List<DataItemType>> = flow {
+    override fun getFalesiaItems(): Flow<List<FalesiaItem>> = flow {
         emit(data)
     }
 
-    override suspend fun insertDataItemType(item: DataItemType) {
+    override suspend fun insertFalesiaItem(item: FalesiaItem) {
         data.add(0, item)
     }
 }

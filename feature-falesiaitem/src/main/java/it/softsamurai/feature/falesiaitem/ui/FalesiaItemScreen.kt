@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package it.softsamurai.feature.dataitemtype.ui
+package it.softsamurai.feature.falesiaitem.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,14 +39,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.repeatOnLifecycle
-import it.softsamurai.feature.dataitemtype.ui.DataItemTypeUiState.Success
+import it.softsamurai.feature.falesiaitem.ui.FalesiaItemUiState.Success
 import it.softsamurai.core.ui.MyApplicationTheme
 
 @Composable
-fun DataItemTypeScreen(modifier: Modifier = Modifier, viewModel: DataItemTypeViewModel = hiltViewModel()) {
+fun FalesiaItemScreen(modifier: Modifier = Modifier, viewModel: FalesiaItemViewModel = hiltViewModel()) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val items by produceState<DataItemTypeUiState>(
-        initialValue = DataItemTypeUiState.Loading,
+    val items by produceState<FalesiaItemUiState>(
+        initialValue = FalesiaItemUiState.Loading,
         key1 = lifecycle,
         key2 = viewModel
     ) {
@@ -55,9 +55,9 @@ fun DataItemTypeScreen(modifier: Modifier = Modifier, viewModel: DataItemTypeVie
         }
     }
     if (items is Success) {
-        DataItemTypeScreen(
+        FalesiaItemScreen(
             items = (items as Success).data,
-            onSave = { name -> viewModel.addDataItemType(name) },
+            onSave = { name -> viewModel.addFalesiaItem(name) },
             modifier = modifier
         )
     }
@@ -65,23 +65,23 @@ fun DataItemTypeScreen(modifier: Modifier = Modifier, viewModel: DataItemTypeVie
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun DataItemTypeScreen(
+internal fun FalesiaItemScreen(
     items: List<String>,
     onSave: (name: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier) {
-        var nameDataItemType by remember { mutableStateOf("Compose") }
+        var nameFalesiaItem by remember { mutableStateOf("Compose") }
         Row(
             modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             TextField(
-                value = nameDataItemType,
-                onValueChange = { nameDataItemType = it }
+                value = nameFalesiaItem,
+                onValueChange = { nameFalesiaItem = it }
             )
 
-            Button(modifier = Modifier.width(96.dp), onClick = { onSave(nameDataItemType) }) {
+            Button(modifier = Modifier.width(96.dp), onClick = { onSave(nameFalesiaItem) }) {
                 Text("Save")
             }
         }
@@ -97,7 +97,7 @@ internal fun DataItemTypeScreen(
 @Composable
 private fun DefaultPreview() {
     MyApplicationTheme {
-        DataItemTypeScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
+        FalesiaItemScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
     }
 }
 
@@ -105,6 +105,6 @@ private fun DefaultPreview() {
 @Composable
 private fun PortraitPreview() {
     MyApplicationTheme {
-        DataItemTypeScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
+        FalesiaItemScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
     }
 }

@@ -78,7 +78,7 @@ dependencies {
 
     implementation(project(":core-ui"))
     implementation(project(":core-data"))
-    implementation(project(":feature-dataitemtype"))
+    implementation(project(":feature-falesiaitem"))
     androidTestImplementation(project(":core-testing"))
 
     // Core Android dependencies

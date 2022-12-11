@@ -24,15 +24,15 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import it.softsamurai.core.database.AppDatabase
-import it.softsamurai.core.database.DataItemTypeDao
+import it.softsamurai.core.database.FalesiaItemDao
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 class DatabaseModule {
     @Provides
-    fun provideDataItemTypeDao(appDatabase: AppDatabase): DataItemTypeDao {
-        return appDatabase.dataItemTypeDao()
+    fun provideFalesiaItemDao(appDatabase: AppDatabase): FalesiaItemDao {
+        return appDatabase.falesiaItemDao()
     }
 
     @Provides
@@ -41,7 +41,7 @@ class DatabaseModule {
         return Room.databaseBuilder(
             appContext,
             AppDatabase::class.java,
-            "DataItemType"
+            "FalesiaItem"
         ).build()
     }
 }

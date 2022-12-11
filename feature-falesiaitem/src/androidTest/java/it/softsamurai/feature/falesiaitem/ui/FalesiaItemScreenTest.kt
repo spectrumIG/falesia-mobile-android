@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package it.softsamurai.feature.dataitemtype.ui
+package it.softsamurai.feature.falesiaitem.ui
 
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -27,10 +27,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * UI tests for [DataItemTypeScreen].
+ * UI tests for [FalesiaItemScreen].
  */
 @RunWith(AndroidJUnit4::class)
-class DataItemTypeScreenTest {
+class FalesiaItemScreenTest {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
@@ -38,7 +38,7 @@ class DataItemTypeScreenTest {
     @Before
     fun setup() {
         composeTestRule.setContent {
-            DataItemTypeScreen(FAKE_DATA, onSave = {})
+            FalesiaItemScreen(FAKE_DATA, onSave = {})
         }
     }
     @Test

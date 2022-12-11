@@ -22,7 +22,7 @@ plugins {
 }
 
 android {
-    namespace = "it.softsamurai.feature.dataitemtype"
+    namespace = "it.softsamurai.feature.falesiaitem"
     compileSdk = 33
 
     defaultConfig {

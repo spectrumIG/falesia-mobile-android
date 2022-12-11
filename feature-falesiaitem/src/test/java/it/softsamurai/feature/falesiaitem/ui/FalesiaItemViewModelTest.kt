@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package it.softsamurai.feature.dataitemtype.ui.dataitemtype
+package it.softsamurai.feature.falesiaitem.ui.falesiaitem
 
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,9 +24,9 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import it.softsamurai.core.data.DataItemTypeRepository
-import it.softsamurai.feature.dataitemtype.ui.DataItemTypeUiState
-import it.softsamurai.feature.dataitemtype.ui.DataItemTypeViewModel
+import it.softsamurai.core.data.FalesiaItemRepository
+import it.softsamurai.feature.falesiaitem.ui.FalesiaItemUiState
+import it.softsamurai.feature.falesiaitem.ui.FalesiaItemViewModel
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -34,25 +34,25 @@ import it.softsamurai.feature.dataitemtype.ui.DataItemTypeViewModel
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 @OptIn(ExperimentalCoroutinesApi::class) // TODO: Remove when stable
-class DataItemTypeViewModelTest {
+class FalesiaItemViewModelTest {
     @Test
     fun uiState_initiallyLoading() = runTest {
-        val viewModel = DataItemTypeViewModel(FakeDataItemTypeRepository())
-        assertEquals(viewModel.uiState.first(), DataItemTypeUiState.Loading)
+        val viewModel = FalesiaItemViewModel(FakeFalesiaItemRepository())
+        assertEquals(viewModel.uiState.first(), FalesiaItemUiState.Loading)
     }
 
     @Test
     fun uiState_onItemSaved_isDisplayed() = runTest {
-        val viewModel = DataItemTypeViewModel(FakeDataItemTypeRepository())
-        assertEquals(viewModel.uiState.first(), DataItemTypeUiState.Loading)
+        val viewModel = FalesiaItemViewModel(FakeFalesiaItemRepository())
+        assertEquals(viewModel.uiState.first(), FalesiaItemUiState.Loading)
     }
 }
 
-private class FakeDataItemTypeRepository : DataItemTypeRepository {
+private class FakeFalesiaItemRepository : FalesiaItemRepository {
 
     private val data = mutableListOf<String>()
 
-    override val dataItemTypes: Flow<List<String>>
+    override val falesiaItems: Flow<List<String>>
         get() = flow { emit(data.toList()) }
 
     override suspend fun add(name: String) {
