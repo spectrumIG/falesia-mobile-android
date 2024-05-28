@@ -38,7 +38,7 @@ class FalesiaItemScreenTest {
     @Before
     fun setup() {
         composeTestRule.setContent {
-            FalesiaItemScreen(FAKE_DATA, onSave = {})
+            it.softsamurai.presentation.screen.FalesiaItemScreen(FAKE_DATA, onSave = {})
         }
     }
     @Test

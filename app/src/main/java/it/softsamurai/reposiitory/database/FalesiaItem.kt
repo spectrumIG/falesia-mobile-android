@@ -14,12 +14,29 @@
  * limitations under the License.
  */
 
-package it.softsamurai.core.database
+package it.softsamurai.reposiitory.database
 
-import androidx.room.Database
-import androidx.room.RoomDatabase
+import androidx.room.Dao
+import androidx.room.Entity
+import androidx.room.Insert
+import androidx.room.PrimaryKey
+import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
-@Database(entities = [FalesiaItem::class], version = 1)
-abstract class AppDatabase : RoomDatabase() {
-    abstract fun falesiaItemDao(): FalesiaItemDao
+@Entity
+data class FalesiaItem(
+    val name: String
+) {
+    @PrimaryKey(autoGenerate = true)
+    var uid: Int = 0
+}
+
+@Dao
+interface FalesiaItemDao {
+
+    @Query("SELECT * FROM falesiaitem ORDER BY uid DESC LIMIT 10")
+    fun getFalesiaItems(): Flow<List<FalesiaItem>>
+
+    @Insert
+    suspend fun insertFalesiaItem(item: FalesiaItem)
 }

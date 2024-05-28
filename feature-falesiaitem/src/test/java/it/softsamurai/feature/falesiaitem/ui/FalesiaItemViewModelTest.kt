@@ -25,8 +25,8 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import it.softsamurai.core.data.FalesiaItemRepository
-import it.softsamurai.feature.falesiaitem.ui.FalesiaItemUiState
-import it.softsamurai.feature.falesiaitem.ui.FalesiaItemViewModel
+import it.softsamurai.presentation.FalesiaItemUiState
+import it.softsamurai.presentation.FalesiaItemViewModel
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -37,18 +37,20 @@ import it.softsamurai.feature.falesiaitem.ui.FalesiaItemViewModel
 class FalesiaItemViewModelTest {
     @Test
     fun uiState_initiallyLoading() = runTest {
-        val viewModel = FalesiaItemViewModel(FakeFalesiaItemRepository())
-        assertEquals(viewModel.uiState.first(), FalesiaItemUiState.Loading)
+        val viewModel =
+            it.softsamurai.presentation.FalesiaItemViewModel(FakeFalesiaItemRepository())
+        assertEquals(viewModel.uiState.first(), it.softsamurai.presentation.FalesiaItemUiState.Loading)
     }
 
     @Test
     fun uiState_onItemSaved_isDisplayed() = runTest {
-        val viewModel = FalesiaItemViewModel(FakeFalesiaItemRepository())
-        assertEquals(viewModel.uiState.first(), FalesiaItemUiState.Loading)
+        val viewModel =
+            it.softsamurai.presentation.FalesiaItemViewModel(FakeFalesiaItemRepository())
+        assertEquals(viewModel.uiState.first(), it.softsamurai.presentation.FalesiaItemUiState.Loading)
     }
 }
 
-private class FakeFalesiaItemRepository : FalesiaItemRepository {
+private class FakeFalesiaItemRepository : it.softsamurai.core.data.FalesiaItemRepository {
 
     private val data = mutableListOf<String>()
 

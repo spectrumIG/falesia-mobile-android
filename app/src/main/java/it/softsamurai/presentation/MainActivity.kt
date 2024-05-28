@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package it.softsamurai.ui
+package it.softsamurai.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

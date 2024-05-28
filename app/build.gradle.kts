@@ -52,14 +52,15 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    // The schemas directory contains a schema file for each version of the Room database.
+    // This is required to enable Room auto migrations.
+    // See https://developer.android.com/reference/kotlin/androidx/room/AutoMigration.
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
+    }
 }
 
 dependencies {
-
-    implementation(project(":core-ui"))
-    implementation(project(":core-data"))
-    implementation(project(":feature-falesiaitem"))
-    androidTestImplementation(project(":core-testing"))
 
     // Core Android dependencies
     implementation(libs.androidx.core.ktx)
@@ -85,6 +86,12 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.runtime)
+    //Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)
     // Instrumented tests

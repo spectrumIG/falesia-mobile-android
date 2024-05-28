@@ -35,7 +35,7 @@ class DefaultFalesiaItemRepositoryTest {
 
     @Test
     fun falesiaItems_newItemSaved_itemIsReturned() = runTest {
-        val repository = DefaultFalesiaItemRepository(FakeFalesiaItemDao())
+        val repository = it.softsamurai.core.data.DefaultFalesiaItemRepository(FakeFalesiaItemDao())
 
         repository.add("Repository")
 

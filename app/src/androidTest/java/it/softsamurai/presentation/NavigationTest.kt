@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package it.softsamurai.ui
+package it.softsamurai.presentation
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import it.softsamurai.core.data.di.fakeFalesiaItems
 import org.junit.Rule
 import org.junit.Test
-import it.softsamurai.core.data.di.fakeFalesiaItems
 
 @HiltAndroidTest
 class NavigationTest {

@@ -33,10 +33,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":core-data"))
-    implementation(project(":core-ui"))
-    androidTestImplementation(project(":core-testing"))
-
     // Core Android dependencies
     implementation(libs.androidx.activity.compose)
 

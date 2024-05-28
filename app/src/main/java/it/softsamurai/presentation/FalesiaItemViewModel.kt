@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package it.softsamurai.feature.falesiaitem.ui
+package it.softsamurai.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.softsamurai.core.data.FalesiaItemRepository
-import it.softsamurai.feature.falesiaitem.ui.FalesiaItemUiState.Error
-import it.softsamurai.feature.falesiaitem.ui.FalesiaItemUiState.Loading
-import it.softsamurai.feature.falesiaitem.ui.FalesiaItemUiState.Success
+import it.softsamurai.presentation.FalesiaItemUiState.Error
+import it.softsamurai.presentation.FalesiaItemUiState.Loading
+import it.softsamurai.presentation.FalesiaItemUiState.Success
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -33,7 +32,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FalesiaItemViewModel @Inject constructor(
-    private val falesiaItemRepository: FalesiaItemRepository
+    private val falesiaItemRepository: it.softsamurai.core.data.FalesiaItemRepository
 ) : ViewModel() {
 
     val uiState: StateFlow<FalesiaItemUiState> = falesiaItemRepository

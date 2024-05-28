@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package it.softsamurai.core.database.di
+package it.softsamurai.reposiitory.database.di
 
 import android.content.Context
 import androidx.room.Room
@@ -23,8 +23,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import it.softsamurai.core.database.AppDatabase
-import it.softsamurai.core.database.FalesiaItemDao
+import it.softsamurai.reposiitory.database.AppDatabase
+import it.softsamurai.reposiitory.database.FalesiaItemDao
 import javax.inject.Singleton
 
 @Module

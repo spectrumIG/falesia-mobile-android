@@ -1,20 +1,4 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package it.softsamurai.feature.falesiaitem.ui
+package it.softsamurai.presentation.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,31 +13,21 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle.State.STARTED
-import androidx.lifecycle.repeatOnLifecycle
-import it.softsamurai.feature.falesiaitem.ui.FalesiaItemUiState.Success
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import it.softsamurai.core.ui.MyApplicationTheme
+import it.softsamurai.presentation.FalesiaItemUiState.Success
+import it.softsamurai.presentation.FalesiaItemViewModel
 
 @Composable
 fun FalesiaItemScreen(modifier: Modifier = Modifier, viewModel: FalesiaItemViewModel = hiltViewModel()) {
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val items by produceState<FalesiaItemUiState>(
-        initialValue = FalesiaItemUiState.Loading,
-        key1 = lifecycle,
-        key2 = viewModel
-    ) {
-        lifecycle.repeatOnLifecycle(state = STARTED) {
-            viewModel.uiState.collect { value = it }
-        }
-    }
+    val items by  viewModel.uiState.collectAsStateWithLifecycle()
+
     if (items is Success) {
         FalesiaItemScreen(
             items = (items as Success).data,
@@ -73,7 +47,9 @@ internal fun FalesiaItemScreen(
     Column(modifier) {
         var nameFalesiaItem by remember { mutableStateOf("Compose") }
         Row(
-            modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 24.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             TextField(
