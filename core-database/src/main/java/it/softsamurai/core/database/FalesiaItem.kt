@@ -33,6 +33,7 @@ data class FalesiaItem(
 
 @Dao
 interface FalesiaItemDao {
+
     @Query("SELECT * FROM falesiaitem ORDER BY uid DESC LIMIT 10")
     fun getFalesiaItems(): Flow<List<FalesiaItem>>
 
