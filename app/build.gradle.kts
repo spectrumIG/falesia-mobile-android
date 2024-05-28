@@ -96,6 +96,12 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
+    //Arrow
+    implementation(platform(libs.arrow.bom))
+    implementation(libs.arrow.core)
+    implementation(libs.arrow.optics)
+    ksp(libs.arrow.optics.ksp.plugin)
+
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)
     // Instrumented tests
