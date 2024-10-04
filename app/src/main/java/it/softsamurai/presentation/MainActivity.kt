@@ -25,6 +25,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
 import it.softsamurai.core.ui.MyApplicationTheme
+import it.softsamurai.presentation.navigation.MainNavigation
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

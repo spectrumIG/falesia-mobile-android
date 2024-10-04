@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.gradle)
     alias(libs.plugins.kotlin.compose.compiler)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -22,7 +23,7 @@ android {
 
         testInstrumentationRunner = "it.softsamurai.core.testing.HiltTestRunner"
         vectorDrawables {
-            useSupportLibrary = true
+        useSupportLibrary = true
         }
     }
 
@@ -101,6 +102,9 @@ dependencies {
     implementation(libs.arrow.core)
     implementation(libs.arrow.optics)
     ksp(libs.arrow.optics.ksp.plugin)
+
+    implementation(libs.kotlinx.serialization.json)
+
 
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)

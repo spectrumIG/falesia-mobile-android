@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -37,7 +36,6 @@ fun FalesiaItemScreen(modifier: Modifier = Modifier, viewModel: FalesiaItemViewM
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun FalesiaItemScreen(
     items: List<String>,

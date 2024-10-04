@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package it.softsamurai.presentation
+package it.softsamurai.presentation.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
