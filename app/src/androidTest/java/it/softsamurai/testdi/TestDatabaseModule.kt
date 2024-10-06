@@ -20,9 +20,9 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
-import it.softsamurai.core.data.FalesiaItemRepository
-import it.softsamurai.core.data.di.DataModule
-import it.softsamurai.core.data.di.FakeFalesiaItemRepository
+import it.softsamurai.repository.FalesiaItemRepository
+import it.softsamurai.repository.di.DataModule
+import it.softsamurai.repository.di.FakeFalesiaItemRepository
 
 @Module
 @TestInstallIn(
@@ -32,7 +32,7 @@ import it.softsamurai.core.data.di.FakeFalesiaItemRepository
 interface FakeDataModule {
 
     @Binds
-    abstract fun bindRepository(
+    fun bindRepository(
         fakeRepository: FakeFalesiaItemRepository
     ): FalesiaItemRepository
 }

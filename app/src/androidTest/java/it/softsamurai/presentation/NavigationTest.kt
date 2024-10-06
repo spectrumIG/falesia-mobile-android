@@ -20,7 +20,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import it.softsamurai.core.data.di.fakeFalesiaItems
+import it.softsamurai.repository.di.fakeFalesiaItems
 import org.junit.Rule
 import org.junit.Test
 

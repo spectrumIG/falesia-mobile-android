@@ -1,12 +1,12 @@
 
-package it.softsamurai.core.data.di
+package it.softsamurai.repository.di
 
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import it.softsamurai.core.data.DefaultFalesiaItemRepository
-import it.softsamurai.core.data.FalesiaItemRepository
+import it.softsamurai.repository.FalesiaDatabesLocalDataSource
+import it.softsamurai.repository.FalesiaItemRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
@@ -19,15 +19,15 @@ interface DataModule {
     @Singleton
     @Binds
     fun bindsFalesiaItemRepository(
-        falesiaItemRepository: DefaultFalesiaItemRepository
+        falesiaItemRepository: FalesiaDatabesLocalDataSource
     ): FalesiaItemRepository
 }
 
 class FakeFalesiaItemRepository @Inject constructor() : FalesiaItemRepository {
     override val falesiaItems: Flow<List<String>> = flowOf(fakeFalesiaItems)
 
-    override suspend fun add(name: String) {
-        throw NotImplementedError()
+    override suspend fun addFalesiaToRepo(name: String) {
+      TODO()
     }
 }
 

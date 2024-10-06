@@ -23,7 +23,7 @@ android {
 
         testInstrumentationRunner = "it.softsamurai.core.testing.HiltTestRunner"
         vectorDrawables {
-        useSupportLibrary = true
+            useSupportLibrary = true
         }
     }
 
@@ -105,7 +105,7 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json)
 
-
+    implementation(libs.skrapeit)
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)
     // Instrumented tests

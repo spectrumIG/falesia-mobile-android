@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import it.softsamurai.presentation.FalesiaItemUiState.Error
 import it.softsamurai.presentation.FalesiaItemUiState.Loading
 import it.softsamurai.presentation.FalesiaItemUiState.Success
+import it.softsamurai.repository.FalesiaItemRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -16,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FalesiaItemViewModel @Inject constructor(
-    private val falesiaItemRepository: it.softsamurai.core.data.FalesiaItemRepository
+    private val falesiaItemRepository: FalesiaItemRepository
 ) : ViewModel() {
 
     val uiState: StateFlow<FalesiaItemUiState> = falesiaItemRepository
@@ -30,7 +31,7 @@ class FalesiaItemViewModel @Inject constructor(
 
     fun addFalesiaItem(name: String) {
         viewModelScope.launch {
-            falesiaItemRepository.add(name)
+            falesiaItemRepository.addFalesiaToRepo(name)
         }
     }
 }

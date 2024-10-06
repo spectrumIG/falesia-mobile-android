@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package it.softsamurai.reposiitory.database
+package it.softsamurai.repository.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

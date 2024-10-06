@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package it.softsamurai.reposiitory.database
+package it.softsamurai.repository.database
 
 import androidx.room.Dao
 import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import it.softsamurai.repository.DataSource
 import kotlinx.coroutines.flow.Flow
 
 @Entity
@@ -32,7 +33,7 @@ data class FalesiaItem(
 }
 
 @Dao
-interface FalesiaItemDao {
+interface FalesiaItemDao : DataSource {
 
     @Query("SELECT * FROM falesiaitem ORDER BY uid DESC LIMIT 10")
     fun getFalesiaItems(): Flow<List<FalesiaItem>>

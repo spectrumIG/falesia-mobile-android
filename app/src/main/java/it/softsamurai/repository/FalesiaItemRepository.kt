@@ -1,25 +1,36 @@
-package it.softsamurai.core.data
+package it.softsamurai.repository
 
-import it.softsamurai.reposiitory.database.FalesiaItem
-import it.softsamurai.reposiitory.database.FalesiaItemDao
+import it.softsamurai.repository.database.FalesiaItem
+import it.softsamurai.repository.database.FalesiaItemDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+interface DataSource
+
 interface FalesiaItemRepository {
     val falesiaItems: Flow<List<String>>
 
-    suspend fun add(name: String)
+    suspend fun addFalesiaToRepo(name: String)
 }
 
-class DefaultFalesiaItemRepository @Inject constructor(
+
+
+
+
+
+
+
+
+//TODO - This won't be used for now.
+class FalesiaDatabesLocalDataSource @Inject constructor(
     private val falesiaItemDao: FalesiaItemDao
 ) : FalesiaItemRepository {
 
     override val falesiaItems: Flow<List<String>> =
         falesiaItemDao.getFalesiaItems().map { items -> items.map { it.name } }
 
-    override suspend fun add(name: String) {
+    override suspend fun addFalesiaToRepo(name: String) {
         falesiaItemDao.insertFalesiaItem(FalesiaItem(name = name))
     }
 }
