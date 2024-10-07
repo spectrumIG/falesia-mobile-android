@@ -17,7 +17,7 @@ android {
 
     defaultConfig {
         applicationId = "it.softsamurai"
-        minSdk = 21
+        minSdk = 26
         versionCode = 1
         versionName = "1.0"
 
@@ -54,6 +54,9 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/META-INF/DEPENDENCIES"
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "mozilla/public-suffix-list.txt"
         }
     }
     // The schemas directory contains a schema file for each version of the Room database.
@@ -62,6 +65,8 @@ android {
     ksp {
         arg("room.schemaLocation", "$projectDir/schemas")
     }
+
+    useLibrary("org.apache.http.legacy")
 }
 
 dependencies {
@@ -105,7 +110,9 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json)
 
-    implementation(libs.skrapeit)
+    implementation(libs.skrapeit) {
+        exclude(group = "it.skrape", module = "skrapeit-async-fetcher")
+    }
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)
     // Instrumented tests

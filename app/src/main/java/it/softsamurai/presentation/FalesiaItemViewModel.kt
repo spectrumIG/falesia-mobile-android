@@ -7,6 +7,7 @@ import it.softsamurai.presentation.FalesiaItemUiState.Error
 import it.softsamurai.presentation.FalesiaItemUiState.Loading
 import it.softsamurai.presentation.FalesiaItemUiState.Success
 import it.softsamurai.repository.FalesiaItemRepository
+import it.softsamurai.repository.model.Falesia
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -17,8 +18,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FalesiaItemViewModel @Inject constructor(
-    private val falesiaItemRepository: FalesiaItemRepository
+    falesiaItemRepository: FalesiaItemRepository
 ) : ViewModel() {
+
+    init {
+
+        viewModelScope.launch {
+            falesiaItemRepository.getAllFalesie()
+        }
+    }
 
     val uiState: StateFlow<FalesiaItemUiState> = falesiaItemRepository
         .falesiaItems.map { Success(data = it) }
@@ -28,16 +36,10 @@ class FalesiaItemViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = Loading
         )
-
-    fun addFalesiaItem(name: String) {
-        viewModelScope.launch {
-            falesiaItemRepository.addFalesiaToRepo(name)
-        }
-    }
 }
 
 sealed interface FalesiaItemUiState {
     data object Loading : FalesiaItemUiState
     data class Error(val throwable: Throwable) : FalesiaItemUiState
-    data class Success(val data: List<String>) : FalesiaItemUiState
+    data class Success(val data: List<Falesia>) : FalesiaItemUiState
 }

@@ -5,10 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,15 +19,18 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import it.softsamurai.core.ui.MyApplicationTheme
 import it.softsamurai.presentation.FalesiaItemUiState.Success
 import it.softsamurai.presentation.FalesiaItemViewModel
+import it.softsamurai.repository.model.Falesia
 
 @Composable
-fun FalesiaItemScreen(modifier: Modifier = Modifier, viewModel: FalesiaItemViewModel = hiltViewModel()) {
-    val items by  viewModel.uiState.collectAsStateWithLifecycle()
+fun FalesiaItemScreen(
+    modifier: Modifier = Modifier,
+    viewModel: FalesiaItemViewModel = hiltViewModel()
+) {
+    val items by viewModel.uiState.collectAsStateWithLifecycle()
 
     if (items is Success) {
         FalesiaItemScreen(
             items = (items as Success).data,
-            onSave = { name -> viewModel.addFalesiaItem(name) },
             modifier = modifier
         )
     }
@@ -38,8 +38,7 @@ fun FalesiaItemScreen(modifier: Modifier = Modifier, viewModel: FalesiaItemViewM
 
 @Composable
 internal fun FalesiaItemScreen(
-    items: List<String>,
-    onSave: (name: String) -> Unit,
+    items: List<Falesia>,
     modifier: Modifier = Modifier
 ) {
     Column(modifier) {
@@ -50,14 +49,7 @@ internal fun FalesiaItemScreen(
                 .padding(bottom = 24.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            TextField(
-                value = nameFalesiaItem,
-                onValueChange = { nameFalesiaItem = it }
-            )
 
-            Button(modifier = Modifier.width(96.dp), onClick = { onSave(nameFalesiaItem) }) {
-                Text("Save")
-            }
         }
         items.forEach {
             Text("Saved item: $it")
@@ -71,7 +63,17 @@ internal fun FalesiaItemScreen(
 @Composable
 private fun DefaultPreview() {
     MyApplicationTheme {
-        FalesiaItemScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
+        FalesiaItemScreen(
+            listOf(
+                Falesia(
+                    nome = "Puppa",
+                    zona = "Puppa",
+                    coordinate = 0.0 to 0.0,
+                    numeroVie = 2,
+                    linkDettagli = ""
+                )
+            )
+        )
     }
 }
 
@@ -79,6 +81,17 @@ private fun DefaultPreview() {
 @Composable
 private fun PortraitPreview() {
     MyApplicationTheme {
-        FalesiaItemScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
+        FalesiaItemScreen(
+            listOf(
+                Falesia(
+                    nome = "Puppa",
+                    zona = "Puppa",
+                    coordinate = 0.0 to 0.0,
+                    numeroVie = 2,
+                    linkDettagli = ""
+                )
+            )
+        )
+
     }
 }

@@ -16,23 +16,15 @@
 
 package it.softsamurai.testdi
 
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.components.SingletonComponent
-import dagger.hilt.testing.TestInstallIn
-import it.softsamurai.repository.FalesiaItemRepository
-import it.softsamurai.repository.di.DataModule
-import it.softsamurai.repository.di.FakeFalesiaItemRepository
-
-@Module
-@TestInstallIn(
-    components = [SingletonComponent::class],
-    replaces = [DataModule::class]
-)
-interface FakeDataModule {
-
-    @Binds
-    fun bindRepository(
-        fakeRepository: FakeFalesiaItemRepository
-    ): FalesiaItemRepository
-}
+//@Module
+//@TestInstallIn(
+//    components = [SingletonComponent::class],
+//    replaces = [DataModule::class]
+//)
+//interface FakeDataModule {
+//
+//    @Binds
+//    fun bindRepository(
+//        fakeRepository: FakeFalesiaItemRepository
+//    ): FalesiaItemRepository
+//}

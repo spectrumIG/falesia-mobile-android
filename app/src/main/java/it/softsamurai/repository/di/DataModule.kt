@@ -1,34 +1,42 @@
-
 package it.softsamurai.repository.di
 
-import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import it.softsamurai.repository.FalesiaDatabesLocalDataSource
+import it.softsamurai.repository.DefaultFalesiaRepo
 import it.softsamurai.repository.FalesiaItemRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
-import javax.inject.Inject
+import it.softsamurai.repository.network.FalesiaNetDataSourceImpl
+import it.softsamurai.repository.network.FalesiaNetworkDataSource
 import javax.inject.Singleton
+
+//@Module
+//@InstallIn(SingletonComponent::class)
+//interface DataModule {
+//
+//
+//    @Singleton
+//    @Binds
+//    fun bindsFalesiaItemRepository(
+//        falesiaItemRepository: FalesiaNetworkDataSource
+//    ): FalesiaItemRepository
+//}
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface DataModule {
+object FalesiaRepoModule{
 
+    @Provides
     @Singleton
-    @Binds
-    fun bindsFalesiaItemRepository(
-        falesiaItemRepository: FalesiaDatabesLocalDataSource
-    ): FalesiaItemRepository
+    fun provideFalesiaRepo(falesiaNetworkDataSource: FalesiaNetworkDataSource): FalesiaItemRepository = DefaultFalesiaRepo(falesiaNetworkDataSource)
+
+    @Provides
+    @Singleton
+    fun provideFalesiaLocalDataSource(): FalesiaNetworkDataSource = FalesiaNetDataSourceImpl()
 }
 
-class FakeFalesiaItemRepository @Inject constructor() : FalesiaItemRepository {
-    override val falesiaItems: Flow<List<String>> = flowOf(fakeFalesiaItems)
-
-    override suspend fun addFalesiaToRepo(name: String) {
-      TODO()
-    }
-}
-
-val fakeFalesiaItems = listOf("One", "Two", "Three")
+//@Module
+//@InstallIn(SingletonComponent::class)
+//interface FalesiaDataSourceModule {
+//
+//}
