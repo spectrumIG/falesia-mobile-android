@@ -24,7 +24,7 @@ class FalesiaNetDataSourceImpl @Inject constructor() : FalesiaNetworkDataSource 
     private val baseUrl = "https://www.falesiaonline.it/falesie/sud-europa.html"
 
     override suspend fun getElencoFalesie(): List<Falesia> {
-        return withContext<List<Falesia>>(IO) {
+        return withContext(IO) {
 
             skrape(BrowserFetcher) {
                 request {
@@ -75,32 +75,34 @@ class FalesiaNetDataSourceImpl @Inject constructor() : FalesiaNetworkDataSource 
     }
 
     override suspend fun getDettagliFalesia(falesiaUrl: String): FalesiaDettagli {
-        return skrape(BrowserFetcher) {
-            request {
-                url = falesiaUrl
-            }
+        return withContext(IO) {
+            skrape(BrowserFetcher) {
+                request {
+                    url = falesiaUrl
+                }
 
-            response {
-                htmlDocument {
-                    var numeroVie = 0
-                    val vie = mutableListOf<Via>()
+                response {
+                    htmlDocument {
+                        var numeroVie = 0
+                        val vie = mutableListOf<Via>()
 
-                    div(".numero-vie") {
-                        numeroVie = findFirst { text.toIntOrNull() ?: 0 }
-                    }
+                        div(".numero-vie") {
+                            numeroVie = findFirst { text.toIntOrNull() ?: 0 }
+                        }
 
-                    div("route-details") {
-                        findAll {
-                            forEach { element ->
-                                val grado = element.div(".route-grade") {
-                                    findFirst { text }
+                        div("route-details") {
+                            findAll {
+                                forEach { element ->
+                                    val grado = element.div(".route-grade") {
+                                        findFirst { text }
+                                    }
+                                    val nome = span(".nome-via") { findFirst { text } }
+                                    vie.add(Via(nome = nome, grado = grado))
                                 }
-                                val nome = span(".nome-via") { findFirst { text } }
-                                vie.add(Via(nome = nome, grado = grado))
                             }
                         }
+                        FalesiaDettagli(numeroVie, vie)
                     }
-                    FalesiaDettagli(numeroVie, vie)
                 }
             }
         }
