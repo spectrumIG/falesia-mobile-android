@@ -5,7 +5,7 @@ typealias FalesiaGeoCoord = Pair<Double, Double>?
 data class Falesia(
     val nome: String,
     val zona: String,
-    val coordinate: FalesiaGeoCoord,
+    val coordinate: FalesiaGeoCoord = null,
     val numeroVie: Int,
     val linkDettagli: String
 )

@@ -2,10 +2,13 @@ package it.softsamurai.repository.network
 
 import it.skrape.core.htmlDocument
 import it.skrape.fetcher.BrowserFetcher
+import it.skrape.fetcher.Method
 import it.skrape.fetcher.response
 import it.skrape.fetcher.skrape
 import it.skrape.selects.html5.a
 import it.skrape.selects.html5.div
+import it.skrape.selects.html5.h4
+import it.skrape.selects.html5.li
 import it.skrape.selects.html5.span
 import it.softsamurai.repository.model.Falesia
 import it.softsamurai.repository.model.FalesiaDettagli
@@ -21,14 +24,18 @@ interface FalesiaNetworkDataSource {
 
 class FalesiaNetDataSourceImpl @Inject constructor() : FalesiaNetworkDataSource {
 
-    private val baseUrl = "https://www.falesiaonline.it/falesie/sud-europa.html"
+    private val baseUrl = "https://www.falesiaonline.it/it/cragsearch/orderCragListUpdate"
 
     override suspend fun getElencoFalesie(): List<Falesia> {
         return withContext(IO) {
 
             skrape(BrowserFetcher) {
                 request {
+                    headers =
+                        mapOf("Referer" to "https://www.falesiaonline.it/falesie/sud-europa.html")
+                    this.body = "location_id=1&order=byinterest&shownnumberofcrags=110"
                     url = baseUrl
+                    method = Method.POST
                 }
 
                 response {
@@ -36,37 +43,78 @@ class FalesiaNetDataSourceImpl @Inject constructor() : FalesiaNetworkDataSource 
                         val falesie = mutableListOf<Falesia>()
 
                         // Correzione dei selettori CSS per la lista delle falesie
-                        div(".block-content") {
+//                        div(".block-content") {
+//                            findAll {
+//                                forEach { element ->
+//                                    val nome = element.div(".falesia-item-name") {
+//                                        findFirst { text }
+//                                    }
+//                                    val zona = element.div(".falesia-item-area") {
+//                                        findFirst { text }
+//                                    }
+//                                    val coordinate = element.div(".falesia-item-coordinates") {
+//                                        findFirst { text }
+//                                    }
+//                                    val numeroVie = element.div(".falesia-item-routes") {
+//                                        findFirst { text.toIntOrNull() ?: 0 }
+//                                    }
+//                                    val link = element.a(".falesia-item-link") {
+//                                        findFirst { attribute("href") }
+//                                    }
+//
+//                                    falesie.add(
+//                                        Falesia(
+//                                            nome = nome,
+//                                            zona = zona,
+//                                            coordinate = coordinate.toCoordinates(),
+//                                            numeroVie = numeroVie,
+//                                            linkDettagli = "https://www.falesiaonline.it$link"
+//                                        )
+//                                    )
+//                                }
+//                            }
+//                        }
+                        li(".leafletshadow") {
                             findAll {
                                 forEach { element ->
-                                    val nome = element.div(".falesia-item-name") {
-                                        findFirst { text }
+                                    // Estrazione del nome della falesia
+                                    val nome = element.h4 {
+                                        findFirst {
+                                            a { findFirst { text } }
+                                        }
                                     }
-                                    val zona = element.div(".falesia-item-area") {
-                                        findFirst { text }
+
+                                    // Estrazione del numero di vie
+                                    div("indicatorrow firstrow") {
+
                                     }
-                                    val coordinate = element.div(".falesia-item-coordinates") {
-                                        findFirst { text }
+                                    val numeroVie = div {
+                                        span(".indicator[title=Vie]") {
+                                            findFirst {
+                                                text.trim().toIntOrNull() ?: 0
+                                            }
+                                        }
+
                                     }
-                                    val numeroVie = element.div(".falesia-item-routes") {
-                                        findFirst { text.toIntOrNull() ?: 0 }
-                                    }
-                                    val link = element.a(".falesia-item-link") {
-                                        findFirst { attribute("href") }
+
+                                    // Estrazione del link ai dettagli
+                                    val linkDettagli = element.h4 {
+                                        a { findFirst { attribute("href") } }
                                     }
 
                                     falesie.add(
                                         Falesia(
                                             nome = nome,
-                                            zona = zona,
-                                            coordinate = coordinate.toCoordinates(),
                                             numeroVie = numeroVie,
-                                            linkDettagli = "https://www.falesiaonline.it$link"
+
+                                            linkDettagli = "https://www.falesiaonline.it$linkDettagli",
+                                            zona = "",
                                         )
                                     )
                                 }
                             }
                         }
+
                         falesie
                     }
                 }

@@ -1,10 +1,12 @@
 package it.softsamurai.repository
 
+import it.softsamurai.presentation.FalesiaItemUiState
 import it.softsamurai.repository.model.Falesia
 import it.softsamurai.repository.network.FalesiaNetworkDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 interface DataSource
@@ -23,5 +25,5 @@ class DefaultFalesiaRepo @Inject constructor(private val localDataSource: Falesi
         get() = _falesieItem
 
     override suspend fun getAllFalesie(): Flow<List<Falesia>> =
-        flowOf(localDataSource.getElencoFalesie())
+        flowOf(localDataSource.getElencoFalesie()).onStart { FalesiaItemUiState.Loading }
 }

@@ -42,7 +42,7 @@ internal fun FalesiaItemScreen(
     modifier: Modifier = Modifier
 ) {
     Column(modifier) {
-        var nameFalesiaItem by remember { mutableStateOf("Compose") }
+        var nameFalesiaItem by remember { mutableStateOf("") }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
