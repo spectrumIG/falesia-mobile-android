@@ -1,6 +1,5 @@
 package it.softsamurai.repository.network
 
-import android.util.Log
 import it.skrape.core.htmlDocument
 import it.skrape.fetcher.BrowserFetcher
 import it.skrape.fetcher.Method
@@ -11,11 +10,13 @@ import it.skrape.selects.html5.div
 import it.skrape.selects.html5.h4
 import it.skrape.selects.html5.li
 import it.skrape.selects.html5.span
+import it.softsamurai.presentation.FalesiaItemUiState
 import it.softsamurai.repository.model.Falesia
 import it.softsamurai.repository.model.FalesiaDettagli
 import it.softsamurai.repository.model.Via
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -86,10 +87,10 @@ class FalesiaNetDataSourceImpl @Inject constructor() : FalesiaNetworkDataSource 
                 }
             }
         }
-        falesie.forEachIndexed { index, falesia ->
-            Log.d("FalesiaNetwork", "FALESIA TROIVATA $index -  $falesie ")
-        }
-        return flowOf(falesie)
+//        falesie.forEachIndexed { index, falesia ->
+//            Log.d("FalesiaNetwork", "FALESIA TROIVATA $index -  $falesie ")
+//        }
+        return flowOf(falesie).catch { FalesiaItemUiState.Error(message = "ERRORE,Acciderbolina!!!") }
     }
 
 
