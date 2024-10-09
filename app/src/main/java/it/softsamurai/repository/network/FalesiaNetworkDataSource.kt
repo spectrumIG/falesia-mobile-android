@@ -1,5 +1,6 @@
 package it.softsamurai.repository.network
 
+import android.util.Log
 import it.skrape.core.htmlDocument
 import it.skrape.fetcher.BrowserFetcher
 import it.skrape.fetcher.Method
@@ -14,11 +15,13 @@ import it.softsamurai.repository.model.Falesia
 import it.softsamurai.repository.model.FalesiaDettagli
 import it.softsamurai.repository.model.Via
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 interface FalesiaNetworkDataSource {
-    suspend fun getElencoFalesie(): List<Falesia>
+    suspend fun getElencoFalesie(): Flow<List<Falesia>>
     suspend fun getDettagliFalesia(url: String): FalesiaDettagli
 }
 
@@ -26,10 +29,10 @@ class FalesiaNetDataSourceImpl @Inject constructor() : FalesiaNetworkDataSource 
 
     private val baseUrl = "https://www.falesiaonline.it/it/cragsearch/orderCragListUpdate"
 
-    override suspend fun getElencoFalesie(): List<Falesia> {
-        return withContext(IO) {
+    override suspend fun getElencoFalesie(): Flow<List<Falesia>> {
 
-            skrape(BrowserFetcher) {
+        val falesie: List<Falesia> = withContext(IO) {
+            return@withContext skrape(BrowserFetcher) {
                 request {
                     headers =
                         mapOf("Referer" to "https://www.falesiaonline.it/falesie/sud-europa.html")
@@ -37,14 +40,11 @@ class FalesiaNetDataSourceImpl @Inject constructor() : FalesiaNetworkDataSource 
                     url = baseUrl
                     method = Method.POST
                 }
-
                 response {
                     htmlDocument {
-                        val falesie = mutableListOf<Falesia>()
-
                         li(".leafletshadow") {
                             findAll {
-                                forEach { element ->
+                                map { element ->
                                     // Estrazione del nome della falesia
                                     val nome = element.h4 {
                                         findFirst {
@@ -70,7 +70,7 @@ class FalesiaNetDataSourceImpl @Inject constructor() : FalesiaNetworkDataSource 
                                         a { findFirst { attribute("href") } }
                                     }
 
-                                    falesie.add(
+
                                         Falesia(
                                             nome = nome,
                                             numeroVie = numeroVie,
@@ -78,17 +78,20 @@ class FalesiaNetDataSourceImpl @Inject constructor() : FalesiaNetworkDataSource 
                                             linkDettagli = "https://www.falesiaonline.it$linkDettagli",
                                             zona = "",
                                         )
-                                    )
+
                                 }
                             }
                         }
-
-                        falesie
                     }
                 }
             }
         }
+        falesie.forEachIndexed { index, falesia ->
+            Log.d("FalesiaNetwork", "FALESIA TROIVATA $index -  $falesie ")
+        }
+        return flowOf(falesie)
     }
+
 
     override suspend fun getDettagliFalesia(falesiaUrl: String): FalesiaDettagli {
         return withContext(IO) {

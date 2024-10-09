@@ -23,16 +23,17 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import it.softsamurai.presentation.screen.FalesiaItemScreen
+import it.softsamurai.presentation.screen.FalesiaItemRoute
 
 @Composable
 fun MainNavigation() {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "main") {
+
         composable("main") {
-            FalesiaItemScreen(modifier = Modifier.padding(16.dp))
+            FalesiaItemRoute(modifier = Modifier.padding(16.dp))
         }
-        // TODO: Add more destinations
+
     }
 }

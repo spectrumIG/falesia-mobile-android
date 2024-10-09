@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,28 +20,28 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import it.softsamurai.core.ui.AppTheme
-import it.softsamurai.presentation.FalesiaItemUiState.Success
+import it.softsamurai.core.ui.AppTypography
+import it.softsamurai.core.ui.errorLight
+import it.softsamurai.presentation.FalesiaItemUiState
 import it.softsamurai.presentation.FalesiaItemViewModel
 import it.softsamurai.repository.model.Falesia
 
 @Composable
-fun FalesiaItemScreen(
+@Suppress("Suspicious indentation:")
+fun FalesiaItemRoute(
     modifier: Modifier = Modifier,
     viewModel: FalesiaItemViewModel = hiltViewModel()
 ) {
-    val items by viewModel.uiState.collectAsStateWithLifecycle()
-
-    if (items is Success) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
         FalesiaItemScreen(
-            items = (items as Success).data,
+            uiState = uiState,
             modifier = modifier
         )
-    }
 }
 
 @Composable
 internal fun FalesiaItemScreen(
-    items: List<Falesia>,
+    uiState: FalesiaItemUiState,
     modifier: Modifier = Modifier
 ) {
     Column(modifier) {
@@ -51,10 +54,33 @@ internal fun FalesiaItemScreen(
         ) {
 
         }
-        items.forEach {
-            Text("Saved item: $it")
+        when (uiState) {
+            is FalesiaItemUiState.Error -> CreateErrorScreen()
+            FalesiaItemUiState.Loading -> CreateLoadingScreen()
+            is FalesiaItemUiState.Success -> {
+                LazyColumn {
+                    items(uiState.data) {
+                        Text("Saved item: $it")
+                    }
+
+                }
+            }
         }
+
+
     }
+}
+
+@Composable
+fun CreateLoadingScreen() {
+    CircularProgressIndicator()
+
+}
+
+@Composable
+fun CreateErrorScreen() {
+
+    Text("ERRRORE", color = errorLight, fontSize = AppTypography.bodyLarge.fontSize)
 }
 
 // Previews
@@ -64,7 +90,8 @@ internal fun FalesiaItemScreen(
 private fun DefaultPreview() {
     AppTheme {
         FalesiaItemScreen(
-            listOf(
+            uiState = FalesiaItemUiState.Success(
+                listOf(
                 Falesia(
                     nome = "Puppa",
                     zona = "Puppa",
@@ -72,7 +99,8 @@ private fun DefaultPreview() {
                     numeroVie = 2,
                     linkDettagli = ""
                 )
-            )
+                )
+            ),
         )
     }
 }
@@ -82,7 +110,8 @@ private fun DefaultPreview() {
 private fun PortraitPreview() {
     AppTheme {
         FalesiaItemScreen(
-            listOf(
+            uiState = FalesiaItemUiState.Success(
+                listOf(
                 Falesia(
                     nome = "Puppa",
                     zona = "Puppa",
@@ -90,7 +119,8 @@ private fun PortraitPreview() {
                     numeroVie = 2,
                     linkDettagli = ""
                 )
-            )
+                )
+            ),
         )
 
     }
