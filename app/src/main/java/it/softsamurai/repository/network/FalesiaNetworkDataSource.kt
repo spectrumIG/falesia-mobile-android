@@ -42,38 +42,6 @@ class FalesiaNetDataSourceImpl @Inject constructor() : FalesiaNetworkDataSource 
                     htmlDocument {
                         val falesie = mutableListOf<Falesia>()
 
-                        // Correzione dei selettori CSS per la lista delle falesie
-//                        div(".block-content") {
-//                            findAll {
-//                                forEach { element ->
-//                                    val nome = element.div(".falesia-item-name") {
-//                                        findFirst { text }
-//                                    }
-//                                    val zona = element.div(".falesia-item-area") {
-//                                        findFirst { text }
-//                                    }
-//                                    val coordinate = element.div(".falesia-item-coordinates") {
-//                                        findFirst { text }
-//                                    }
-//                                    val numeroVie = element.div(".falesia-item-routes") {
-//                                        findFirst { text.toIntOrNull() ?: 0 }
-//                                    }
-//                                    val link = element.a(".falesia-item-link") {
-//                                        findFirst { attribute("href") }
-//                                    }
-//
-//                                    falesie.add(
-//                                        Falesia(
-//                                            nome = nome,
-//                                            zona = zona,
-//                                            coordinate = coordinate.toCoordinates(),
-//                                            numeroVie = numeroVie,
-//                                            linkDettagli = "https://www.falesiaonline.it$link"
-//                                        )
-//                                    )
-//                                }
-//                            }
-//                        }
                         li(".leafletshadow") {
                             findAll {
                                 forEach { element ->

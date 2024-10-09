@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import it.softsamurai.core.ui.MyApplicationTheme
+import it.softsamurai.core.ui.AppTheme
 import it.softsamurai.presentation.FalesiaItemUiState.Success
 import it.softsamurai.presentation.FalesiaItemViewModel
 import it.softsamurai.repository.model.Falesia
@@ -62,7 +62,7 @@ internal fun FalesiaItemScreen(
 @Preview(showBackground = true)
 @Composable
 private fun DefaultPreview() {
-    MyApplicationTheme {
+    AppTheme {
         FalesiaItemScreen(
             listOf(
                 Falesia(
@@ -80,7 +80,7 @@ private fun DefaultPreview() {
 @Preview(showBackground = true, widthDp = 480)
 @Composable
 private fun PortraitPreview() {
-    MyApplicationTheme {
+    AppTheme {
         FalesiaItemScreen(
             listOf(
                 Falesia(
