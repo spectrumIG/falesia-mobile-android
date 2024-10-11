@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.detekt)
     alias(libs.plugins.hilt.gradle)
     alias(libs.plugins.kotlin.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
@@ -14,10 +15,17 @@ plugins {
 android {
     namespace = "it.softsamurai"
     compileSdk = 35
+    apply(
+        plugin = "io.gitlab.arturbosch.detekt",
+    )
 
+    detekt {
+        buildUponDefaultConfig = true
+        config.setFrom(files("$rootDir/gradle/detekt.yml"))
+    }
     defaultConfig {
         applicationId = "it.softsamurai"
-        minSdk = 34
+        minSdk = 30
         versionCode = 3
         versionName = "1.2"
 

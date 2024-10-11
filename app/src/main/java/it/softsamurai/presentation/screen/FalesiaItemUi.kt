@@ -31,7 +31,9 @@ fun FalesiaItemUi(
     falesiaValue: Falesia
 ) {
     Card(
-        modifier = Modifier.then(modifier).fillMaxWidth(),
+        modifier = Modifier
+            .then(modifier)
+            .fillMaxWidth(),
         colors = CardDefaults.elevatedCardColors()
             .copy(contentColor = onSurfaceVariantDarkMediumContrast)
     ) {
@@ -40,13 +42,13 @@ fun FalesiaItemUi(
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
+            horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
 
             Image(
                 modifier = Modifier.size(40.dp),
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.FillBounds,
                 painter = painterResource(drawable.montagna),
                 contentDescription = ""
             )
@@ -59,20 +61,17 @@ fun FalesiaItemUi(
             ) {
                 Text(
                     text = falesiaValue.nome,
-                    fontStyle = AppTypography.headlineMedium.fontStyle,
-                    fontSize = AppTypography.headlineMedium.fontSize,
+                    style = AppTypography.titleLarge,
                     color = primaryLight
                 )
                 Text(
                     text = falesiaValue.numeroVie.toString(),
-                    fontStyle = AppTypography.titleMedium.fontStyle,
-                    fontSize = AppTypography.titleMedium.fontSize,
+                    style = AppTypography.titleMedium,
                     color = primaryLight
                 )
                 Text(
                     text = falesiaValue.linkDettagli,
-                    fontStyle = AppTypography.titleMedium.fontStyle,
-                    fontSize = AppTypography.titleMedium.fontSize,
+                    style = AppTypography.titleSmall,
                     color = primaryLight
                 )
             }
