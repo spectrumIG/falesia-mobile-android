@@ -13,6 +13,7 @@ plugins {
 }
 
 android {
+
     namespace = "it.softsamurai"
     compileSdk = 35
     apply(
@@ -25,11 +26,13 @@ android {
     }
     defaultConfig {
         applicationId = "it.softsamurai"
+        targetSdk = 35
         minSdk = 30
-        versionCode = 3
-        versionName = "1.2"
+        versionCode = 4
+        versionName = "1.2.1"
 
         testInstrumentationRunner = "it.softsamurai.core.testing.HiltTestRunner"
+
         vectorDrawables {
             useSupportLibrary = true
         }
