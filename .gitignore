@@ -15,3 +15,5 @@
 .cxx
 local.properties
 /.kotlin
+keystore.properties
+falesia-keystore2.jks
