@@ -28,8 +28,8 @@ android {
         applicationId = "it.softsamurai"
         targetSdk = 35
         minSdk = 30
-        versionCode = 4
-        versionName = "1.2.1"
+        versionCode = 5
+        versionName = "1.2.2"
 
         testInstrumentationRunner = "it.softsamurai.core.testing.HiltTestRunner"
 
