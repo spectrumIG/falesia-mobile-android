@@ -23,7 +23,7 @@ if (keystorePropertiesFile.exists()) {
 android {
 
     namespace = "it.softsamurai"
-    compileSdk = 35
+    compileSdk = 36
     apply(
         plugin = "io.gitlab.arturbosch.detekt",
     )
@@ -34,7 +34,6 @@ android {
     }
     defaultConfig {
         applicationId = "it.softsamurai"
-        targetSdk = 35
         minSdk = 30
         versionCode = 5
         versionName = "1.2.2"
