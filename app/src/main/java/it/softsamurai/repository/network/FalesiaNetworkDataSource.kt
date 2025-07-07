@@ -87,10 +87,10 @@ class FalesiaNetDataSourceImpl @Inject constructor() : FalesiaNetworkDataSource 
                 }
             }
         }
-//        falesie.forEachIndexed { index, falesia ->
-//            Log.d("FalesiaNetwork", "FALESIA TROIVATA $index -  $falesie ")
-//        }
-        return flowOf(falesie).catch { FalesiaItemUiState.Error(message = "ERRORE,Acciderbolina!!!") }
+
+        return flowOf(falesie).catch {
+            FalesiaItemUiState.Error(message = "ERRORE,Acciderbolina!!!")
+        }
     }
 
 

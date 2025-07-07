@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.io.FileInputStream
+import java.util.Properties
 
-
-@Suppress("DSL_SCOPE_VIOLATION") // Remove when fixed https://youtrack.jetbrains.com/issue/KTIJ-19369
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -10,6 +10,14 @@ plugins {
     alias(libs.plugins.hilt.gradle)
     alias(libs.plugins.kotlin.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+}
+
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+
+val keystoreProperties = Properties()
+
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
 android {
@@ -37,14 +45,38 @@ android {
             useSupportLibrary = true
         }
     }
+    signingConfigs {
+        create("release") {
+            storeFile = file(keystoreProperties["storeFile"] as String)
+            storePassword = keystoreProperties["storePassword"] as String
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+        }
+    }
 
     buildTypes {
+
         getByName("release") {
-            isMinifyEnabled = false
+//            isMinifyEnabled = true // Abilitato minify per la release
+//            isShrinkResources = true // Opzionale: riduce le risorse inutilizzate
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+
+        getByName("debug") {
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+//            isMinifyEnabled = false // Disabilitato minify per il debug
+//            isShrinkResources = false // Disabilitato riduzione risorse per il debug
+        }
+
+        create("debugRelease") {
+            initWith(getByName("release"))
+            isDebuggable = true  // Permette debugging su una build di release
+            matchingFallbacks += listOf("release")
         }
     }
 
@@ -52,6 +84,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlin {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
@@ -79,6 +112,11 @@ android {
     }
 
     useLibrary("org.apache.http.legacy")
+    lint {
+        baseline = file("lint-baseline.xml")
+        disable += setOf("NullSafeMutableLiveData")
+
+    }
 }
 
 dependencies {

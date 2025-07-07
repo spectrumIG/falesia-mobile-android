@@ -113,3 +113,132 @@
 
 # Se usi Auth
 -keep class io.ktor.client.features.auth.** { *; }
+
+# Please add these rules to your existing keep rules in order to suppress warnings.
+# This is generated automatically by the Android Gradle plugin.
+-dontwarn java.lang.management.ManagementFactory
+-dontwarn java.lang.management.RuntimeMXBean
+
+# Regole generali per prevenire crash all'avvio
+
+# Mantieni le annotazioni
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+-keepattributes Signature
+-keepattributes Exceptions
+
+# Mantieni i modelli usati nell'applicazione (adatta ai tuoi package)
+-keep class it.softsamurai.models.** { *; }
+-keep class it.softsamurai.data.** { *; }
+
+# Hilt/Dagger - molto comune nei crash all'avvio
+-keep class dagger.** { *; }
+-keep class javax.inject.** { *; }
+-keep class * extends dagger.internal.Binding
+-keep class * extends dagger.internal.ModuleAdapter
+-keep class * extends dagger.internal.StaticInjection
+-keep class **$$ModuleAdapter
+-keep class **$$InjectAdapter
+-keep class **$$StaticInjection
+-keep class javax.annotation.** { *; }
+
+# Mantieni i componenti Hilt che possono causare crash all'avvio
+-keep class * extends androidx.hilt.work.HiltWorker
+-keepnames @dagger.hilt.android.lifecycle.HiltViewModel class * extends androidx.lifecycle.ViewModel
+
+# Regole per Compose
+-keep class androidx.compose.** { *; }
+-keep class androidx.lifecycle.viewmodel.compose.** { *; }
+
+# Arrow
+-keep class arrow.** { *; }
+
+# Room
+-keep class * extends androidx.room.RoomDatabase
+-keep @androidx.room.Entity class *
+-dontwarn androidx.room.paging.**
+
+# Skrape.it
+-keep class it.skrape.** { *; }
+
+# Regole per Activity/Fragment/ViewModel
+-keepclassmembers class * extends android.app.Activity {
+    public void *(android.view.View);
+}
+-keepclassmembers class * extends androidx.fragment.app.Fragment {
+    public void *(android.view.View);
+}
+-keep class androidx.lifecycle.** { *; }
+
+# Regole per i crash legati al runtime Kotlin
+-keep class kotlin.** { *; }
+-keep class kotlinx.** { *; }
+-keepclassmembers class **$WhenMappings {
+    <fields>;
+}
+-keepclassmembers class kotlin.Metadata {
+    public <methods>;
+}
+
+# Regola specifica per evitare crash con le reflection in Kotlin
+-keepclasseswithmembers class * {
+    @kotlin.jvm.* <methods>;
+}
+
+# Per i crash legati a Coroutines
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-keepclassmembernames class kotlinx.** {
+    volatile <fields>;
+}
+
+-keep class org.apache.commons.logging.impl.*
+
+-dontwarn javax.servlet.ServletContextListener
+-dontwarn org.apache.avalon.framework.logger.Logger
+-dontwarn org.apache.log.Hierarchy
+-dontwarn org.apache.log.Logger
+
+# Regole ProGuard specifiche per SkrapeIt e le sue dipendenze
+
+# Regole per SkrapeIt
+-keep class it.skrape.** { *; }
+-dontwarn it.skrape.**
+
+# Regole per HtmlUnit (utilizzato da BrowserFetcher di SkrapeIt)
+-keep class com.gargoylesoftware.htmlunit.** { *; }
+-dontwarn com.gargoylesoftware.htmlunit.**
+
+# Regole per Apache Commons Logging
+-keep class org.apache.commons.logging.** { *; }
+-dontwarn org.apache.commons.logging.**
+
+# Implementazioni di Log che potrebbero essere utilizzate
+-keep class org.apache.commons.logging.impl.** { *; }
+-keep class org.apache.logging.log4j.** { *; }
+-keep class org.slf4j.** { *; }
+-dontwarn org.slf4j.**
+-dontwarn org.apache.logging.log4j.**
+
+# Altre dipendenze di HtmlUnit
+-keep class org.apache.http.** { *; }
+-dontwarn org.apache.http.**
+-keep class org.eclipse.jetty.** { *; }
+-dontwarn org.eclipse.jetty.**
+-keep class org.w3c.css.** { *; }
+-dontwarn org.w3c.css.**
+
+# Per XML e simili utilizzati da HtmlUnit
+-keep class org.w3c.dom.** { *; }
+-keep class org.xml.** { *; }
+-dontwarn org.xml.**
+
+# Regole per JavaScript engine usato da HtmlUnit
+-keep class net.sourceforge.htmlunit.corejs.** { *; }
+-dontwarn net.sourceforge.htmlunit.corejs.**
+
+# Regole per WebSocket e altre componenti di rete
+-keep class org.apache.coyote.** { *; }
+-dontwarn org.apache.coyote.**
+-keep class org.apache.tomcat.** { *; }
+-dontwarn org.apache.tomcat.**
