@@ -56,8 +56,8 @@ android {
     buildTypes {
 
         getByName("release") {
-//            isMinifyEnabled = true // Abilitato minify per la release
-//            isShrinkResources = true // Opzionale: riduce le risorse inutilizzate
+            isMinifyEnabled = true // Abilitato minify per la release
+            isShrinkResources = true // Opzionale: riduce le risorse inutilizzate
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -68,8 +68,8 @@ android {
         getByName("debug") {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
-//            isMinifyEnabled = false // Disabilitato minify per il debug
-//            isShrinkResources = false // Disabilitato riduzione risorse per il debug
+            isMinifyEnabled = false // Disabilitato minify per il debug
+            isShrinkResources = false // Disabilitato riduzione risorse per il debug
         }
 
         create("debugRelease") {
@@ -160,9 +160,8 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json)
 
-    implementation(libs.skrapeit) {
-        exclude(group = "it.skrape", module = "skrapeit-async-fetcher")
-    }
+    implementation(libs.ksoup.core)
+    implementation(libs.ksoup.network)
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)
     // Instrumented tests
