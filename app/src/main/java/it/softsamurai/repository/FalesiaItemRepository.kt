@@ -22,15 +22,13 @@ class DefaultFalesiaRepo @Inject constructor(private val localDataSource: Falesi
         localDataSource.getElencoFalesie()
             .onStart {
                 FalesiaItemUiState.Loading
-            }
-            .catch {
-                FalesiaItemUiState.Error(message = "ERRORE,Acciderbolina!!!")
-            }
-            .map {
+            }.map {
                 if (it.isEmpty()) {
                     FalesiaItemUiState.Error(message = "ERRORE,Acciderbolina!!!")
                 } else {
                     FalesiaItemUiState.Success(it)
                 }
+            }.catch {
+                FalesiaItemUiState.Error(message = "ERRORE,Acciderbolina!!!")
             }
 }

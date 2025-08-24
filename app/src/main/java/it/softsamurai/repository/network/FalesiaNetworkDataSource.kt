@@ -1,15 +1,12 @@
 package it.softsamurai.repository.network
 
-import it.skrape.core.htmlDocument
-import it.skrape.fetcher.BrowserFetcher
-import it.skrape.fetcher.Method
-import it.skrape.fetcher.response
-import it.skrape.fetcher.skrape
-import it.skrape.selects.html5.a
-import it.skrape.selects.html5.div
-import it.skrape.selects.html5.h4
-import it.skrape.selects.html5.li
-import it.skrape.selects.html5.span
+import com.fleeksoft.ksoup.Ksoup
+import com.fleeksoft.ksoup.network.parseGetRequest
+import com.fleeksoft.ksoup.network.parsePostRequest
+import com.fleeksoft.ksoup.nodes.Document
+import io.ktor.client.request.headers
+import io.ktor.client.request.setBody
+import io.ktor.http.HttpHeaders
 import it.softsamurai.presentation.FalesiaItemUiState
 import it.softsamurai.repository.model.Falesia
 import it.softsamurai.repository.model.FalesiaDettagli
@@ -26,67 +23,45 @@ interface FalesiaNetworkDataSource {
     suspend fun getDettagliFalesia(url: String): FalesiaDettagli
 }
 
-class FalesiaNetDataSourceImpl @Inject constructor() : FalesiaNetworkDataSource {
+class FalesiaNetDataSourceImpl @Inject constructor(val baseUrl: String) : FalesiaNetworkDataSource {
 
-    private val baseUrl = "https://www.falesiaonline.it/it/cragsearch/orderCragListUpdate"
 
     override suspend fun getElencoFalesie(): Flow<List<Falesia>> {
-
-        val falesie: List<Falesia> = withContext(IO) {
-            return@withContext skrape(BrowserFetcher) {
-                request {
-                    headers =
-                        mapOf("Referer" to "https://www.falesiaonline.it/falesie/sud-europa.html")
-                    this.body = "location_id=1&order=byinterest&shownnumberofcrags=110"
-                    url = baseUrl
-                    method = Method.POST
+        val request: Document = Ksoup.parsePostRequest(
+            url = baseUrl,
+            httpRequestBuilder = {
+                headers {
+                    append(
+                        HttpHeaders.Referrer,
+                        "https://www.falesiaonline.it/falesie/sud-europa.html"
+                    )
                 }
-                response {
-                    htmlDocument {
-                        li(".leafletshadow") {
-                            findAll {
-                                map { element ->
-                                    // Estrazione del nome della falesia
-                                    val nome = element.h4 {
-                                        findFirst {
-                                            a { findFirst { text } }
-                                        }
-                                    }
+                setBody("location_id=1&order=byinterest&shownnumberofcrags=110")
+            })
 
-                                    // Estrazione del numero di vie
-                                    div("indicatorrow firstrow") {
+      val falesie =   request.select("li.leafletshadow").let { elements ->
+            val falesie = elements.map { element ->
+                // Estrazione del nome della falesia
+                val nome = element.selectFirst("h4 a")?.text() ?: "N/A"
 
-                                    }
-                                    val numeroVie = div {
-                                        span(".indicator[title=Vie]") {
-                                            findFirst {
-                                                text.trim().toIntOrNull() ?: 0
-                                            }
-                                        }
+                // Estrazione del numero di vie
+                val numeroVie = element.selectFirst("div.indicatorrow.firstrow span.indicator[title=Vie]")?.text()
+                    ?.trim()?.toIntOrNull() ?: 0
 
-                                    }
+                // Estrazione del link ai dettagli
+                val linkDettagli = element.selectFirst("h4 a")?.attr("href") ?: ""
 
-                                    // Estrazione del link ai dettagli
-                                    val linkDettagli = element.h4 {
-                                        a { findFirst { attribute("href") } }
-                                    }
-
-
-                                        Falesia(
-                                            nome = nome,
-                                            numeroVie = numeroVie,
-
-                                            linkDettagli = "https://www.falesiaonline.it$linkDettagli",
-                                            zona = "",
-                                        )
-
-                                }
-                            }
-                        }
-                    }
-                }
+                Falesia(
+                    nome = nome,
+                    numeroVie = numeroVie,
+                    linkDettagli = "https://www.falesiaonline.it$linkDettagli",
+                    zona = ""
+                )
             }
+
+            return@let falesie
         }
+
 
         return flowOf(falesie).catch {
             FalesiaItemUiState.Error(message = "ERRORE,Acciderbolina!!!")
@@ -96,35 +71,24 @@ class FalesiaNetDataSourceImpl @Inject constructor() : FalesiaNetworkDataSource 
 
     override suspend fun getDettagliFalesia(falesiaUrl: String): FalesiaDettagli {
         return withContext(IO) {
-            skrape(BrowserFetcher) {
-                request {
-                    url = falesiaUrl
-                }
+            val document: Document = Ksoup.parseGetRequest(falesiaUrl)
 
-                response {
-                    htmlDocument {
-                        var numeroVie = 0
-                        val vie = mutableListOf<Via>()
+            var numeroVie = 0
+            val vie = mutableListOf<Via>()
 
-                        div(".numero-vie") {
-                            numeroVie = findFirst { text.toIntOrNull() ?: 0 }
-                        }
-
-                        div("route-details") {
-                            findAll {
-                                forEach { element ->
-                                    val grado = element.div(".route-grade") {
-                                        findFirst { text }
-                                    }
-                                    val nome = span(".nome-via") { findFirst { text } }
-                                    vie.add(Via(nome = nome, grado = grado))
-                                }
-                            }
-                        }
-                        FalesiaDettagli(numeroVie, vie)
-                    }
-                }
+            // Trova il numero di vie
+            document.selectFirst("div.numero-vie")?.text()?.let { text ->
+                numeroVie = text.toIntOrNull() ?: 0
             }
+
+            // Trova tutti gli elementi route-details
+            document.select("div.route-details").forEach { element ->
+                val grado = element.selectFirst("div.route-grade")?.text() ?: ""
+                val nome = element.selectFirst("span.nome-via")?.text() ?: ""
+                vie.add(Via(nome = nome, grado = grado))
+            }
+
+            FalesiaDettagli(numeroVie, vie)
         }
     }
 }

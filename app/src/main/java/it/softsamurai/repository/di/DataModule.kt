@@ -28,11 +28,15 @@ object FalesiaRepoModule{
 
     @Provides
     @Singleton
+    fun provideFalesiaUrlForDataSource(): String = "https://www.falesiaonline.it/it/cragsearch/orderCragListUpdate"
+
+    @Provides
+    @Singleton
     fun provideFalesiaRepo(falesiaNetworkDataSource: FalesiaNetworkDataSource): FalesiaItemRepository = DefaultFalesiaRepo(falesiaNetworkDataSource)
 
     @Provides
     @Singleton
-    fun provideFalesiaLocalDataSource(): FalesiaNetworkDataSource = FalesiaNetDataSourceImpl()
+    fun provideFalesiaLocalDataSource(baseUrl: String): FalesiaNetworkDataSource = FalesiaNetDataSourceImpl(baseUrl= baseUrl)
 }
 
 //@Module
