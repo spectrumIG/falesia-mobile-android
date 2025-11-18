@@ -28,7 +28,8 @@ object FalesiaRepoModule{
 
     @Provides
     @Singleton
-    fun provideFalesiaUrlForDataSource(): String = "https://www.falesiaonline.it/it/cragsearch/orderCragListUpdate"
+    fun provideFalesiaUrlForDataSource(): String =
+        "https://www.falesiaonline.it/falesie/sud-europa.html"
 
     @Provides
     @Singleton
