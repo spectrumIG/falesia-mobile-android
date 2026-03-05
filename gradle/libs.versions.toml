@@ -21,6 +21,7 @@ serialization-json = "1.9.0"
 uiTextGoogleFonts = "1.9.0"
 detekt = "1.23.8"
 ksoup = "0.2.5"
+stability-analizer-ver = "0.6.6"
 
 
 [libraries]
@@ -73,5 +74,6 @@ hilt-gradle = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+stability-analyzer = { id = "com.github.skydoves.compose.stability.analyzer", version.ref = "stability-analizer-ver" }
 
 
