@@ -1,5 +1,6 @@
 package it.softsamurai.presentation
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -8,6 +9,7 @@ import it.softsamurai.repository.FalesiaItemRepository
 import it.softsamurai.repository.model.Falesia
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,7 +28,7 @@ class FalesiaItemViewModel @Inject constructor(
     fun retrieveFalesie() {
         viewModelScope.launch {
 
-            falesiaItemRepository.getAllFalesie().collect {
+            falesiaItemRepository.getAllFalesie().onStart { emit(Loading) }.collect {
                 _uiState.value = it
             }
         }

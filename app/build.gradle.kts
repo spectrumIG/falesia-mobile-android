@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.hilt.gradle)
     alias(libs.plugins.kotlin.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+    alias (libs.plugins.stability.analyzer)
 }
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -23,7 +24,7 @@ if (keystorePropertiesFile.exists()) {
 android {
 
     namespace = "it.softsamurai"
-    compileSdk = 35
+    compileSdk = 36
     apply(
         plugin = "io.gitlab.arturbosch.detekt",
     )
@@ -34,7 +35,6 @@ android {
     }
     defaultConfig {
         applicationId = "it.softsamurai"
-        targetSdk = 35
         minSdk = 30
         versionCode = 5
         versionName = "1.2.2"
@@ -57,8 +57,8 @@ android {
     buildTypes {
 
         getByName("release") {
-//            isMinifyEnabled = true // Abilitato minify per la release
-//            isShrinkResources = true // Opzionale: riduce le risorse inutilizzate
+            isMinifyEnabled = true // Abilitato minify per la release
+            isShrinkResources = true // Opzionale: riduce le risorse inutilizzate
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -69,8 +69,8 @@ android {
         getByName("debug") {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
-//            isMinifyEnabled = false // Disabilitato minify per il debug
-//            isShrinkResources = false // Disabilitato riduzione risorse per il debug
+            isMinifyEnabled = false // Disabilitato minify per il debug
+            isShrinkResources = false // Disabilitato riduzione risorse per il debug
         }
 
         create("debugRelease") {
@@ -161,9 +161,8 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json)
 
-    implementation(libs.skrapeit) {
-        exclude(group = "it.skrape", module = "skrapeit-async-fetcher")
-    }
+    implementation(libs.ksoup.core)
+    implementation(libs.ksoup.network)
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)
     // Instrumented tests

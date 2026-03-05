@@ -2,7 +2,6 @@
 
 package it.softsamurai.presentation.screen
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,7 +28,7 @@ import it.softsamurai.presentation.FalesiaItemViewModel
 import it.softsamurai.repository.model.Falesia
 
 @Composable
-@SuppressLint("Suspicious indentation:")
+@Suppress("Suspicious indentation:")
 fun FalesiaItemRoute(
     modifier: Modifier = Modifier,
     viewModel: FalesiaItemViewModel = hiltViewModel(),
@@ -40,7 +39,7 @@ fun FalesiaItemRoute(
     FalesiaItemScreen(uiState = uiState, modifier = modifier)
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Suppress("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 internal fun FalesiaItemScreen(
     uiState: FalesiaItemUiState,
