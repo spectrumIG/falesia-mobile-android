@@ -130,7 +130,11 @@ dependencies {
 
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
-    implementation(libs.androidx.ui.text.google.fonts)
+
+    // Image loading
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+    implementation(libs.androidx.material3)
     ksp(libs.hilt.compiler)
     // Hilt and instrumented tests.
     androidTestImplementation(libs.hilt.android.testing)
@@ -139,10 +143,16 @@ dependencies {
     testImplementation(libs.hilt.android.testing)
     kspTest(libs.hilt.android.compiler)
 
+    // core-ui module
+    implementation(project(":core-ui"))
+
     // Arch Components
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.navigation.compose)
+
+    // Navigation 3
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.navigation3.runtime)
 
     // Compose
     implementation(platform(libs.androidx.compose.bom))

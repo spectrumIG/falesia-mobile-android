@@ -1,8 +1,10 @@
 package it.softsamurai.presentation.navigation
 
-import kotlinx.serialization.Serializable
+import androidx.navigation3.runtime.NavKey
 
-sealed class Route {
-    @Serializable
-    data object Home: Route()
+sealed interface AppRoute {
+    data object Discover : AppRoute, NavKey
+    data object Logbook : AppRoute
+    data object Ticklist : AppRoute
+    data object Profile : AppRoute
 }
