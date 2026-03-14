@@ -17,3 +17,4 @@ local.properties
 /.kotlin
 keystore.properties
 falesia-keystore2.jks
+/core-ui/build/
