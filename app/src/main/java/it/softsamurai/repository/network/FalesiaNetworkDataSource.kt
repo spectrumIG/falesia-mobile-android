@@ -1,5 +1,6 @@
 package it.softsamurai.repository.network
 
+import arrow.core.Either
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.network.parseGetRequest
 import com.fleeksoft.ksoup.network.parsePostRequest
@@ -7,97 +8,119 @@ import com.fleeksoft.ksoup.nodes.Document
 import io.ktor.client.request.headers
 import io.ktor.client.request.setBody
 import io.ktor.http.HttpHeaders
-import it.softsamurai.presentation.FalesiaItemUiState
-import it.softsamurai.repository.model.Falesia
-import it.softsamurai.repository.model.FalesiaDettagli
-import it.softsamurai.repository.model.Via
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.withContext
+import it.softsamurai.domain.error.SyncError
+import it.softsamurai.repository.network.model.FalesiaDetailNetworkModel
+import it.softsamurai.repository.network.model.FalesiaListItemNetworkModel
+import it.softsamurai.repository.network.model.ViaNetworkModel
 import javax.inject.Inject
 
 interface FalesiaNetworkDataSource {
-    suspend fun getElencoFalesie(): Flow<List<Falesia>>
-    suspend fun getDettagliFalesia(url: String): FalesiaDettagli
+    suspend fun fetchElencoFalesie(): Either<SyncError, List<FalesiaListItemNetworkModel>>
+    suspend fun fetchDettagliFalesia(url: String): Either<SyncError, FalesiaDetailNetworkModel>
 }
 
-class FalesiaNetDataSourceImpl @Inject constructor(val baseUrl: String) : FalesiaNetworkDataSource {
+private const val BASE_REFERRER = "https://www.falesiaonline.it/falesie/sud-europa.html"
+private const val POST_BODY = "location_id=1&order=byinterest&shownnumberofcrags=110"
 
+class FalesiaNetDataSourceImpl @Inject constructor(
+    private val baseUrl: String,
+) : FalesiaNetworkDataSource {
 
-    override suspend fun getElencoFalesie(): Flow<List<Falesia>> {
-        val request: Document = Ksoup.parsePostRequest(
-            url = baseUrl,
-            httpRequestBuilder = {
-                headers {
-                    append(
-                        HttpHeaders.Referrer,
-                        "https://www.falesiaonline.it/falesie/sud-europa.html"
-                    )
-                }
-                setBody("location_id=1&order=byinterest&shownnumberofcrags=110")
-            })
-
-      val falesie =   request.select("li.leafletshadow").let { elements ->
-            val falesie = elements.map { element ->
-                // Estrazione del nome della falesia
+    override suspend fun fetchElencoFalesie(): Either<SyncError, List<FalesiaListItemNetworkModel>> =
+        Either.catch {
+            val document: Document = Ksoup.parsePostRequest(
+                url = baseUrl,
+                httpRequestBuilder = {
+                    headers { append(HttpHeaders.Referrer, BASE_REFERRER) }
+                    setBody(POST_BODY)
+                },
+            )
+            document.select("li.leafletshadow").map { element ->
                 val nome = element.selectFirst("h4 a")?.text() ?: "N/A"
+                val routeCount =
+                    element
+                        .selectFirst("div.indicatorrow.firstrow span.indicator[title=Vie]")
+                        ?.text()
+                        ?.trim()
+                        ?.toIntOrNull() ?: 0
+                val relativeLink = element.selectFirst("h4 a")?.attr("href") ?: ""
+                val detailUrl = "https://www.falesiaonline.it$relativeLink"
 
-                // Estrazione del numero di vie
-                val numeroVie = element.selectFirst("div.indicatorrow.firstrow span.indicator[title=Vie]")?.text()
-                    ?.trim()?.toIntOrNull() ?: 0
+                // TODO: verify the correct CSS selector for the list-page thumbnail once the
+                //       site HTML is inspected. Currently trying the first <img> in the card.
+                val pictureUrl = element.selectFirst("img")?.attr("abs:src")?.takeIf { it.isNotBlank() }
 
-                // Estrazione del link ai dettagli
-                val linkDettagli = element.selectFirst("h4 a")?.attr("href") ?: ""
-
-                Falesia(
+                FalesiaListItemNetworkModel(
                     nome = nome,
-                    numeroVie = numeroVie,
-                    linkDettagli = "https://www.falesiaonline.it$linkDettagli",
-                    zona = ""
+                    pictureUrl = pictureUrl,
+                    routeCount = routeCount,
+                    detailUrl = detailUrl,
                 )
             }
+        }.mapLeft { SyncError.NetworkFailure(it) }
 
-            return@let falesie
-        }
+    override suspend fun fetchDettagliFalesia(url: String): Either<SyncError, FalesiaDetailNetworkModel> =
+        Either.catch {
+            val document: Document = Ksoup.parseGetRequest(url)
 
-
-        return flowOf(falesie).catch {
-            FalesiaItemUiState.Error(message = "ERRORE,Acciderbolina!!!")
-        }
-    }
-
-
-    override suspend fun getDettagliFalesia(falesiaUrl: String): FalesiaDettagli {
-        return withContext(IO) {
-            val document: Document = Ksoup.parseGetRequest(falesiaUrl)
-
-            var numeroVie = 0
-            val vie = mutableListOf<Via>()
-
-            // Trova il numero di vie
-            document.selectFirst("div.numero-vie")?.text()?.let { text ->
-                numeroVie = text.toIntOrNull() ?: 0
-            }
-
-            // Trova tutti gli elementi route-details
-            document.select("div.route-details").forEach { element ->
+            val vie = document.select("div.route-details").map { element ->
                 val grado = element.selectFirst("div.route-grade")?.text() ?: ""
                 val nome = element.selectFirst("span.nome-via")?.text() ?: ""
-                vie.add(Via(nome = nome, grado = grado))
+                ViaNetworkModel(nome = nome, grado = grado)
             }
 
-            FalesiaDettagli(numeroVie, vie)
-        }
-    }
-}
+            // TODO: verify the correct CSS selectors for the crag photo once HTML is inspected.
+            val pictureUrl = document.selectFirst(
+                "img.crag-photo, .falesia-photo img, .crag-header img, .crag-image img, article > img",
+            )?.attr("abs:src")?.takeIf { it.isNotBlank() }
 
-fun String.toCoordinates(): Pair<Double, Double>? {
-    val coordinates = this.split(",").map { it.trim().toDoubleOrNull() }
-    return if (coordinates.size == 2 && coordinates[0] != null && coordinates[1] != null) {
-        Pair(coordinates[0]!!, coordinates[1]!!)
-    } else {
-        null
+            val (latitude, longitude) = document.extractCoordinates() ?: (null to null)
+
+            FalesiaDetailNetworkModel(
+                pictureUrl = pictureUrl,
+                latitude = latitude,
+                longitude = longitude,
+                vie = vie,
+            )
+        }.mapLeft { SyncError.NetworkFailure(it) }
+
+    /**
+     * Attempts to extract geographic coordinates from Leaflet.js initialization patterns.
+     *
+     * Strategies (tried in order):
+     * 1. `data-lat` / `data-lng` attributes on any element.
+     * 2. `setView([lat, lng], zoom)` script pattern.
+     * 3. `L.marker([lat, lng])` script pattern.
+     */
+    private fun Document.extractCoordinates(): Pair<Double, Double>? {
+        // Strategy 1: data attributes
+        selectFirst("[data-lat][data-lng]")?.let { el ->
+            val lat = el.attr("data-lat").toDoubleOrNull()
+            val lng = el.attr("data-lng").toDoubleOrNull()
+            if (lat != null && lng != null) return lat to lng
+        }
+
+        val setViewPattern = Regex("""setView\(\s*\[\s*(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*)\s*]""")
+        val markerPattern = Regex("""L\.marker\(\s*\[\s*(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*)\s*]""")
+
+        for (script in select("script")) {
+            val data = script.data()
+
+            // Strategy 2: setView
+            setViewPattern.find(data)?.let { match ->
+                val lat = match.groupValues[1].toDoubleOrNull()
+                val lng = match.groupValues[2].toDoubleOrNull()
+                if (lat != null && lng != null) return lat to lng
+            }
+
+            // Strategy 3: L.marker
+            markerPattern.find(data)?.let { match ->
+                val lat = match.groupValues[1].toDoubleOrNull()
+                val lng = match.groupValues[2].toDoubleOrNull()
+                if (lat != null && lng != null) return lat to lng
+            }
+        }
+
+        return null
     }
 }

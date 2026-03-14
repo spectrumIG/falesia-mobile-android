@@ -1,47 +1,48 @@
 package it.softsamurai.repository.di
 
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import it.softsamurai.repository.DefaultFalesiaRepo
-import it.softsamurai.repository.FalesiaItemRepository
+import it.softsamurai.core.di.IoDispatcher
+import it.softsamurai.domain.repository.FalesiaRepository
+import it.softsamurai.repository.FalesiaRepositoryImpl
+import it.softsamurai.repository.local.FalesiaLocalDataSource
+import it.softsamurai.repository.local.FalesiaLocalDataSourceImpl
 import it.softsamurai.repository.network.FalesiaNetDataSourceImpl
 import it.softsamurai.repository.network.FalesiaNetworkDataSource
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
-
-//@Module
-//@InstallIn(SingletonComponent::class)
-//interface DataModule {
-//
-//
-//    @Singleton
-//    @Binds
-//    fun bindsFalesiaItemRepository(
-//        falesiaItemRepository: FalesiaNetworkDataSource
-//    ): FalesiaItemRepository
-//}
 
 @Module
 @InstallIn(SingletonComponent::class)
-object FalesiaRepoModule{
+abstract class DataModule {
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideFalesiaUrlForDataSource(): String =
-        "https://www.falesiaonline.it/falesie/sud-europa.html"
+    abstract fun bindFalesiaRepository(impl: FalesiaRepositoryImpl): FalesiaRepository
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideFalesiaRepo(falesiaNetworkDataSource: FalesiaNetworkDataSource): FalesiaItemRepository = DefaultFalesiaRepo(falesiaNetworkDataSource)
+    abstract fun bindFalesiaLocalDataSource(impl: FalesiaLocalDataSourceImpl): FalesiaLocalDataSource
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideFalesiaLocalDataSource(baseUrl: String): FalesiaNetworkDataSource = FalesiaNetDataSourceImpl(baseUrl= baseUrl)
+    abstract fun bindFalesiaNetworkDataSource(impl: FalesiaNetDataSourceImpl): FalesiaNetworkDataSource
+
+    @Module
+    @InstallIn(SingletonComponent::class)
+    object DataProvides {
+
+        @Provides
+        @Singleton
+        fun provideBaseUrl(): String = "https://www.falesiaonline.it/falesie/sud-europa.html"
+
+        @Provides
+        @Singleton
+        @IoDispatcher
+        fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+    }
 }
-
-//@Module
-//@InstallIn(SingletonComponent::class)
-//interface FalesiaDataSourceModule {
-//
-//}

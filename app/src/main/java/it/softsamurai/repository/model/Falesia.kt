@@ -1,16 +1,6 @@
+// Domain models are now in it.softsamurai.domain.model.
+// These typealiases keep existing imports working without changes.
 package it.softsamurai.repository.model
 
-typealias FalesiaGeoCoord = Pair<Double, Double>?
-
-data class Falesia(
-    val nome: String,
-    val zona: String,
-    val coordinate: FalesiaGeoCoord = null,
-    val numeroVie: Int,
-    val linkDettagli: String
-)
-
-data class FalesiaDettagli(
-    val numeroVie: Int,
-    val vie: List<Via>
-)
+typealias Falesia = it.softsamurai.domain.model.Falesia
+typealias FalesiaGeoCoord = it.softsamurai.domain.model.FalesiaGeoCoord

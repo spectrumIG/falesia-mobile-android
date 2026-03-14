@@ -4,42 +4,37 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.softsamurai.presentation.FalesiaItemUiState.Loading
-import it.softsamurai.repository.FalesiaItemRepository
-import it.softsamurai.repository.model.Falesia
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
+import it.softsamurai.domain.model.Falesia
+import it.softsamurai.domain.usecase.GetAllFalesieUseCase
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class FalesiaItemViewModel @Inject constructor(
-    private val falesiaItemRepository: FalesiaItemRepository
+    getAllFalesie: GetAllFalesieUseCase,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<FalesiaItemUiState>(Loading)
-    val uiState = _uiState.asStateFlow()
 
-
-    init {
-        retrieveFalesie()
-    }
-
-    fun retrieveFalesie() {
-        viewModelScope.launch {
-
-            falesiaItemRepository.getAllFalesie().onStart { emit(Loading) }.collect {
-                _uiState.value = it
-            }
+    val uiState: StateFlow<FalesiaItemUiState> = getAllFalesie()
+        .map { falesie ->
+            if (falesie.isEmpty()) FalesiaItemUiState.Loading
+            else FalesiaItemUiState.Success(falesie)
         }
-    }
-
-
+        .catch { emit(FalesiaItemUiState.Error(it, it.message ?: "Unknown error")) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = FalesiaItemUiState.Loading,
+        )
 }
 
+@Stable
 sealed interface FalesiaItemUiState {
     data object Loading : FalesiaItemUiState
-    data class Error(val throwable: Throwable = NoSuchFieldError(), val message: String) :
+    data class Error(val throwable: Throwable = Throwable(), val message: String) :
         FalesiaItemUiState
     data class Success(val data: List<Falesia>) : FalesiaItemUiState
 }

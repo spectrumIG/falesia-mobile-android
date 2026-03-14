@@ -1,25 +1,18 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package it.softsamurai.repository.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import it.softsamurai.repository.database.dao.FalesiaDao
+import it.softsamurai.repository.database.dao.ViaDao
+import it.softsamurai.repository.database.entity.FalesiaEntity
+import it.softsamurai.repository.database.entity.ViaEntity
 
-@Database(entities = [FalesiaItem::class], version = 1)
+@Database(
+    entities = [FalesiaEntity::class, ViaEntity::class],
+    version = 2,
+    exportSchema = true,
+)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun falesiaItemDao(): FalesiaItemDao
+    abstract fun falesiaDao(): FalesiaDao
+    abstract fun viaDao(): ViaDao
 }

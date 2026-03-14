@@ -28,6 +28,7 @@ android {
         plugin = "io.gitlab.arturbosch.detekt",
     )
 
+    //noinspection WrongGradleMethod
     detekt {
         buildUponDefaultConfig = true
         config.setFrom(files("$rootDir/gradle/detekt.yml"))
@@ -84,6 +85,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    //noinspection WrongGradleMethod
     kotlin {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
@@ -106,6 +108,7 @@ android {
     // The schemas directory contains a schema file for each version of the Room database.
     // This is required to enable Room auto migrations.
     // See https://developer.android.com/reference/kotlin/androidx/room/AutoMigration.
+    //noinspection WrongGradleMethod
     ksp {
         arg("room.schemaLocation", "$projectDir/schemas")
     }
@@ -162,6 +165,12 @@ dependencies {
 
     implementation(libs.ksoup.core)
     implementation(libs.ksoup.network)
+
+    // WorkManager + Hilt integration
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.hilt.work)
+    ksp(libs.androidx.hilt.compiler)
+
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)
     // Instrumented tests
@@ -171,6 +180,8 @@ dependencies {
     // Local tests: jUnit, coroutines, Android runner
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.turbine)
 
     // Instrumented tests: jUnit rules and runners
     androidTestImplementation(libs.androidx.test.ext.junit)
