@@ -75,7 +75,7 @@ android {
 
         create("debugRelease") {
             initWith(getByName("release"))
-            isDebuggable = true  // Permette debugging su una build di release
+//            isDebuggable = true  // Permette debugging su una build di release
             matchingFallbacks += listOf("release")
         }
     }
@@ -153,6 +153,7 @@ dependencies {
     // Navigation 3
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.adaptive.navigation3)
 
     // Compose
     implementation(platform(libs.androidx.compose.bom))
