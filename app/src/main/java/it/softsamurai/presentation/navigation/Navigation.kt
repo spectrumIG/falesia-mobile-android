@@ -1,5 +1,6 @@
 package it.softsamurai.presentation.navigation
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,15 +13,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import it.softsamurai.R
 import it.softsamurai.presentation.screen.DiscoverRoute
 
 @Composable
 fun AppNavigation() {
-    val backStack = rememberNavBackStack(AppRoute.Discover)
+    val backStack = rememberNavBackStack(AppRoute)
 
     Scaffold(
         bottomBar = {
@@ -57,15 +59,15 @@ private fun PlaceholderScreen(label: String) {
 
 private data class BottomNavItem(
     val route: AppRoute,
-    val icon: ImageVector,
+    @param:DrawableRes val icon: Int,
     val label: String,
 )
 
 private val bottomNavItems = listOf(
-    BottomNavItem(AppRoute.Discover, Icons.Default.Explore, "Discover"),
-    BottomNavItem(AppRoute.Logbook, Icons.Default.MenuBook, "Logbook"),
-    BottomNavItem(AppRoute.Ticklist, Icons.Default.CheckCircle, "Ticklist"),
-    BottomNavItem(AppRoute.Profile, Icons.Default.Person, "Profile"),
+    BottomNavItem(AppRoute.Discover, R.drawable.ic_explore, "Discover"),
+    BottomNavItem(AppRoute.Logbook, R.drawable.ic_menu_book, "Logbook"),
+    BottomNavItem(AppRoute.Ticklist, R.drawable.ic_check_circle, "Ticklist"),
+    BottomNavItem(AppRoute.Profile, R.drawable.ic_person, "Profile"),
 )
 
 @Composable
@@ -78,7 +80,7 @@ private fun AppBottomBar(
             NavigationBarItem(
                 selected = currentRoute == item.route,
                 onClick = { onNavigate(item.route) },
-                icon = { Icon(item.icon, contentDescription = item.label) },
+                icon = { Icon(painterResource(item.icon), contentDescription = item.label) },
                 label = { Text(item.label) },
             )
         }
