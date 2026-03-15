@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Falesia mobile"
 
-include(":app")
+include(":app", ":core-ui")

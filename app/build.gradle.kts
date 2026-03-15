@@ -28,6 +28,7 @@ android {
         plugin = "io.gitlab.arturbosch.detekt",
     )
 
+    //noinspection WrongGradleMethod
     detekt {
         buildUponDefaultConfig = true
         config.setFrom(files("$rootDir/gradle/detekt.yml"))
@@ -84,6 +85,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    //noinspection WrongGradleMethod
     kotlin {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
@@ -106,6 +108,7 @@ android {
     // The schemas directory contains a schema file for each version of the Room database.
     // This is required to enable Room auto migrations.
     // See https://developer.android.com/reference/kotlin/androidx/room/AutoMigration.
+    //noinspection WrongGradleMethod
     ksp {
         arg("room.schemaLocation", "$projectDir/schemas")
     }
@@ -127,7 +130,11 @@ dependencies {
 
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
-    implementation(libs.androidx.ui.text.google.fonts)
+
+    // Image loading
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+    implementation(libs.androidx.material3)
     ksp(libs.hilt.compiler)
     // Hilt and instrumented tests.
     androidTestImplementation(libs.hilt.android.testing)
@@ -136,10 +143,16 @@ dependencies {
     testImplementation(libs.hilt.android.testing)
     kspTest(libs.hilt.android.compiler)
 
+    // core-ui module
+    implementation(project(":core-ui"))
+
     // Arch Components
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.navigation.compose)
+
+    // Navigation 3
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.navigation3.runtime)
 
     // Compose
     implementation(platform(libs.androidx.compose.bom))
@@ -162,6 +175,12 @@ dependencies {
 
     implementation(libs.ksoup.core)
     implementation(libs.ksoup.network)
+
+    // WorkManager + Hilt integration
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.hilt.work)
+    ksp(libs.androidx.hilt.compiler)
+
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)
     // Instrumented tests
@@ -171,6 +190,8 @@ dependencies {
     // Local tests: jUnit, coroutines, Android runner
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.turbine)
 
     // Instrumented tests: jUnit rules and runners
     androidTestImplementation(libs.androidx.test.ext.junit)

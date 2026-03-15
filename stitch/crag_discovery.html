@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f49d25",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#221a10",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header & Search -->
+<header class="sticky top-0 z-20 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-primary/10">
+<div class="flex items-center p-4 justify-between">
+<div class="text-primary flex size-10 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</div>
+<h2 class="text-xl font-bold leading-tight tracking-tight flex-1 text-center pr-10">Crag Atlas</h2>
+</div>
+<div class="px-4 pb-4">
+<label class="flex flex-col w-full group">
+<div class="flex w-full h-14 items-center rounded-xl bg-slate-200/50 dark:bg-primary/10 border-2 border-transparent focus-within:border-primary transition-all">
+<div class="text-slate-500 dark:text-primary/60 flex items-center justify-center pl-4">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="w-full bg-transparent border-none focus:ring-0 text-lg placeholder:text-slate-400 dark:placeholder:text-primary/40 px-3" placeholder="Search climbing areas..."/>
+</div>
+</label>
+</div>
+<!-- Filters -->
+<div class="flex gap-3 px-4 pb-4 overflow-x-auto no-scrollbar">
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-primary text-background-dark px-4 font-semibold shadow-sm">
+<span class="text-sm">Style</span>
+<span class="material-symbols-outlined text-[20px]">expand_more</span>
+</button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-slate-200 dark:bg-primary/20 text-slate-700 dark:text-primary px-4 font-medium">
+<span class="text-sm">Grade Range</span>
+<span class="material-symbols-outlined text-[20px]">expand_more</span>
+</button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-slate-200 dark:bg-primary/20 text-slate-700 dark:text-primary px-4 font-medium">
+<span class="text-sm">Distance</span>
+<span class="material-symbols-outlined text-[20px]">expand_more</span>
+</button>
+</div>
+</header>
+<!-- Content -->
+<main class="flex-1 px-4 py-6 space-y-6">
+<div class="flex items-center justify-between">
+<h3 class="text-2xl font-bold tracking-tight">Nearby Crags</h3>
+<span class="text-sm font-medium text-primary">Map View</span>
+</div>
+<!-- Crag Cards -->
+<div class="grid gap-6">
+<!-- Card 1 -->
+<div class="group relative flex flex-col overflow-hidden rounded-xl bg-white dark:bg-primary/5 border border-slate-200 dark:border-primary/10 shadow-sm hover:shadow-md transition-shadow">
+<div class="aspect-[16/9] w-full overflow-hidden">
+<img alt="Limestone cliffs with climbers" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Sun-drenched limestone cliffs with professional climbers" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDna-6oqvD2iWjPT6GcV94d6G9xfx6y2fHxPGPfLZiuoBbDUYfvYJuUoMStki00BLwAYnwYi_BDSOZcJW6kmogP9Lz7HReZR6EigzsNP6t_z30hZGmMXo35RTp81Via8iy85tGA5ZUBPz6MKU97hAi2Glkxu9bkldOuLa2jMrA1egGgh2dYuz23qTtxdy9f9kR97pVag-R2DPWtsF3nLzEw1c_eDg_-De8wONt-P6jhLK56CBNKJAfbbaMX0PS8Qr2jrOCQrE4Nx5Y"/>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="text-xl font-bold">Siurana</h4>
+<p class="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span> Catalonia, Spain
+                            </p>
+</div>
+<span class="bg-primary/20 text-primary text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Sport</span>
+</div>
+<div class="flex items-center gap-4 mt-4 pt-4 border-t border-slate-100 dark:border-primary/10">
+<div class="flex flex-col">
+<span class="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-tighter">Routes</span>
+<span class="text-lg font-bold">1,240</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-tighter">Best Grade</span>
+<span class="text-lg font-bold">7a - 9b</span>
+</div>
+<div class="ml-auto">
+<button class="size-10 rounded-full bg-primary flex items-center justify-center text-background-dark">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group relative flex flex-col overflow-hidden rounded-xl bg-white dark:bg-primary/5 border border-slate-200 dark:border-primary/10 shadow-sm hover:shadow-md transition-shadow">
+<div class="aspect-[16/9] w-full overflow-hidden">
+<img alt="Massive granite boulders" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Massive smooth granite boulders in forest clearing" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj8RWp9djnooOvvDkeJI5xmGDKSp-brWFGWWFheKdJ7EREqyVhBrH498rXprTvU9bJNx0_cxkLJmkJQ2yRzv1vl5bFzIAMHQmDoPfDrRixv1A34Jsjpsll3c277LcNnvXFnmc-NPwIE630utvFMhCo2rrThjhrtiqQnFHiTvMxRJTZsTRuLv12LncdiKRz3_TeYrdsqddVafEgA7S9wLDJVeOOX0Uwb84x-2DiJyAQDVIifxEZQVhe7e_oh3z3LIqYRQTqR2HJVAc"/>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="text-xl font-bold">Fontainebleau</h4>
+<p class="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span> France
+                            </p>
+</div>
+<span class="bg-primary/20 text-primary text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Bouldering</span>
+</div>
+<div class="flex items-center gap-4 mt-4 pt-4 border-t border-slate-100 dark:border-primary/10">
+<div class="flex flex-col">
+<span class="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-tighter">Routes</span>
+<span class="text-lg font-bold">25,000+</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-tighter">Distance</span>
+<span class="text-lg font-bold">12.4 km</span>
+</div>
+<div class="ml-auto">
+<button class="size-10 rounded-full bg-primary flex items-center justify-center text-background-dark">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group relative flex flex-col overflow-hidden rounded-xl bg-white dark:bg-primary/5 border border-slate-200 dark:border-primary/10 shadow-sm hover:shadow-md transition-shadow">
+<div class="aspect-[16/9] w-full overflow-hidden">
+<img alt="Majestic high peaks" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Towering granite mountain peaks against blue sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBO5Zpx0SAzok20OXaBOqNF8Rte2kjAaWneoxnQUE_Fp8nRAjdpFjgq1FxmegUoz6mmGI2xgLOXuW6qhaErFiYAO3bbmx5wYg-UCw1Xm7V12TScq5ihx_lOHdIIsb6Lj9dhg2ut-LL7KH8QAuuW6h6Y6K9Wgk8t5rNm2MgjM4ZhzfargiKXchgJhnO2SxxwjnbWFzNiJAh6WeLZYbTf3pislZ8nnaLWXHhjNo-rcOh-EC76BC2yvzVPOzBiFO6p5d7a2rS11FTxi1s"/>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="text-xl font-bold">El Capitan</h4>
+<p class="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span> Yosemite, USA
+                            </p>
+</div>
+<span class="bg-primary/20 text-primary text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Trad</span>
+</div>
+<div class="flex items-center gap-4 mt-4 pt-4 border-t border-slate-100 dark:border-primary/10">
+<div class="flex flex-col">
+<span class="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-tighter">Routes</span>
+<span class="text-lg font-bold">300+</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-tighter">Style</span>
+<span class="text-lg font-bold">Big Wall</span>
+</div>
+<div class="ml-auto">
+<button class="size-10 rounded-full bg-primary flex items-center justify-center text-background-dark">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="h-10"></div>
+</main>
+<!-- Navigation Bar -->
+<nav class="sticky bottom-0 bg-background-light dark:bg-background-dark border-t border-slate-200 dark:border-primary/10 px-4 pb-6 pt-2 z-30">
+<div class="flex justify-between max-w-md mx-auto">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined active-icon">explore</span>
+<p class="text-xs font-semibold">Discover</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-primary/40" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<p class="text-xs font-medium">Logbook</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-primary/40" href="#">
+<span class="material-symbols-outlined">check_circle</span>
+<p class="text-xs font-medium">Ticklist</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-primary/40" href="#">
+<span class="material-symbols-outlined">person</span>
+<p class="text-xs font-medium">Profile</p>
+</a>
+</div>
+</nav>
+</body></html>

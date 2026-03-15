@@ -8,8 +8,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
 import it.softsamurai.core.ui.AppTheme
-import it.softsamurai.core.ui.backgroundLight
-import it.softsamurai.presentation.navigation.MainNavigation
+import it.softsamurai.presentation.navigation.AppNavigation
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -18,11 +17,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = backgroundLight
-                ) {
-                    MainNavigation()
+                Surface(modifier = Modifier.fillMaxSize()) {
+                    AppNavigation()
                 }
             }
         }
