@@ -52,7 +52,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import it.softsamurai.R
@@ -63,7 +63,7 @@ import it.softsamurai.presentation.FalesiaItemViewModel
 
 @Composable
 fun DiscoverRoute(
-    viewModel: FalesiaItemViewModel = hiltViewModel(),
+    viewModel: FalesiaItemViewModel = hiltViewModel<FalesiaItemViewModel>(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     DiscoverScreen(uiState = uiState)
