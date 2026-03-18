@@ -3,6 +3,7 @@
 package it.softsamurai.presentation.screen
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -56,6 +57,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import it.softsamurai.R
+import it.softsamurai.core.ui.AppTheme
 import it.softsamurai.domain.model.Falesia
 import it.softsamurai.domain.model.Via
 import it.softsamurai.presentation.FalesiaItemUiState
@@ -77,7 +79,7 @@ fun DiscoverScreen(uiState: FalesiaItemUiState) {
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            Column {
+            Column(modifier = Modifier.background(MaterialTheme.colorScheme.surface)) {
                 CenterAlignedTopAppBar(
                     title = {
                         Text(
@@ -391,7 +393,7 @@ private val previewCrags = listOf(
 @Preview(name = "Loading — phone", showBackground = true, device = Devices.PHONE)
 @Composable
 private fun DiscoverScreenLoadingPreview() {
-    MaterialTheme {
+    AppTheme {
         DiscoverScreen(uiState = FalesiaItemUiState.Loading)
     }
 }
@@ -399,7 +401,7 @@ private fun DiscoverScreenLoadingPreview() {
 @Preview(name = "Error — phone", showBackground = true, device = Devices.PHONE)
 @Composable
 private fun DiscoverScreenErrorPreview() {
-    MaterialTheme {
+    AppTheme {
         DiscoverScreen(uiState = FalesiaItemUiState.Error(message = "Network error: unable to reach server"))
     }
 }
@@ -407,7 +409,7 @@ private fun DiscoverScreenErrorPreview() {
 @Preview(name = "Success — phone", showBackground = true, device = Devices.PHONE)
 @Composable
 private fun DiscoverScreenSuccessPreview() {
-    MaterialTheme {
+    AppTheme {
         DiscoverScreen(uiState = FalesiaItemUiState.Success(previewCrags))
     }
 }
@@ -420,7 +422,7 @@ private fun DiscoverScreenSuccessPreview() {
 )
 @Composable
 private fun DiscoverScreenDarkPreview() {
-    MaterialTheme {
+    AppTheme {
         DiscoverScreen(uiState = FalesiaItemUiState.Success(previewCrags))
     }
 }
@@ -428,7 +430,7 @@ private fun DiscoverScreenDarkPreview() {
 @Preview(name = "Success — tablet", showBackground = true, device = Devices.TABLET)
 @Composable
 private fun DiscoverScreenTabletPreview() {
-    MaterialTheme {
+    AppTheme {
         DiscoverScreen(uiState = FalesiaItemUiState.Success(previewCrags))
     }
 }
@@ -436,7 +438,7 @@ private fun DiscoverScreenTabletPreview() {
 @Preview(name = "Success — large font", showBackground = true, fontScale = 1.5f)
 @Composable
 private fun DiscoverScreenLargeFontPreview() {
-    MaterialTheme {
+    AppTheme {
         DiscoverScreen(uiState = FalesiaItemUiState.Success(previewCrags))
     }
 }
@@ -444,7 +446,7 @@ private fun DiscoverScreenLargeFontPreview() {
 @Preview(name = "CragCard — no vie", showBackground = true)
 @Composable
 private fun CragCardNoViePreview() {
-    MaterialTheme {
+    AppTheme {
         CragCard(
             crag = Falesia(
                 id = "arco",
@@ -466,7 +468,7 @@ private fun CragCardNoViePreview() {
 @Preview(name = "CragCard — with grade", showBackground = true)
 @Composable
 private fun CragCardWithGradePreview() {
-    MaterialTheme {
+    AppTheme {
         CragCard(
             crag = previewCrags.first(),
             modifier = Modifier.padding(16.dp),
@@ -481,7 +483,7 @@ private fun CragCardWithGradePreview() {
 )
 @Composable
 private fun CragCardDarkPreview() {
-    MaterialTheme {
+    AppTheme {
         CragCard(
             crag = previewCrags.first(),
             modifier = Modifier.padding(16.dp),
