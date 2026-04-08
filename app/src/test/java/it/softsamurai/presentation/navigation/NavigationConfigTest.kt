@@ -46,9 +46,17 @@ class NavigationConfigTest {
     }
 
     @Test
-    fun `bottomNavItems labels match expected tab names`() {
-        val labels = bottomNavItems.map { it.label }
-        assertEquals(listOf("Discover", "Logbook", "Ticklist", "Profile"), labels)
+    fun `bottomNavItems labelRes match expected string resources`() {
+        val labelRes = bottomNavItems.map { it.labelRes }
+        assertEquals(
+            listOf(
+                R.string.nav_discover,
+                R.string.nav_logbook,
+                R.string.nav_ticklist,
+                R.string.nav_profile
+            ),
+            labelRes,
+        )
     }
 
     @Test
@@ -66,8 +74,8 @@ class NavigationConfigTest {
     }
 
     @Test
-    fun `bottomNavItems has no duplicate labels`() {
-        val labels = bottomNavItems.map { it.label }
-        assertEquals(labels.size, labels.distinct().size)
+    fun `bottomNavItems has no duplicate labelRes`() {
+        val labelRes = bottomNavItems.map { it.labelRes }
+        assertEquals(labelRes.size, labelRes.distinct().size)
     }
 }

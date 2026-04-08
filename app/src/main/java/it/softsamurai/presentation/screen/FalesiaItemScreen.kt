@@ -49,6 +49,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -83,7 +84,7 @@ fun DiscoverScreen(uiState: FalesiaItemUiState) {
                 CenterAlignedTopAppBar(
                     title = {
                         Text(
-                            text = "Crag Atlas",
+                            text = stringResource(R.string.crag_atlas),
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
                         )
@@ -92,7 +93,7 @@ fun DiscoverScreen(uiState: FalesiaItemUiState) {
                         IconButton(onClick = {}) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_menu),
-                                contentDescription = "Menu",
+                                contentDescription = stringResource(R.string.cd_menu),
                                 tint = MaterialTheme.colorScheme.primary,
                             )
                         }
@@ -108,7 +109,7 @@ fun DiscoverScreen(uiState: FalesiaItemUiState) {
                         .padding(horizontal = 16.dp),
                     placeholder = {
                         Text(
-                            "Search climbing areas...",
+                            stringResource(R.string.search_placeholder),
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                         )
                     },
@@ -142,7 +143,11 @@ fun DiscoverScreen(uiState: FalesiaItemUiState) {
 
 @Composable
 private fun FilterChipsRow() {
-    val filters = listOf("Style", "Grade Range", "Distance")
+    val filters = listOf(
+        stringResource(R.string.filter_style),
+        stringResource(R.string.filter_grade_range),
+        stringResource(R.string.filter_distance),
+    )
     var selected by remember { mutableStateOf(filters.first()) }
 
     LazyRow(
@@ -185,14 +190,14 @@ private fun CragListContent(crags: List<Falesia>, innerPadding: PaddingValues) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = "Nearby Crags",
+                    text = stringResource(R.string.nearby_crags),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f),
                 )
                 TextButton(onClick = {}) {
                     Text(
-                        "Map View",
+                        stringResource(R.string.map_view),
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.labelLarge,
                     )
@@ -296,13 +301,13 @@ fun CragCard(crag: Falesia, modifier: Modifier = Modifier) {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     StatColumn(
-                        label = "ROUTES",
+                        label = stringResource(R.string.label_routes),
                         value = crag.numeroVie.toString(),
                     )
                     crag.vie.firstOrNull()?.let { via ->
                         Spacer(Modifier.width(24.dp))
                         StatColumn(
-                            label = "BEST GRADE",
+                            label = stringResource(R.string.label_best_grade),
                             value = via.grado,
                         )
                     }
@@ -313,7 +318,7 @@ fun CragCard(crag: Falesia, modifier: Modifier = Modifier) {
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_arrow_forward),
-                            contentDescription = "View ${crag.nome}",
+                            contentDescription = stringResource(R.string.cd_view_crag, crag.nome),
                         )
                     }
                 }

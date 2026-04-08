@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FalesiaMobile</string>
+    <string name="home_title_lbl">Falesia Mobile</string>
+
+    <!-- Schermata Scopri -->
+    <string name="crag_atlas">Atlante Falesie</string>
+    <string name="cd_menu">Menu</string>
+    <string name="search_placeholder">Cerca aree di arrampicata…</string>
+    <string name="nearby_crags">Falesie Vicine</string>
+    <string name="map_view">Vista Mappa</string>
+    <string name="label_routes">VIE</string>
+    <string name="label_best_grade">GRADO MIGLIORE</string>
+    <string name="filter_style">Stile</string>
+    <string name="filter_grade_range">Intervallo Gradi</string>
+    <string name="filter_distance">Distanza</string>
+    <string name="cd_view_crag">Visualizza %1$s</string>
+
+    <!-- Navigazione inferiore -->
+    <string name="nav_discover">Scopri</string>
+    <string name="nav_logbook">Diario</string>
+    <string name="nav_ticklist">Lista Obiettivi</string>
+    <string name="nav_profile">Profilo</string>
+</resources>
