@@ -46,9 +46,9 @@ class FalesiaNetDataSourceImpl @Inject constructor(
                 val relativeLink = element.selectFirst("h4 a")?.attr("href") ?: ""
                 val detailUrl = "https://www.falesiaonline.it$relativeLink"
 
-                // TODO: verify the correct CSS selector for the list-page thumbnail once the
-                //       site HTML is inspected. Currently trying the first <img> in the card.
-                val pictureUrl = element.selectFirst("img")?.attr("abs:src")?.takeIf { it.isNotBlank() }
+                // The list page has no crag thumbnail — only small icon images. The photo
+                // is fetched from the detail page and takes priority in the mapper.
+                val pictureUrl: String? = null
 
                 FalesiaListItemNetworkModel(
                     nome = nome,
@@ -69,10 +69,9 @@ class FalesiaNetDataSourceImpl @Inject constructor(
                 ViaNetworkModel(nome = nome, grado = grado)
             }
 
-            // TODO: verify the correct CSS selectors for the crag photo once HTML is inspected.
-            val pictureUrl = document.selectFirst(
-                "img.crag-photo, .falesia-photo img, .crag-header img, .crag-image img, article > img",
-            )?.attr("abs:src")?.takeIf { it.isNotBlank() }
+            // The crag photo is inside <div id="objectPhoto"><img src="..."></div>
+            val rawSrc = document.selectFirst("#objectPhoto img")?.attr("src").orEmpty()
+            val pictureUrl = resolveImageUrl(rawSrc)
 
             val (latitude, longitude) = document.extractCoordinates() ?: (null to null)
 
@@ -103,7 +102,7 @@ class FalesiaNetDataSourceImpl @Inject constructor(
         val setViewPattern = Regex("""setView\(\s*\[\s*(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*)\s*]""")
         val markerPattern = Regex("""L\.marker\(\s*\[\s*(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*)\s*]""")
 
-        for (script in select("script")) {
+        select("script").forEach { script ->
             val data = script.data()
 
             // Strategy 2: setView
@@ -123,4 +122,20 @@ class FalesiaNetDataSourceImpl @Inject constructor(
 
         return null
     }
+}
+
+private const val BASE_HOST = "https://www.falesiaonline.it"
+
+/**
+ * Converts a raw `src` attribute value (possibly relative) into an absolute URL.
+ * Returns null when [rawSrc] is blank (image element not found).
+ *
+ * We do this manually because ksoup's `abs:src` pseudo-attribute requires the
+ * parser's base URI to be set by the HTTP client — which is not guaranteed.
+ */
+internal fun resolveImageUrl(rawSrc: String): String? = when {
+    rawSrc.startsWith("http://") || rawSrc.startsWith("https://") -> rawSrc
+    rawSrc.startsWith("/") -> "$BASE_HOST$rawSrc"
+    rawSrc.isNotBlank() -> "$BASE_HOST/$rawSrc"
+    else -> null
 }
