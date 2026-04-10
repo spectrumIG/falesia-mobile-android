@@ -16,11 +16,10 @@ import it.softsamurai.repository.network.model.FalesiaDetailNetworkModel
 import it.softsamurai.repository.network.model.FalesiaListItemNetworkModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.sync.Semaphore
-import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -90,19 +89,22 @@ class FalesiaRepositoryImpl @Inject constructor(
                 networkDataSource.fetchElencoFalesie().bind()
 
             val now = System.currentTimeMillis()
-            val semaphore = Semaphore(SYNC_CONCURRENCY)
 
-            // Step 2: fetch each crag's detail page concurrently, bounded by semaphore
+            // Step 2: fetch each crag's detail page concurrently, SYNC_CONCURRENCY at a time
             val detailResults: List<Either<SyncError, Pair<FalesiaListItemNetworkModel, FalesiaDetailNetworkModel>>> =
-                coroutineScope {
-                    listItems.map { listItem ->
-                        async {
-                            semaphore.withPermit {
-                                networkDataSource.fetchDettagliFalesia(listItem.detailUrl)
-                                    .map { detail -> listItem to detail }
+                buildList {
+                    for (chunk in listItems.chunked(SYNC_CONCURRENCY)) {
+                        addAll(
+                            coroutineScope {
+                                chunk.map { listItem ->
+                                    async {
+                                        networkDataSource.fetchDettagliFalesia(listItem.detailUrl)
+                                            .map { detail -> listItem to detail }
+                                    }
+                                }.awaitAll()
                             }
-                        }
-                    }.map { it.await() }
+                        )
+                    }
                 }
 
             // Step 3: collect results — first failure short-circuits via bind()

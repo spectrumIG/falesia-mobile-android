@@ -3,6 +3,7 @@
 package it.softsamurai.presentation.screen
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,10 +35,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,7 +52,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -56,32 +63,54 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import it.softsamurai.R
+import it.softsamurai.core.ui.AppTheme
 import it.softsamurai.domain.model.Falesia
 import it.softsamurai.domain.model.Via
 import it.softsamurai.presentation.FalesiaItemUiState
 import it.softsamurai.presentation.FalesiaItemViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+
+const val TAG_PULL_TO_REFRESH = "pull_to_refresh"
 
 @Composable
 fun DiscoverRoute(
     viewModel: FalesiaItemViewModel = hiltViewModel<FalesiaItemViewModel>(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    DiscoverScreen(uiState = uiState)
+    DiscoverScreen(
+        uiState = uiState,
+        syncErrorEvent = viewModel.syncErrorEvent,
+        onRefresh = viewModel::onRefresh,
+    )
 }
 
 @Composable
-fun DiscoverScreen(uiState: FalesiaItemUiState) {
+fun DiscoverScreen(
+    uiState: FalesiaItemUiState,
+    syncErrorEvent: Flow<Unit> = emptyFlow(),
+    onRefresh: () -> Unit = {},
+) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val syncErrorMessage = stringResource(R.string.sync_error_snackbar)
     var searchQuery by remember { mutableStateOf("") }
+
+    LaunchedEffect(syncErrorEvent) {
+        syncErrorEvent.collect {
+            snackbarHostState.showSnackbar(syncErrorMessage)
+        }
+    }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            Column {
+            Column(modifier = Modifier.background(MaterialTheme.colorScheme.surface)) {
                 CenterAlignedTopAppBar(
                     title = {
                         Text(
-                            text = "Crag Atlas",
+                            text = stringResource(R.string.crag_atlas),
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
                         )
@@ -90,7 +119,7 @@ fun DiscoverScreen(uiState: FalesiaItemUiState) {
                         IconButton(onClick = {}) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_menu),
-                                contentDescription = "Menu",
+                                contentDescription = stringResource(R.string.cd_menu),
                                 tint = MaterialTheme.colorScheme.primary,
                             )
                         }
@@ -106,7 +135,7 @@ fun DiscoverScreen(uiState: FalesiaItemUiState) {
                         .padding(horizontal = 16.dp),
                     placeholder = {
                         Text(
-                            "Search climbing areas...",
+                            stringResource(R.string.search_placeholder),
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                         )
                     },
@@ -133,14 +162,27 @@ fun DiscoverScreen(uiState: FalesiaItemUiState) {
         when (uiState) {
             is FalesiaItemUiState.Loading -> LoadingContent(innerPadding)
             is FalesiaItemUiState.Error -> ErrorContent(uiState, innerPadding)
-            is FalesiaItemUiState.Success -> CragListContent(uiState.data, innerPadding)
+            is FalesiaItemUiState.Success -> PullToRefreshBox(
+                isRefreshing = uiState.isRefreshing,
+                onRefresh = onRefresh,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = innerPadding.calculateTopPadding())
+                    .testTag(TAG_PULL_TO_REFRESH),
+            ) {
+                CragListContent(uiState.data, innerPadding)
+            }
         }
     }
 }
 
 @Composable
 private fun FilterChipsRow() {
-    val filters = listOf("Style", "Grade Range", "Distance")
+    val filters = listOf(
+        stringResource(R.string.filter_style),
+        stringResource(R.string.filter_grade_range),
+        stringResource(R.string.filter_distance),
+    )
     var selected by remember { mutableStateOf(filters.first()) }
 
     LazyRow(
@@ -170,7 +212,7 @@ private fun FilterChipsRow() {
 private fun CragListContent(crags: List<Falesia>, innerPadding: PaddingValues) {
     LazyColumn(
         contentPadding = PaddingValues(
-            top = innerPadding.calculateTopPadding() + 16.dp,
+            top = 16.dp,
             bottom = innerPadding.calculateBottomPadding() + 16.dp,
             start = 16.dp,
             end = 16.dp,
@@ -183,14 +225,14 @@ private fun CragListContent(crags: List<Falesia>, innerPadding: PaddingValues) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = "Nearby Crags",
+                    text = stringResource(R.string.nearby_crags),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f),
                 )
                 TextButton(onClick = {}) {
                     Text(
-                        "Map View",
+                        stringResource(R.string.map_view),
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.labelLarge,
                     )
@@ -294,13 +336,13 @@ fun CragCard(crag: Falesia, modifier: Modifier = Modifier) {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     StatColumn(
-                        label = "ROUTES",
+                        label = stringResource(R.string.label_routes),
                         value = crag.numeroVie.toString(),
                     )
                     crag.vie.firstOrNull()?.let { via ->
                         Spacer(Modifier.width(24.dp))
                         StatColumn(
-                            label = "BEST GRADE",
+                            label = stringResource(R.string.label_best_grade),
                             value = via.grado,
                         )
                     }
@@ -311,7 +353,7 @@ fun CragCard(crag: Falesia, modifier: Modifier = Modifier) {
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_arrow_forward),
-                            contentDescription = "View ${crag.nome}",
+                            contentDescription = stringResource(R.string.cd_view_crag, crag.nome),
                         )
                     }
                 }
@@ -391,7 +433,7 @@ private val previewCrags = listOf(
 @Preview(name = "Loading — phone", showBackground = true, device = Devices.PHONE)
 @Composable
 private fun DiscoverScreenLoadingPreview() {
-    MaterialTheme {
+    AppTheme {
         DiscoverScreen(uiState = FalesiaItemUiState.Loading)
     }
 }
@@ -399,7 +441,7 @@ private fun DiscoverScreenLoadingPreview() {
 @Preview(name = "Error — phone", showBackground = true, device = Devices.PHONE)
 @Composable
 private fun DiscoverScreenErrorPreview() {
-    MaterialTheme {
+    AppTheme {
         DiscoverScreen(uiState = FalesiaItemUiState.Error(message = "Network error: unable to reach server"))
     }
 }
@@ -407,8 +449,16 @@ private fun DiscoverScreenErrorPreview() {
 @Preview(name = "Success — phone", showBackground = true, device = Devices.PHONE)
 @Composable
 private fun DiscoverScreenSuccessPreview() {
-    MaterialTheme {
+    AppTheme {
         DiscoverScreen(uiState = FalesiaItemUiState.Success(previewCrags))
+    }
+}
+
+@Preview(name = "Success — refreshing", showBackground = true, device = Devices.PHONE)
+@Composable
+private fun DiscoverScreenRefreshingPreview() {
+    AppTheme {
+        DiscoverScreen(uiState = FalesiaItemUiState.Success(previewCrags, isRefreshing = true))
     }
 }
 
@@ -420,7 +470,7 @@ private fun DiscoverScreenSuccessPreview() {
 )
 @Composable
 private fun DiscoverScreenDarkPreview() {
-    MaterialTheme {
+    AppTheme {
         DiscoverScreen(uiState = FalesiaItemUiState.Success(previewCrags))
     }
 }
@@ -428,7 +478,7 @@ private fun DiscoverScreenDarkPreview() {
 @Preview(name = "Success — tablet", showBackground = true, device = Devices.TABLET)
 @Composable
 private fun DiscoverScreenTabletPreview() {
-    MaterialTheme {
+    AppTheme {
         DiscoverScreen(uiState = FalesiaItemUiState.Success(previewCrags))
     }
 }
@@ -436,7 +486,7 @@ private fun DiscoverScreenTabletPreview() {
 @Preview(name = "Success — large font", showBackground = true, fontScale = 1.5f)
 @Composable
 private fun DiscoverScreenLargeFontPreview() {
-    MaterialTheme {
+    AppTheme {
         DiscoverScreen(uiState = FalesiaItemUiState.Success(previewCrags))
     }
 }
@@ -444,7 +494,7 @@ private fun DiscoverScreenLargeFontPreview() {
 @Preview(name = "CragCard — no vie", showBackground = true)
 @Composable
 private fun CragCardNoViePreview() {
-    MaterialTheme {
+    AppTheme {
         CragCard(
             crag = Falesia(
                 id = "arco",
@@ -466,7 +516,7 @@ private fun CragCardNoViePreview() {
 @Preview(name = "CragCard — with grade", showBackground = true)
 @Composable
 private fun CragCardWithGradePreview() {
-    MaterialTheme {
+    AppTheme {
         CragCard(
             crag = previewCrags.first(),
             modifier = Modifier.padding(16.dp),
@@ -481,7 +531,7 @@ private fun CragCardWithGradePreview() {
 )
 @Composable
 private fun CragCardDarkPreview() {
-    MaterialTheme {
+    AppTheme {
         CragCard(
             crag = previewCrags.first(),
             modifier = Modifier.padding(16.dp),
