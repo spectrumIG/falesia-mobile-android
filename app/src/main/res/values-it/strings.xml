@@ -16,6 +16,8 @@
     <string name="filter_distance">Distanza</string>
     <string name="cd_view_crag">Visualizza %1$s</string>
 
+    <string name="sync_error_snackbar">Aggiornamento non riuscito. Mostro dati in cache.</string>
+
     <!-- Navigazione inferiore -->
     <string name="nav_discover">Scopri</string>
     <string name="nav_logbook">Diario</string>

@@ -35,10 +35,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,6 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -63,22 +68,43 @@ import it.softsamurai.domain.model.Falesia
 import it.softsamurai.domain.model.Via
 import it.softsamurai.presentation.FalesiaItemUiState
 import it.softsamurai.presentation.FalesiaItemViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+
+const val TAG_PULL_TO_REFRESH = "pull_to_refresh"
 
 @Composable
 fun DiscoverRoute(
     viewModel: FalesiaItemViewModel = hiltViewModel<FalesiaItemViewModel>(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    DiscoverScreen(uiState = uiState)
+    DiscoverScreen(
+        uiState = uiState,
+        syncErrorEvent = viewModel.syncErrorEvent,
+        onRefresh = viewModel::onRefresh,
+    )
 }
 
 @Composable
-fun DiscoverScreen(uiState: FalesiaItemUiState) {
+fun DiscoverScreen(
+    uiState: FalesiaItemUiState,
+    syncErrorEvent: Flow<Unit> = emptyFlow(),
+    onRefresh: () -> Unit = {},
+) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val syncErrorMessage = stringResource(R.string.sync_error_snackbar)
     var searchQuery by remember { mutableStateOf("") }
+
+    LaunchedEffect(syncErrorEvent) {
+        syncErrorEvent.collect {
+            snackbarHostState.showSnackbar(syncErrorMessage)
+        }
+    }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             Column(modifier = Modifier.background(MaterialTheme.colorScheme.surface)) {
                 CenterAlignedTopAppBar(
@@ -136,7 +162,16 @@ fun DiscoverScreen(uiState: FalesiaItemUiState) {
         when (uiState) {
             is FalesiaItemUiState.Loading -> LoadingContent(innerPadding)
             is FalesiaItemUiState.Error -> ErrorContent(uiState, innerPadding)
-            is FalesiaItemUiState.Success -> CragListContent(uiState.data, innerPadding)
+            is FalesiaItemUiState.Success -> PullToRefreshBox(
+                isRefreshing = uiState.isRefreshing,
+                onRefresh = onRefresh,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = innerPadding.calculateTopPadding())
+                    .testTag(TAG_PULL_TO_REFRESH),
+            ) {
+                CragListContent(uiState.data, innerPadding)
+            }
         }
     }
 }
@@ -177,7 +212,7 @@ private fun FilterChipsRow() {
 private fun CragListContent(crags: List<Falesia>, innerPadding: PaddingValues) {
     LazyColumn(
         contentPadding = PaddingValues(
-            top = innerPadding.calculateTopPadding() + 16.dp,
+            top = 16.dp,
             bottom = innerPadding.calculateBottomPadding() + 16.dp,
             start = 16.dp,
             end = 16.dp,
@@ -416,6 +451,14 @@ private fun DiscoverScreenErrorPreview() {
 private fun DiscoverScreenSuccessPreview() {
     AppTheme {
         DiscoverScreen(uiState = FalesiaItemUiState.Success(previewCrags))
+    }
+}
+
+@Preview(name = "Success — refreshing", showBackground = true, device = Devices.PHONE)
+@Composable
+private fun DiscoverScreenRefreshingPreview() {
+    AppTheme {
+        DiscoverScreen(uiState = FalesiaItemUiState.Success(previewCrags, isRefreshing = true))
     }
 }
 
