@@ -36,8 +36,8 @@ android {
     defaultConfig {
         applicationId = "it.softsamurai"
         minSdk = 30
-        versionCode = 5
-        versionName = "1.2.2"
+        versionCode = 6
+        versionName = "1.3.2"
 
         testInstrumentationRunner = "it.softsamurai.core.testing.HiltTestRunner"
 
