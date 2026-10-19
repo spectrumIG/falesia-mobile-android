@@ -5,12 +5,23 @@
 - **Prefer unit tests** (JVM, `app/src/test/`). Use instrumented/Compose UI tests (`app/src/androidTest/`) only
   for UI behavior that cannot be covered otherwise.
 - Test the behavior that matters per layer:
-  - **Domain**: use cases (e.g. `CheckDbFreshnessUseCaseTest`, `SyncCragsUseCaseTest`).
+  - **Domain**: use cases (e.g. `CheckDbFreshnessUseCaseTest`, `RefreshCragsUseCaseTest`). Inject a fixed
+    `TimeProvider` (`{ now }`) for time-based rules and test the exact boundaries.
   - **Data**: repository (`FalesiaRepositoryImplTest`), mappers (`FalesiaMapperTest`), scraping/parsing helpers
-    (`ResolveImageUrlTest`; add HTML fixture tests for selectors, see [scraping.md](scraping.md)).
-  - **Presentation**: ViewModels (`FalesiaItemViewModelTest`), navigation config (`NavigationConfigTest`).
-  - **UI**: `DiscoverScreenTest`, `NavigationTest` (instrumented).
+    (`FalesiaHtmlParserTest` on saved pages in `app/src/test/resources/`, `ResolveImageUrlTest`; see
+    [scraping.md](scraping.md)).
+  - **Sync**: the worker decision `syncWorkOutcome()` (`SyncWorkOutcomeTest`).
+  - **Presentation**: ViewModels (`FalesiaItemViewModelTest`), navigation config
+    (`NavigationConfigTest`), back stack rules (`TopLevelNavigationTest`).
+  - **Resources**: EN/IT string parity (`StringResourcesParityTest`, reads `src/main/res` from the
+    module dir).
+  - **Theme** (`:core-ui`): design tokens in code match `tokens.json` (`ThemeTokensTest`).
+  - **UI**: `DiscoverScreenTest`, `NavigationTest`, `PlaceholderScreenTest` (instrumented). Read
+    expected texts from resources (`context.getString`), never hardcode them: tests must pass in
+    every device locale. Cover light and dark (`AppTheme(darkTheme = …)`) where it matters.
 - Cover both `Right` and `Left` paths of every `Either`.
+- No trivial tests: skip pure delegation (a use case that only forwards to the repository); test decisions,
+  boundaries, mapping and failure paths.
 
 ## Tooling & style
 - JUnit4, **MockK** (`mockk`, `coEvery`), **Turbine** (`flow.test { }`) and `kotlinx-coroutines-test`
@@ -22,7 +33,20 @@
 
 ## Commands
 ```bash
-./gradlew :app:testDebugUnitTest            # unit tests
-./gradlew :app:connectedDebugAndroidTest    # instrumented tests (device/emulator required)
+./gradlew :core-ui:testDebugUnitTest :app:testDebugUnitTest   # unit tests
+./gradlew :app:connectedDebugAndroidTest                       # instrumented tests (device/emulator required)
 ```
-Known issue: the instrumented runner class is missing, see [known-issues.md](known-issues.md).
+
+Instrumented tests run on `it.softsamurai.core.testing.HiltTestRunner` (`app/src/androidTest`).
+
+## Visual check (manual, before merging UI changes)
+Tests do not prove the app looks like the design. On an emulator, install the debug build and compare each changed
+screen with `design/claude-design/` (screen markup, `tokens.json`, component READMEs) in all four combinations:
+```bash
+./gradlew :app:installDebug
+adb shell cmd uimode night yes|no                                              # dark / light
+adb shell cmd locale set-app-locales it.softsamurai.debug --locales it-IT|en-US # app language
+adb exec-out screencap -p > screen.png                                          # screenshot
+adb shell cmd locale set-app-locales it.softsamurai.debug --locales ""          # back to system language
+```
+Fix layout defects with a UI test that pins them (e.g. bounds checks in `PlaceholderScreenTest`).

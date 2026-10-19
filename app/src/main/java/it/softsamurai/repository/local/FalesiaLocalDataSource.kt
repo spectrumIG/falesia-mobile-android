@@ -13,6 +13,7 @@ interface FalesiaLocalDataSource {
     suspend fun getFalesiaWithVieById(falesiaId: String): FalesiaWithVie?
     suspend fun countFalesie(): Int
     suspend fun getOldestUpdateTimestamp(): Long?
+    suspend fun getNewestUpdateTimestamp(): Long?
 
     /**
      * Atomically upserts [entity] and replaces all its routes with [vie].

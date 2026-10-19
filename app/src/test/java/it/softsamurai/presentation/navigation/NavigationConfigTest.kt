@@ -1,8 +1,9 @@
 package it.softsamurai.presentation.navigation
 
 import it.softsamurai.R
+import kotlinx.serialization.json.Json
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNotEquals
 import org.junit.Test
 
 class NavigationConfigTest {
@@ -10,23 +11,41 @@ class NavigationConfigTest {
     // --- AppRoute ---
 
     @Test
-    fun `AppRoute Discover exists`() {
-        assertNotNull(AppRoute.Discover)
+    fun `top-level routes are their own top level`() {
+        listOf(AppRoute.Discover, AppRoute.Logbook, AppRoute.Ticklist, AppRoute.Profile).forEach {
+            assertEquals(it, it.topLevel)
+        }
     }
 
     @Test
-    fun `AppRoute Logbook exists`() {
-        assertNotNull(AppRoute.Logbook)
+    fun `CragDetails keeps Discover selected`() {
+        assertEquals(AppRoute.Discover, AppRoute.CragDetails("arco").topLevel)
     }
 
     @Test
-    fun `AppRoute Ticklist exists`() {
-        assertNotNull(AppRoute.Ticklist)
+    fun `CragDetails equality is by falesiaId`() {
+        assertEquals(AppRoute.CragDetails("arco"), AppRoute.CragDetails("arco"))
+        assertNotEquals(AppRoute.CragDetails("arco"), AppRoute.CragDetails("finale-ligure"))
     }
 
     @Test
-    fun `AppRoute Profile exists`() {
-        assertNotNull(AppRoute.Profile)
+    fun `CragDetails survives serialization with its id`() {
+        val route: AppRoute = AppRoute.CragDetails("monte-arrubiu")
+
+        val decoded = Json.decodeFromString(
+            AppRoute.serializer(),
+            Json.encodeToString(AppRoute.serializer(), route)
+        )
+
+        assertEquals(route, decoded)
+    }
+
+    @Test
+    fun `top-level routes survive serialization`() {
+        bottomNavItems.map { it.route }.forEach { route ->
+            val json = Json.encodeToString(AppRoute.serializer(), route)
+            assertEquals(route, Json.decodeFromString(AppRoute.serializer(), json))
+        }
     }
 
     // --- bottomNavItems configuration ---
@@ -37,34 +56,50 @@ class NavigationConfigTest {
     }
 
     @Test
-    fun `bottomNavItems routes match all AppRoute destinations`() {
-        val routes = bottomNavItems.map { it.route }
-        assertEquals(AppRoute.Discover, routes[0])
-        assertEquals(AppRoute.Logbook, routes[1])
-        assertEquals(AppRoute.Ticklist, routes[2])
-        assertEquals(AppRoute.Profile, routes[3])
+    fun `bottomNavItems routes match all top-level destinations in order`() {
+        assertEquals(
+            listOf(AppRoute.Discover, AppRoute.Logbook, AppRoute.Ticklist, AppRoute.Profile),
+            bottomNavItems.map { it.route },
+        )
     }
 
     @Test
     fun `bottomNavItems labelRes match expected string resources`() {
-        val labelRes = bottomNavItems.map { it.labelRes }
         assertEquals(
             listOf(
                 R.string.nav_discover,
                 R.string.nav_logbook,
                 R.string.nav_ticklist,
-                R.string.nav_profile
+                R.string.nav_profile,
             ),
-            labelRes,
+            bottomNavItems.map { it.labelRes },
         )
     }
 
     @Test
     fun `bottomNavItems icons are assigned correctly`() {
-        assertEquals(R.drawable.ic_explore, bottomNavItems[0].icon)
-        assertEquals(R.drawable.ic_menu_book, bottomNavItems[1].icon)
-        assertEquals(R.drawable.ic_check_circle, bottomNavItems[2].icon)
-        assertEquals(R.drawable.ic_person, bottomNavItems[3].icon)
+        assertEquals(
+            listOf(
+                R.drawable.ic_explore,
+                R.drawable.ic_menu_book,
+                R.drawable.ic_check_circle,
+                R.drawable.ic_person
+            ),
+            bottomNavItems.map { it.icon },
+        )
+    }
+
+    @Test
+    fun `bottomNavItems selected icons are the filled variants`() {
+        assertEquals(
+            listOf(
+                R.drawable.ic_explore_filled,
+                R.drawable.ic_menu_book_filled,
+                R.drawable.ic_check_circle_filled,
+                R.drawable.ic_person_filled,
+            ),
+            bottomNavItems.map { it.selectedIcon },
+        )
     }
 
     @Test

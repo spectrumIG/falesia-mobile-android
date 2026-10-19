@@ -34,6 +34,10 @@ interface FalesiaDao {
     @Query("SELECT MIN(lastUpdated) FROM falesie")
     suspend fun getOldestUpdateTimestamp(): Long?
 
+    /** Returns the newest lastUpdated timestamp: when the last successful sync ran. */
+    @Query("SELECT MAX(lastUpdated) FROM falesie")
+    suspend fun getNewestUpdateTimestamp(): Long?
+
     // ── Write ─────────────────────────────────────────────────────────────
 
     @Upsert

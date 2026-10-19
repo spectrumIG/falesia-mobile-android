@@ -1,13 +1,21 @@
 package it.softsamurai.presentation
 
+import androidx.annotation.StringRes
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotSelected
 import androidx.compose.ui.test.assertIsSelected
+import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.test.espresso.Espresso
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import it.softsamurai.R
+import it.softsamurai.presentation.screen.TAG_PLACEHOLDER_TITLE
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -20,55 +28,78 @@ class NavigationTest {
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
+    @Before
+    fun setUp() {
+        hiltRule.inject()
+    }
+
+    private fun label(@StringRes id: Int) = composeTestRule.activity.getString(id)
+
+    // Bottom bar items are the clickable nodes carrying the tab label.
+    private fun tab(@StringRes id: Int) =
+        composeTestRule.onNode(hasText(label(id)) and hasClickAction())
+
     @Test
     fun bottomBar_showsAllFourTabs() {
-        composeTestRule.onNodeWithText("Discover").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Logbook").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Ticklist").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Profile").assertIsDisplayed()
+        listOf(
+            R.string.nav_discover,
+            R.string.nav_logbook,
+            R.string.nav_ticklist,
+            R.string.nav_profile
+        )
+            .forEach { tab(it).assertIsDisplayed() }
     }
 
     @Test
     fun bottomBar_discoverTabIsSelectedOnLaunch() {
-        composeTestRule.onNodeWithText("Discover").assertIsSelected()
+        tab(R.string.nav_discover).assertIsSelected()
     }
 
     @Test
     fun bottomBar_clickLogbook_showsLogbookScreen() {
-        composeTestRule.onNodeWithText("Logbook").performClick()
-        // The placeholder screen displays the tab label as its heading
-        composeTestRule
-            .onNodeWithText("Logbook", useUnmergedTree = true)
-            .assertIsDisplayed()
-        composeTestRule.onNodeWithText("Logbook").assertIsSelected()
-        composeTestRule.onNodeWithText("Discover").assertIsNotSelected()
+        tab(R.string.nav_logbook).performClick()
+
+        composeTestRule.onNodeWithTag(TAG_PLACEHOLDER_TITLE)
+            .assertTextEquals(label(R.string.nav_logbook))
+        tab(R.string.nav_logbook).assertIsSelected()
+        tab(R.string.nav_discover).assertIsNotSelected()
     }
 
     @Test
     fun bottomBar_clickTicklist_showsTicklistScreen() {
-        composeTestRule.onNodeWithText("Ticklist").performClick()
-        composeTestRule
-            .onNodeWithText("Ticklist", useUnmergedTree = true)
-            .assertIsDisplayed()
-        composeTestRule.onNodeWithText("Ticklist").assertIsSelected()
+        tab(R.string.nav_ticklist).performClick()
+
+        composeTestRule.onNodeWithTag(TAG_PLACEHOLDER_TITLE)
+            .assertTextEquals(label(R.string.nav_ticklist))
+        tab(R.string.nav_ticklist).assertIsSelected()
     }
 
     @Test
     fun bottomBar_clickProfile_showsProfileScreen() {
-        composeTestRule.onNodeWithText("Profile").performClick()
-        composeTestRule
-            .onNodeWithText("Profile", useUnmergedTree = true)
-            .assertIsDisplayed()
-        composeTestRule.onNodeWithText("Profile").assertIsSelected()
+        tab(R.string.nav_profile).performClick()
+
+        composeTestRule.onNodeWithTag(TAG_PLACEHOLDER_TITLE)
+            .assertTextEquals(label(R.string.nav_profile))
+        tab(R.string.nav_profile).assertIsSelected()
     }
 
     @Test
     fun bottomBar_navigateAwayAndBack_restoresDiscover() {
-        composeTestRule.onNodeWithText("Logbook").performClick()
-        composeTestRule.onNodeWithText("Logbook").assertIsSelected()
+        tab(R.string.nav_logbook).performClick()
+        tab(R.string.nav_logbook).assertIsSelected()
 
-        composeTestRule.onNodeWithText("Discover").performClick()
-        composeTestRule.onNodeWithText("Discover").assertIsSelected()
-        composeTestRule.onNodeWithText("Logbook").assertIsNotSelected()
+        tab(R.string.nav_discover).performClick()
+        tab(R.string.nav_discover).assertIsSelected()
+        tab(R.string.nav_logbook).assertIsNotSelected()
+    }
+
+    @Test
+    fun systemBack_fromTab_returnsToDiscover() {
+        tab(R.string.nav_profile).performClick()
+
+        Espresso.pressBack()
+
+        tab(R.string.nav_discover).assertIsSelected()
+        tab(R.string.nav_profile).assertIsNotSelected()
     }
 }

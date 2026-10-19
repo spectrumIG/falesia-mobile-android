@@ -20,15 +20,21 @@ routes (*vie*). Users do not create remote content; the app consumes public data
 - **Tested**: every feature ships with tests, unit tests first. See [testing.md](testing.md).
 
 ## Current features
-| Section (bottom bar) | Route | Status |
-|---|---|---|
-| Discover | `AppRoute.Discover` | Implemented: crag list, pull-to-refresh, crag cards |
-| Logbook | `AppRoute.Logbook` | Placeholder |
-| Ticklist | `AppRoute.Ticklist` | Placeholder |
-| Profile | `AppRoute.Profile` | Placeholder |
+| Section (bottom bar) | Route                             | Status                                                                                   |
+|----------------------|-----------------------------------|------------------------------------------------------------------------------------------|
+| Discover             | `AppRoute.Discover`               | Implemented: crag list, pull-to-refresh, crag cards (design-system tokens, light + dark) |
+| ↳ Crag details       | `AppRoute.CragDetails(falesiaId)` | Placeholder (opened by tapping a crag card)                                              |
+| Logbook              | `AppRoute.Logbook`                | Placeholder (`PlaceholderScreen`)                                                        |
+| Ticklist             | `AppRoute.Ticklist`               | Placeholder (`PlaceholderScreen`)                                                        |
+| Profile              | `AppRoute.Profile`                | Placeholder (`PlaceholderScreen`)                                                        |
+
+UI languages: English (default, `values/`) and Italian (`values-it/`).
 
 ## Roadmap / milestones
-1. Rework the UI (currently derived from a Stitch.io mockup) and move the design to **Claude Design**.
+
+1. Rework the UI in **Claude Design** (the Stitch mockup is imported there and its tokens are mapped
+   in
+   `:core-ui`).
 2. Fill the placeholder sections.
 3. Convert the project to **Kotlin Multiplatform** (KMP). Every library/design choice made today should ease this.
 

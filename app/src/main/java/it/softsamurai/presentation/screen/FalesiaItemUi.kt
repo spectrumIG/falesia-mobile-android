@@ -1,6 +1,6 @@
 package it.softsamurai.presentation.screen
 
-import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,70 +8,72 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import it.softsamurai.R.drawable
+import it.softsamurai.core.ui.AppTheme
+import it.softsamurai.core.ui.FalesiaTheme
 import it.softsamurai.domain.model.Falesia
 import it.softsamurai.domain.model.Via
 
+/** Compact crag row (thumbnail, name, routes count, source link) on the design-system tokens. */
 @Composable
 fun FalesiaItemUi(
     modifier: Modifier = Modifier,
     falesiaValue: Falesia,
 ) {
+    val colors = FalesiaTheme.colors
+    val spacing = FalesiaTheme.spacing
     Card(
-        modifier = Modifier
-            .then(modifier)
-            .fillMaxWidth(),
-        colors = CardDefaults.elevatedCardColors(
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(FalesiaTheme.radius.xl),
+        border = BorderStroke(FalesiaTheme.size.hairline, colors.line),
+        colors = CardDefaults.cardColors(
+            containerColor = colors.surfaceCardNeutral,
+            contentColor = colors.ink
         ),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.Center,
+                .padding(spacing.space4),
+            horizontalArrangement = Arrangement.spacedBy(spacing.space4),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(
-                modifier = Modifier.size(40.dp),
-                contentScale = ContentScale.FillBounds,
+                modifier = Modifier.size(FalesiaTheme.size.thumb),
+                contentScale = ContentScale.Fit,
                 painter = painterResource(drawable.montagna),
-                contentDescription = "",
+                contentDescription = null,
             )
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(5.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceEvenly,
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = falesiaValue.nome,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.primary,
+                    style = FalesiaTheme.typography.itemTitle,
+                    color = colors.ink,
                 )
                 Text(
                     text = falesiaValue.numeroVie.toString(),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary,
+                    style = FalesiaTheme.typography.stat,
+                    color = colors.primaryText,
                 )
                 Text(
                     text = falesiaValue.linkDettagli,
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.primary,
+                    style = FalesiaTheme.typography.bodySm,
+                    color = colors.inkMuted,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
@@ -119,10 +121,10 @@ private val sampleFalesiaLongName = Falesia(
     lastUpdated = 0L,
 )
 
-@Preview(name = "Default crag", showBackground = true)
+@PreviewLightDark
 @Composable
 private fun FalesiaItemUiPreview() {
-    MaterialTheme {
+    AppTheme {
         FalesiaItemUi(
             falesiaValue = sampleFalesia,
             modifier = Modifier.padding(8.dp),
@@ -133,7 +135,7 @@ private fun FalesiaItemUiPreview() {
 @Preview(name = "No routes yet", showBackground = true)
 @Composable
 private fun FalesiaItemUiNoViePreview() {
-    MaterialTheme {
+    AppTheme {
         FalesiaItemUi(
             falesiaValue = sampleFalesiaNoVie,
             modifier = Modifier.padding(8.dp),
@@ -144,24 +146,9 @@ private fun FalesiaItemUiNoViePreview() {
 @Preview(name = "Long name wrapping", showBackground = true)
 @Composable
 private fun FalesiaItemUiLongNamePreview() {
-    MaterialTheme {
+    AppTheme {
         FalesiaItemUi(
             falesiaValue = sampleFalesiaLongName,
-            modifier = Modifier.padding(8.dp),
-        )
-    }
-}
-
-@Preview(
-    name = "Dark theme",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-)
-@Composable
-private fun FalesiaItemUiDarkPreview() {
-    MaterialTheme {
-        FalesiaItemUi(
-            falesiaValue = sampleFalesia,
             modifier = Modifier.padding(8.dp),
         )
     }
@@ -170,7 +157,7 @@ private fun FalesiaItemUiDarkPreview() {
 @Preview(name = "Large font scale", showBackground = true, fontScale = 1.5f)
 @Composable
 private fun FalesiaItemUiLargeFontPreview() {
-    MaterialTheme {
+    AppTheme {
         FalesiaItemUi(
             falesiaValue = sampleFalesia,
             modifier = Modifier.padding(8.dp),

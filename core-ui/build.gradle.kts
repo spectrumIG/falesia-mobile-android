@@ -4,6 +4,17 @@ plugins {
     alias(libs.plugins.android.library)
 
     alias(libs.plugins.kotlin.compose.compiler)
+    alias(libs.plugins.detekt)
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    config.setFrom(files("$rootDir/detekt.yml"))
+}
+
+// detekt derives its JVM target from the Gradle JVM by default; align it with the project's target.
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+    jvmTarget = JavaVersion.VERSION_17.toString()
 }
 
 android {
@@ -31,4 +42,8 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+
+    testImplementation(libs.junit)
 }

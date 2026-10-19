@@ -14,11 +14,21 @@
    - first failure short-circuits via `bind()`;
    - persist each crag with its routes atomically (`upsertFalesiaWithVie`); DB errors → `SyncError.StorageFailure`.
 2. `CheckDbFreshnessUseCase` returns `NeedsSync` if the DB is empty or the oldest `lastUpdated` is older than one week.
-3. `SyncWorker` (`@HiltWorker`) runs freshness check → sync; retries up to `MAX_RETRIES` (3), then fails.
+3. `SyncWorker` (`@HiltWorker`) runs freshness check → sync; retries up to `MAX_RETRIES` (3), then fails. The
+   decision is the pure function `syncWorkOutcome()` (unit-tested), the worker only maps it to `Result`.
 4. `WorkManagerSyncScheduler` (bound to `SyncScheduler`), invoked in `FalesiaMobile.onCreate()`:
    - `scheduleOnDemandSync()`: unique one-time work, `ExistingWorkPolicy.KEEP`, requires network;
    - `schedulePeriodicSync()`: unique periodic work every 7 days, `KEEP`, requires network.
-5. Pull-to-refresh in the UI calls `SyncCragsUseCase` directly.
+5. Pull-to-refresh calls `RefreshCragsUseCase`: it syncs only if the DB is empty or the **last successful sync**
+   (`MAX(lastUpdated)`, i.e. `FalesiaRepository.getNewestUpdateTimestamp()`) is at least 24 hours old
+   (`MANUAL_REFRESH_INTERVAL_MILLIS`). Otherwise it returns `RefreshOutcome.AlreadyUpToDate` without touching the
+   network: the list keeps showing the DB and the UI shows a "Data is already up to date" snackbar
+   (`DiscoverEvent.AlreadyUpToDate`). A timestamp in the future (clock moved back) never blocks a refresh.
+   The ViewModel ignores `onRefresh` while a refresh is running.
+
+## Time
+- Time-based rules read the clock through `domain/time/TimeProvider` (bound to `System.currentTimeMillis()` in
+  `DataModule`), never `System.currentTimeMillis()` directly: tests pass a fixed time.
 
 ## Room
 - `AppDatabase` (currently version 2, `exportSchema = true`), entities `FalesiaEntity`, `ViaEntity`,

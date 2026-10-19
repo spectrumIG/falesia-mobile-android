@@ -20,19 +20,20 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
+detekt {
+    buildUponDefaultConfig = true
+    config.setFrom(files("$rootDir/detekt.yml"))
+}
+
+// detekt derives its JVM target from the Gradle JVM by default; align it with the project's target.
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+    jvmTarget = JavaVersion.VERSION_17.toString()
+}
+
 android {
 
     namespace = "it.softsamurai"
     compileSdk = 36
-    apply(
-        plugin = "io.gitlab.arturbosch.detekt",
-    )
-
-    //noinspection WrongGradleMethod
-    detekt {
-        buildUponDefaultConfig = true
-        config.setFrom(files("$rootDir/gradle/detekt.yml"))
-    }
     defaultConfig {
         applicationId = "it.softsamurai"
         minSdk = 30
@@ -125,6 +126,7 @@ dependencies {
 
     // Core Android dependencies
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
 
@@ -185,6 +187,7 @@ dependencies {
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)
     // Instrumented tests
+    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
