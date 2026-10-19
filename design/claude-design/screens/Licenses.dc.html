@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Open source licenses</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="../design-system/tokens.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;900&amp;family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&amp;display=swap">
+<style>
+body{margin:0}
+button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer}
+h1,h2,h3,h4,p{margin:0}
+.ms{font-family:'Material Symbols Outlined';font-weight:400;font-style:normal;font-size:24px;line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap;direction:ltr;display:inline-block;font-feature-settings:'liga';-webkit-font-smoothing:antialiased;font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+a{color:var(--primary)}a:hover{color:var(--primary)}
+</style>
+</helmet>
+<div data-theme="{{theme}}" style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; position: relative; overflow: hidden; background: var(--bg); color: var(--ink); font-family: 'Lexend', sans-serif">
+<header style="position: sticky; top: 0; z-index: 50; display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--bg-glass-80); backdrop-filter: blur(12px); border-bottom: 1px solid var(--primary-10)">
+<a href="Menu.dc.html" aria-label="Back" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-full); color: var(--ink); text-decoration: none"><span class="ms" aria-hidden="true">arrow_back</span></a>
+<div>
+<h1 style="font-size: 20px; line-height: 25px; font-weight: 700; letter-spacing: -0.025em">Open source licenses</h1>
+<p style="color: var(--primary); font-size: 12px; line-height: 16px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em">18 components</p>
+</div>
+</header>
+<main style="flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+<p style="padding: 0 8px 4px; color: var(--ink-body); font-size: 14px; line-height: 22.75px">Crag Atlas is built with these open source components.</p>
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+<div style="border-radius: var(--radius-xl); background: var(--surface-card-neutral); border: 1px solid var(--primary-10); overflow: hidden">
+<button onClick="{{g.toggle}}" aria-expanded="{{g.expanded}}" style="width: 100%; display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 0 16px; text-align: left">
+<span style="flex: 1; font-size: 16px; line-height: 24px; font-weight: 600">{{g.title}}</span>
+<span style="padding: 2px 8px; border-radius: var(--radius-full); background: var(--primary-10); color: var(--primary); font-size: 12px; line-height: 16px; font-weight: 700">{{g.count}}</span>
+<span class="ms" aria-hidden="true" style="color: var(--ink-muted)">{{g.icon}}</span>
+</button>
+<sc-if value="{{g.open}}" hint-placeholder-val="{{g.open}}">
+<div style="border-top: 1px solid var(--primary-10); padding: 4px 0">
+<sc-for list="{{g.items}}" as="it" hint-placeholder-count="4">
+<a href="#" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 16px; color: var(--ink); text-decoration: none">
+<span style="flex: 1; min-width: 0; font-size: 14px; line-height: 20px; font-weight: 500">{{it.name}}</span>
+<span style="color: var(--ink-muted); font-size: 12px; line-height: 16px; font-weight: 500">{{it.license}}</span>
+</a>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const data = [
+      { id: 'androidx', title: 'AndroidX & Jetpack', items: [
+        { name: 'AndroidX Core', license: 'Apache 2.0' },
+        { name: 'Activity Compose', license: 'Apache 2.0' },
+        { name: 'Jetpack Compose UI', license: 'Apache 2.0' },
+        { name: 'Compose Material 3', license: 'Apache 2.0' },
+        { name: 'Lifecycle', license: 'Apache 2.0' },
+        { name: 'Navigation 3', license: 'Apache 2.0' },
+        { name: 'Room', license: 'Apache 2.0' },
+        { name: 'WorkManager', license: 'Apache 2.0' },
+        { name: 'Hilt for AndroidX', license: 'Apache 2.0' }
+      ] },
+      { id: 'kotlin', title: 'Kotlin & libraries', items: [
+        { name: 'Kotlin Coroutines', license: 'Apache 2.0' },
+        { name: 'Kotlin Serialization', license: 'Apache 2.0' },
+        { name: 'Arrow', license: 'Apache 2.0' },
+        { name: 'Dagger Hilt', license: 'Apache 2.0' },
+        { name: 'Ksoup', license: 'MIT' },
+        { name: 'Coil', license: 'Apache 2.0' },
+        { name: 'OkHttp', license: 'Apache 2.0' }
+      ] },
+      { id: 'fonts', title: 'Fonts & icons', items: [
+        { name: 'Lexend', license: 'SIL OFL 1.1' },
+        { name: 'Material Symbols', license: 'Apache 2.0' }
+      ] }
+    ];
+    const open = this.state && 'open' in this.state ? this.state.open : 'androidx';
+    const groups = data.map((g) => ({
+      title: g.title,
+      count: g.items.length,
+      items: g.items,
+      open: open === g.id,
+      expanded: open === g.id ? 'true' : 'false',
+      icon: open === g.id ? 'expand_less' : 'expand_more',
+      toggle: () => this.setState({ open: open === g.id ? null : g.id })
+    }));
+    return { theme: this.props.theme ?? 'dark', groups };
+  }
+}
+</script>
+</body>
+</html>

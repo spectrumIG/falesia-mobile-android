@@ -37,5 +37,11 @@ readable as a spec.
 | `RouteList.dc.html` | Route list of a crag | `route_list_2` |
 | `RouteTopo.dc.html` | Route detail with topo | `route_detail_topo_2` |
 | `Logbook.dc.html` | Logbook | `logbook_2` |
+| `Menu.dc.html` | Menu as a bottom sheet over Discover: guest profile, offline data, App and About sections | New, not in Stitch |
+| `Licenses.dc.html` | Open source licenses: accordion of the app's runtime dependencies (second level, from the menu) | New, not in Stitch |
 
 All screens use the app's bottom bar: Discover, Logbook, Ticklist, Profile.
+
+The menu button on Discover and Logbook opens `Menu.dc.html`; its "Open source licenses" row opens
+`Licenses.dc.html`. The license list mirrors the runtime libraries in `gradle/libs.versions.toml`: update it when
+dependencies change.

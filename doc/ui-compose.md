@@ -74,7 +74,7 @@
   - Design system "Falesia Mobile": https://claude.ai/artifact/RAbZEfFEBx8kRkw5syHe4A (tokens, type scale,
     16 component specs, contrast notes).
   - Screens "Falesia Mobile UI": https://claude.ai/artifact/M6Zfv3snFfotKZtua44WQz (Discover, Crag details,
-    Route list, Route detail/topo, Logbook).
+    Route list, Route detail/topo, Logbook, Menu bottom sheet, Open source licenses).
   - A snapshot of both, readable without claude.ai, lives in
     [`design/claude-design/`](../design/claude-design/README.md): tokens (`tokens.json`), usage rules, component
     specs and screen markup. Read it for any UI work; re-export it when the design changes.
@@ -107,3 +107,6 @@ Issues found while importing the Stitch export into Claude Design. Highest prior
    to Discover / Logbook / Ticklist / Profile). Pick one rule for each.
 7. **Placeholder photos:** the canvas uses low-resolution crops of Stitch's screenshots (the original
    images were not in the export). Replace with real crag photos.
+8. **Menu entries without a page:** Settings, Terms & conditions and Privacy policy in the menu bottom sheet
+   have no screen yet; Terms and Privacy need the real legal text. The profile header shows only the guest
+   state (the app has no sign-in).
