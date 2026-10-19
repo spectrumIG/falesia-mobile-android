@@ -5,24 +5,32 @@
   "launch": { "view": "canvas" },
   "pages": [],
   "boards": {
-    "Main.dc.html": { "x": 0, "y": 0, "w": 390, "h": 1600, "title": "Discover" },
+    "Main.dc.html": { "x": 0, "y": 0, "w": 390, "h": 1600, "title": "Discover", "is_interactive": true },
     "CragDetails.dc.html": { "x": 470, "y": 0, "w": 390, "h": 1260, "title": "Crag details" },
     "RouteList.dc.html": { "x": 940, "y": 0, "w": 390, "h": 844, "title": "Route list" },
     "RouteTopo.dc.html": { "x": 1410, "y": 0, "w": 390, "h": 1340, "title": "Route detail (topo)" },
-    "Logbook.dc.html": { "x": 1880, "y": 0, "w": 390, "h": 844, "title": "Logbook" },
+    "Logbook.dc.html": { "x": 1880, "y": 0, "w": 390, "h": 844, "title": "Logbook", "is_interactive": true },
+    "Menu.dc.html": { "x": 2350, "y": 0, "w": 390, "h": 844, "title": "Menu (bottom sheet)", "is_interactive": true },
+    "Licenses.dc.html": { "x": 2820, "y": 0, "w": 390, "h": 844, "title": "Open source licenses", "is_interactive": true },
     "DiscoverLight.dc.html": { "x": 0, "y": 1980, "w": 390, "h": 1600, "title": "Discover · Light" },
     "CragDetailsLight.dc.html": { "x": 470, "y": 1980, "w": 390, "h": 1260, "title": "Crag details · Light" },
     "RouteListLight.dc.html": { "x": 940, "y": 1980, "w": 390, "h": 844, "title": "Route list · Light" },
     "RouteTopoLight.dc.html": { "x": 1410, "y": 1980, "w": 390, "h": 1340, "title": "Route detail (topo) · Light" },
-    "LogbookLight.dc.html": { "x": 1880, "y": 1980, "w": 390, "h": 844, "title": "Logbook · Light" }
+    "LogbookLight.dc.html": { "x": 1880, "y": 1980, "w": 390, "h": 844, "title": "Logbook · Light" },
+    "MenuLight.dc.html": { "x": 2350, "y": 1980, "w": 390, "h": 844, "title": "Menu (bottom sheet) · Light" },
+    "LicensesLight.dc.html": { "x": 2820, "y": 1980, "w": 390, "h": 844, "title": "Open source licenses · Light" }
   },
   "order": [
     "Main.dc.html", "CragDetails.dc.html", "RouteList.dc.html", "RouteTopo.dc.html", "Logbook.dc.html",
-    "DiscoverLight.dc.html", "CragDetailsLight.dc.html", "RouteListLight.dc.html", "RouteTopoLight.dc.html", "LogbookLight.dc.html"
+    "Menu.dc.html", "Licenses.dc.html",
+    "DiscoverLight.dc.html", "CragDetailsLight.dc.html", "RouteListLight.dc.html", "RouteTopoLight.dc.html", "LogbookLight.dc.html",
+    "MenuLight.dc.html", "LicensesLight.dc.html"
   ],
   "notes": {
     "titleDark": { "x": 0, "y": -300, "text": "Stitch import · Dark", "kind": "title1", "maxW": 2270 },
-    "titleLight": { "x": 0, "y": 1680, "text": "Stitch import · Light", "kind": "title1", "maxW": 2270 }
+    "titleLight": { "x": 0, "y": 1680, "text": "Stitch import · Light", "kind": "title1", "maxW": 2270 },
+    "titleMenu": { "x": 2350, "y": -300, "text": "Menu & secondary pages", "kind": "title1", "maxW": 860 },
+    "titleMenuLight": { "x": 2350, "y": 1680, "text": "Menu & secondary pages · Light", "kind": "title1", "maxW": 860 }
   },
   "designSystems": [
     { "title": "Falesia Mobile", "namespace": "falesiamobile", "artifact": "https://claude.ai/artifact/RAbZEfFEBx8kRkw5syHe4A", "version": "1792412325-2196", "copiedAt": "2026-10-19T12:45:00Z" }
