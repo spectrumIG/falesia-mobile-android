@@ -77,7 +77,7 @@ sealed interface DiscoverEvent {
 @Stable
 sealed interface FalesiaItemUiState {
     data object Loading : FalesiaItemUiState
-    data class Error(val throwable: Throwable = Throwable(), val message: String) :
+    data class Error(val throwable: Throwable? = null, val message: String) :
         FalesiaItemUiState
     data class Success(val data: List<Falesia>, val isRefreshing: Boolean = false) :
         FalesiaItemUiState

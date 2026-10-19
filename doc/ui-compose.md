@@ -49,8 +49,8 @@
 
 ## Navigation
 - **Navigation 3**: routes are `@Serializable` objects/classes implementing `NavKey` in
-  `presentation/navigation/Route.kt` (`AppRoute`); `NavDisplay` setup in `Navigation.kt`; bottom bar in
-  `BottomBar.kt`.
+  `presentation/navigation/AppRoute.kt`; `NavDisplay` setup in `Navigation.kt`; bottom bar in
+  `BottomBar.kt` (tabs defined in `BottomNavItem.kt`).
 - Top-level destinations (bottom bar tabs) are `data object`s; detail destinations are `data class`
   es that carry the id of what they show, e.g. `AppRoute.CragDetails(falesiaId)`. Each route
   declares `topLevel`: the tab that stays selected while it is shown (detail screens reached from

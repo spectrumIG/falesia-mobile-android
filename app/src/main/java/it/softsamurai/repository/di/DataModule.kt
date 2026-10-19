@@ -17,6 +17,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
 
+private const val FALESIA_LIST_URL = "https://www.falesiaonline.it/falesie/sud-europa.html"
+
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DataModule {
@@ -39,7 +41,7 @@ abstract class DataModule {
 
         @Provides
         @Singleton
-        fun provideBaseUrl(): String = "https://www.falesiaonline.it/falesie/sud-europa.html"
+        fun provideBaseUrl(): String = FALESIA_LIST_URL
 
         @Provides
         @Singleton

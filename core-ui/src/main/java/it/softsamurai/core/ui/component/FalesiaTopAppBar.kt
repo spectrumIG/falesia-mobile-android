@@ -1,6 +1,5 @@
 package it.softsamurai.core.ui.component
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,28 +28,6 @@ import it.softsamurai.core.ui.AppTheme
 import it.softsamurai.core.ui.FalesiaTheme
 import it.softsamurai.core.ui.R
 import java.util.Locale
-
-/** Leading action of a [FalesiaTopAppBar]: `menu` on top-level screens, `arrow_back` on detail screens. */
-sealed interface TopBarNavigation {
-    val contentDescription: String
-    val onClick: () -> Unit
-
-    @get:DrawableRes
-    val icon: Int
-
-    data class Menu(
-        override val contentDescription: String,
-        override val onClick: () -> Unit = {}
-    ) :
-        TopBarNavigation {
-        override val icon: Int get() = R.drawable.ic_menu
-    }
-
-    data class Back(override val contentDescription: String, override val onClick: () -> Unit) :
-        TopBarNavigation {
-        override val icon: Int get() = R.drawable.ic_arrow_back
-    }
-}
 
 /**
  * Sticky bar at the top of every screen (design component `TopAppBar`).

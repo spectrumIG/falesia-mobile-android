@@ -3,9 +3,10 @@
 ## Before declaring a task done
 1. Code compiles: `./gradlew :app:compileDebugKotlin` (or IDE diagnostics). Check imports and Gradle deps
    explicitly; reading the code is not enough.
-2. Unit tests pass: `./gradlew :app:testDebugUnitTest`.
-3. New/changed behavior is tested ([testing.md](testing.md)).
-4. Relevant `doc/` files and [../AGENTS.md](../AGENTS.md) are updated.
+2. Unit tests pass: `./gradlew :core-ui:testDebugUnitTest :app:testDebugUnitTest`.
+3. Static analysis passes: `./gradlew detekt` (`maxIssues: 0`).
+4. New/changed behavior is tested ([testing.md](testing.md)).
+5. Relevant `doc/` files and [../AGENTS.md](../AGENTS.md) are updated.
 
 ## Style
 - Kotlin official code style (`kotlin.code.style=official`); match surrounding code (section comments like
@@ -13,7 +14,9 @@
 - Domain vocabulary is **Italian** and must be kept: `falesia`/`falesie` (crag/crags), `via`/`vie`
   (route/routes), `zona`, `nome`. Everything else (code structure, comments, docs) in English.
 - `private const val` for magic numbers at file top (e.g. `SYNC_CONCURRENCY`, `MAX_RETRIES`).
-- detekt with `buildUponDefaultConfig`; Android lint with `app/lint-baseline.xml` (don't grow the baseline to
+- detekt with `buildUponDefaultConfig`: `detekt.yml` holds only the project's overrides (Compose-aware naming,
+  thresholds); fix findings in code, use `@Suppress` with a reason only when a rule is wrong for that case, no
+  detekt baseline. Android lint with `app/lint-baseline.xml` (don't grow the baseline to
   hide new issues).
 
 ## Git

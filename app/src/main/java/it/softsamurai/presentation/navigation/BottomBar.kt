@@ -1,8 +1,6 @@
 package it.softsamurai.presentation.navigation
 
 import android.content.res.Configuration
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -18,43 +16,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import it.softsamurai.R
 import it.softsamurai.core.ui.AppTheme
 import it.softsamurai.core.ui.FalesiaTheme
-
-internal data class BottomNavItem(
-    val route: AppRoute,
-    @param:DrawableRes val icon: Int,
-    @param:DrawableRes val selectedIcon: Int,
-    @param:StringRes val labelRes: Int,
-)
-
-internal val bottomNavItems: List<BottomNavItem> = listOf(
-    BottomNavItem(
-        AppRoute.Discover,
-        R.drawable.ic_explore,
-        R.drawable.ic_explore_filled,
-        R.string.nav_discover
-    ),
-    BottomNavItem(
-        AppRoute.Logbook,
-        R.drawable.ic_menu_book,
-        R.drawable.ic_menu_book_filled,
-        R.string.nav_logbook
-    ),
-    BottomNavItem(
-        AppRoute.Ticklist,
-        R.drawable.ic_check_circle,
-        R.drawable.ic_check_circle_filled,
-        R.string.nav_ticklist,
-    ),
-    BottomNavItem(
-        AppRoute.Profile,
-        R.drawable.ic_person,
-        R.drawable.ic_person_filled,
-        R.string.nav_profile
-    ),
-)
 
 /**
  * Design component `BottomBar`: `bg` fill under a `primary-10` hairline, no selection pill; the active item

@@ -18,7 +18,7 @@ when a library is added, removed or upgraded significantly.
 | Serialization | kotlinx-serialization-json | ✅ |
 | Images | Coil 3 (`coil-compose`, `coil-network-okhttp`) | ✅ (use `coil-network-ktor` on KMP) |
 | Coroutines | kotlinx-coroutines | ✅ |
-| Static analysis | detekt, Compose stability analyzer | — |
+| Static analysis | detekt 1.23.8 (both modules, config `detekt.yml`), Compose stability analyzer | — |
 | Tests | JUnit4, MockK, Turbine, coroutines-test, Compose UI test, Hilt testing | Turbine/coroutines-test ✅, MockK ⚠️ |
 
 ## Library selection policy
@@ -33,6 +33,12 @@ when a library is added, removed or upgraded significantly.
 
 ## Build basics
 - `compileSdk = 36`, `minSdk = 30`, Java/JVM target 17.
+- **Gradle daemon JVM: 21**, pinned in `gradle/gradle-daemon-jvm.properties` (regenerate with
+  `./gradlew updateDaemonJvm --jvm-version=21`). If no JDK 21 is installed, Gradle downloads one into
+  `~/.gradle/jdks` through the foojay resolver (`settings.gradle.kts`; settings plugins cannot use the version
+  catalog, so its version is written there). Reason: detekt 1.23.x bundles a Kotlin 2.0 compiler that cannot run on
+  Java 25. Revisit when moving to detekt 2.x.
+- detekt tasks use `jvmTarget = 17` explicitly (by default they would use the daemon's JVM version).
 - Build types: `debug` (`.debug` suffix), `release` (minify + shrink, signed with `keystore.properties`),
   `debugRelease`.
 - Commands: `./gradlew assembleDebug`, `./gradlew :app:compileDebugKotlin`, `./gradlew :app:testDebugUnitTest`,

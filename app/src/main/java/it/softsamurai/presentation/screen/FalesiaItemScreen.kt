@@ -78,6 +78,7 @@ private val CardRestElevation = 1.dp
 @Composable
 fun DiscoverRoute(
     onCragClick: (falesiaId: String) -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: FalesiaItemViewModel = hiltViewModel<FalesiaItemViewModel>(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -86,6 +87,7 @@ fun DiscoverRoute(
         events = viewModel.events,
         onRefresh = viewModel::onRefresh,
         onCragClick = onCragClick,
+        modifier = modifier,
     )
 }
 
@@ -94,6 +96,7 @@ fun DiscoverRoute(
 @Composable
 fun DiscoverScreen(
     uiState: FalesiaItemUiState,
+    modifier: Modifier = Modifier,
     events: Flow<DiscoverEvent> = emptyFlow(),
     onRefresh: () -> Unit = {},
     onCragClick: (falesiaId: String) -> Unit = {},
@@ -113,6 +116,7 @@ fun DiscoverScreen(
     }
 
     Scaffold(
+        modifier = modifier,
         containerColor = FalesiaTheme.colors.bg,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = { DiscoverHeader() },
@@ -348,7 +352,7 @@ fun FalesiaItemRoute(
     modifier: Modifier = Modifier,
     onCragClick: (falesiaId: String) -> Unit = {},
     viewModel: FalesiaItemViewModel = hiltViewModel(),
-) = DiscoverRoute(onCragClick, viewModel)
+) = DiscoverRoute(onCragClick, modifier, viewModel)
 
 // ──────────────────────── Previews ────────────────────────
 
