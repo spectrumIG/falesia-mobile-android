@@ -38,3 +38,15 @@
 ```
 
 Instrumented tests run on `it.softsamurai.core.testing.HiltTestRunner` (`app/src/androidTest`).
+
+## Visual check (manual, before merging UI changes)
+Tests do not prove the app looks like the design. On an emulator, install the debug build and compare each changed
+screen with `design/claude-design/` (screen markup, `tokens.json`, component READMEs) in all four combinations:
+```bash
+./gradlew :app:installDebug
+adb shell cmd uimode night yes|no                                              # dark / light
+adb shell cmd locale set-app-locales it.softsamurai.debug --locales it-IT|en-US # app language
+adb exec-out screencap -p > screen.png                                          # screenshot
+adb shell cmd locale set-app-locales it.softsamurai.debug --locales ""          # back to system language
+```
+Fix layout defects with a UI test that pins them (e.g. bounds checks in `PlaceholderScreenTest`).

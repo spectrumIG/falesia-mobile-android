@@ -70,6 +70,7 @@ import it.softsamurai.core.ui.R as CoreUiR
 
 const val TAG_PULL_TO_REFRESH = "pull_to_refresh"
 const val TAG_CRAG_CARD = "crag_card"
+const val TAG_CRAG_LOCATION = "crag_location"
 
 private const val CRAG_PHOTO_ASPECT_RATIO = 16f / 9f
 private val LocationIconSize = 14.dp
@@ -277,23 +278,27 @@ fun CragCard(
                 style = FalesiaTheme.typography.cardTitle,
                 color = colors.ink,
             )
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(spacing.space1),
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_location_on),
-                    contentDescription = null,
-                    modifier = Modifier.size(LocationIconSize),
-                    tint = colors.inkMuted,
-                )
-                Text(
-                    text = crag.zona,
-                    style = FalesiaTheme.typography.bodySm,
-                    color = colors.inkMuted,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+            // The scraper does not provide the zone yet: no location line rather than an orphan pin.
+            if (crag.zona.isNotBlank()) {
+                Row(
+                    modifier = Modifier.testTag(TAG_CRAG_LOCATION),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(spacing.space1),
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_location_on),
+                        contentDescription = null,
+                        modifier = Modifier.size(LocationIconSize),
+                        tint = colors.inkMuted,
+                    )
+                    Text(
+                        text = crag.zona,
+                        style = FalesiaTheme.typography.bodySm,
+                        color = colors.inkMuted,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
             }
 
             HorizontalDivider(

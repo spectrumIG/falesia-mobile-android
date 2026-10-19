@@ -17,6 +17,7 @@ import it.softsamurai.domain.model.Falesia
 import it.softsamurai.domain.model.Via
 import it.softsamurai.presentation.screen.DiscoverScreen
 import it.softsamurai.presentation.screen.TAG_CRAG_CARD
+import it.softsamurai.presentation.screen.TAG_CRAG_LOCATION
 import it.softsamurai.presentation.screen.TAG_PULL_TO_REFRESH
 import kotlinx.coroutines.flow.MutableSharedFlow
 import org.junit.Assert.assertEquals
@@ -119,6 +120,23 @@ class DiscoverScreenTest {
 
         composeRule.onNodeWithText("Monte Arrubiu").assertIsDisplayed()
         composeRule.onNodeWithTag(TAG_PULL_TO_REFRESH).assertIsDisplayed()
+    }
+
+    @Test
+    fun cragCard_withZone_showsLocationLine() {
+        setScreen(FalesiaItemUiState.Success(fakecrags.take(1)))
+
+        composeRule.onNodeWithTag(TAG_CRAG_LOCATION, useUnmergedTree = true).assertIsDisplayed()
+        composeRule.onNodeWithText("Sardegna, Ogliastra", useUnmergedTree = true).assertIsDisplayed()
+    }
+
+    @Test
+    fun cragCard_withoutZone_hasNoLocationLine() {
+        // The scraper stores an empty zone today: the card must not show an orphan location pin.
+        setScreen(FalesiaItemUiState.Success(listOf(fakecrags.first().copy(zona = ""))))
+
+        composeRule.onNodeWithText("Monte Arrubiu").assertIsDisplayed()
+        composeRule.onNodeWithTag(TAG_CRAG_LOCATION, useUnmergedTree = true).assertDoesNotExist()
     }
 
     /** Emits [event] once the screen collects events and checks that [messageRes] is shown. */

@@ -2,10 +2,12 @@ package it.softsamurai.presentation
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.test.platform.app.InstrumentationRegistry
 import it.softsamurai.R
@@ -19,6 +21,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import java.util.Locale
+import kotlin.math.abs
+
+private const val CENTER_TOLERANCE_DP = 1f
 
 class PlaceholderScreenTest {
 
@@ -49,6 +54,21 @@ class PlaceholderScreenTest {
 
         composeRule.onNodeWithTag(TAG_PLACEHOLDER_TITLE)
             .assertTextEquals(context.getString(R.string.nav_profile))
+    }
+
+    @Test
+    fun title_isHorizontallyCentered() {
+        composeRule.setContent { AppTheme { ProfileScreen() } }
+
+        val title = composeRule.onNodeWithTag(TAG_PLACEHOLDER_TITLE).getUnclippedBoundsInRoot()
+        val root = composeRule.onRoot().getUnclippedBoundsInRoot()
+
+        val titleCenter = (title.left + title.right) / 2
+        val rootCenter = (root.left + root.right) / 2
+        assertTrue(
+            "title center $titleCenter, screen center $rootCenter",
+            abs(titleCenter.value - rootCenter.value) <= CENTER_TOLERANCE_DP,
+        )
     }
 
     @Test
