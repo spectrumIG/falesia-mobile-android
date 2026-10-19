@@ -7,6 +7,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import it.softsamurai.core.di.IoDispatcher
 import it.softsamurai.domain.repository.FalesiaRepository
+import it.softsamurai.domain.time.TimeProvider
 import it.softsamurai.repository.FalesiaRepositoryImpl
 import it.softsamurai.repository.local.FalesiaLocalDataSource
 import it.softsamurai.repository.local.FalesiaLocalDataSourceImpl
@@ -44,5 +45,9 @@ abstract class DataModule {
         @Singleton
         @IoDispatcher
         fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+        @Provides
+        @Singleton
+        fun provideTimeProvider(): TimeProvider = TimeProvider { System.currentTimeMillis() }
     }
 }

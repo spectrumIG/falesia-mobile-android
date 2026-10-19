@@ -5,9 +5,12 @@
 - **Prefer unit tests** (JVM, `app/src/test/`). Use instrumented/Compose UI tests (`app/src/androidTest/`) only
   for UI behavior that cannot be covered otherwise.
 - Test the behavior that matters per layer:
-  - **Domain**: use cases (e.g. `CheckDbFreshnessUseCaseTest`, `SyncCragsUseCaseTest`).
+  - **Domain**: use cases (e.g. `CheckDbFreshnessUseCaseTest`, `RefreshCragsUseCaseTest`). Inject a fixed
+    `TimeProvider` (`{ now }`) for time-based rules and test the exact boundaries.
   - **Data**: repository (`FalesiaRepositoryImplTest`), mappers (`FalesiaMapperTest`), scraping/parsing helpers
-    (`ResolveImageUrlTest`; add HTML fixture tests for selectors, see [scraping.md](scraping.md)).
+    (`FalesiaHtmlParserTest` on saved pages in `app/src/test/resources/`, `ResolveImageUrlTest`; see
+    [scraping.md](scraping.md)).
+  - **Sync**: the worker decision `syncWorkOutcome()` (`SyncWorkOutcomeTest`).
   - **Presentation**: ViewModels (`FalesiaItemViewModelTest`), navigation config
     (`NavigationConfigTest`), back stack rules (`TopLevelNavigationTest`).
   - **Resources**: EN/IT string parity (`StringResourcesParityTest`, reads `src/main/res` from the
@@ -17,6 +20,8 @@
     expected texts from resources (`context.getString`), never hardcode them: tests must pass in
     every device locale. Cover light and dark (`AppTheme(darkTheme = …)`) where it matters.
 - Cover both `Right` and `Left` paths of every `Either`.
+- No trivial tests: skip pure delegation (a use case that only forwards to the repository); test decisions,
+  boundaries, mapping and failure paths.
 
 ## Tooling & style
 - JUnit4, **MockK** (`mockk`, `coEvery`), **Turbine** (`flow.test { }`) and `kotlinx-coroutines-test`

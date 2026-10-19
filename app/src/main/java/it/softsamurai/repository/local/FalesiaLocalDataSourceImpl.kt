@@ -29,6 +29,8 @@ class FalesiaLocalDataSourceImpl @Inject constructor(
 
     override suspend fun getOldestUpdateTimestamp(): Long? = falesiaDao.getOldestUpdateTimestamp()
 
+    override suspend fun getNewestUpdateTimestamp(): Long? = falesiaDao.getNewestUpdateTimestamp()
+
     override suspend fun upsertFalesiaWithVie(entity: FalesiaEntity, vie: List<ViaEntity>) {
         db.withTransaction {
             falesiaDao.upsertFalesia(entity)

@@ -60,6 +60,7 @@ import it.softsamurai.core.ui.component.SectionHeader
 import it.softsamurai.core.ui.component.TopBarNavigation
 import it.softsamurai.domain.model.Falesia
 import it.softsamurai.domain.model.Via
+import it.softsamurai.presentation.DiscoverEvent
 import it.softsamurai.presentation.FalesiaItemUiState
 import it.softsamurai.presentation.FalesiaItemViewModel
 import kotlinx.coroutines.flow.Flow
@@ -82,7 +83,7 @@ fun DiscoverRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     DiscoverScreen(
         uiState = uiState,
-        syncErrorEvent = viewModel.syncErrorEvent,
+        events = viewModel.events,
         onRefresh = viewModel::onRefresh,
         onCragClick = onCragClick,
     )
@@ -93,16 +94,21 @@ fun DiscoverRoute(
 @Composable
 fun DiscoverScreen(
     uiState: FalesiaItemUiState,
-    syncErrorEvent: Flow<Unit> = emptyFlow(),
+    events: Flow<DiscoverEvent> = emptyFlow(),
     onRefresh: () -> Unit = {},
     onCragClick: (falesiaId: String) -> Unit = {},
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val syncErrorMessage = stringResource(R.string.sync_error_snackbar)
+    val upToDateMessage = stringResource(R.string.refresh_up_to_date)
 
-    LaunchedEffect(syncErrorEvent) {
-        syncErrorEvent.collect {
-            snackbarHostState.showSnackbar(syncErrorMessage)
+    LaunchedEffect(events) {
+        events.collect { event ->
+            val message = when (event) {
+                DiscoverEvent.SyncFailed -> syncErrorMessage
+                DiscoverEvent.AlreadyUpToDate -> upToDateMessage
+            }
+            snackbarHostState.showSnackbar(message)
         }
     }
 

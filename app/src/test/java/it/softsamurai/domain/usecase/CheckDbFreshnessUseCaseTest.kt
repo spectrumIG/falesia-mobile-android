@@ -1,6 +1,7 @@
 package it.softsamurai.domain.usecase
 
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import it.softsamurai.domain.repository.FalesiaRepository
 import kotlinx.coroutines.test.runTest
@@ -10,64 +11,61 @@ import org.junit.Test
 
 class CheckDbFreshnessUseCaseTest {
 
+    private val now = 1_700_000_000_000L
     private lateinit var repository: FalesiaRepository
     private lateinit var useCase: CheckDbFreshnessUseCase
 
     @Before
     fun setUp() {
         repository = mockk()
-        useCase = CheckDbFreshnessUseCase(repository)
+        useCase = CheckDbFreshnessUseCase(repository) { now }
+    }
+
+    private fun givenDb(count: Int, oldest: Long?) {
+        coEvery { repository.countFalesie() } returns count
+        coEvery { repository.getOldestUpdateTimestamp() } returns oldest
     }
 
     @Test
-    fun `returns NeedsSync when DB is empty`() = runTest {
-        coEvery { repository.countFalesie() } returns 0
+    fun `returns NeedsSync when DB is empty without reading timestamps`() = runTest {
+        givenDb(count = 0, oldest = now)
 
-        val result = useCase()
-
-        assertEquals(DbFreshnessStatus.NeedsSync, result)
+        assertEquals(DbFreshnessStatus.NeedsSync, useCase())
+        coVerify(exactly = 0) { repository.getOldestUpdateTimestamp() }
     }
 
     @Test
     fun `returns NeedsSync when oldest timestamp is null`() = runTest {
-        coEvery { repository.countFalesie() } returns 5
-        coEvery { repository.getOldestUpdateTimestamp() } returns null
+        givenDb(count = 5, oldest = null)
 
-        val result = useCase()
-
-        assertEquals(DbFreshnessStatus.NeedsSync, result)
+        assertEquals(DbFreshnessStatus.NeedsSync, useCase())
     }
 
     @Test
     fun `returns NeedsSync when data is older than one week`() = runTest {
-        val eightDaysAgo = System.currentTimeMillis() - (8L * 24 * 60 * 60 * 1000)
-        coEvery { repository.countFalesie() } returns 10
-        coEvery { repository.getOldestUpdateTimestamp() } returns eightDaysAgo
+        givenDb(count = 10, oldest = now - 8L * 24 * 60 * 60 * 1000)
 
-        val result = useCase()
-
-        assertEquals(DbFreshnessStatus.NeedsSync, result)
+        assertEquals(DbFreshnessStatus.NeedsSync, useCase())
     }
 
     @Test
     fun `returns Fresh when data is less than one week old`() = runTest {
-        val threeDaysAgo = System.currentTimeMillis() - (3L * 24 * 60 * 60 * 1000)
-        coEvery { repository.countFalesie() } returns 10
-        coEvery { repository.getOldestUpdateTimestamp() } returns threeDaysAgo
+        givenDb(count = 10, oldest = now - 3L * 24 * 60 * 60 * 1000)
 
-        val result = useCase()
-
-        assertEquals(DbFreshnessStatus.Fresh, result)
+        assertEquals(DbFreshnessStatus.Fresh, useCase())
     }
 
     @Test
-    fun `returns Fresh when data is exactly at the boundary (just under one week)`() = runTest {
-        val justUnderOneWeek = System.currentTimeMillis() - (7L * 24 * 60 * 60 * 1000 - 1000)
-        coEvery { repository.countFalesie() } returns 1
-        coEvery { repository.getOldestUpdateTimestamp() } returns justUnderOneWeek
+    fun `data exactly one week old is still Fresh`() = runTest {
+        givenDb(count = 1, oldest = now - ONE_WEEK_MILLIS)
 
-        val result = useCase()
+        assertEquals(DbFreshnessStatus.Fresh, useCase())
+    }
 
-        assertEquals(DbFreshnessStatus.Fresh, result)
+    @Test
+    fun `data one millisecond past one week NeedsSync`() = runTest {
+        givenDb(count = 1, oldest = now - ONE_WEEK_MILLIS - 1)
+
+        assertEquals(DbFreshnessStatus.NeedsSync, useCase())
     }
 }

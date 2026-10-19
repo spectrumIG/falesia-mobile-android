@@ -6,9 +6,12 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
+import it.softsamurai.repository.database.entity.ViaEntity
 import it.softsamurai.domain.error.FalesiaError
 import it.softsamurai.domain.error.SyncError
 import it.softsamurai.domain.model.Falesia
+import it.softsamurai.domain.model.Via
 import it.softsamurai.repository.database.entity.FalesiaEntity
 import it.softsamurai.repository.database.relation.FalesiaWithVie
 import it.softsamurai.repository.local.FalesiaLocalDataSource
@@ -24,6 +27,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
+private const val NOW = 1_700_000_000_000L
+
 class FalesiaRepositoryImplTest {
 
     private lateinit var localDataSource: FalesiaLocalDataSource
@@ -34,7 +39,7 @@ class FalesiaRepositoryImplTest {
     fun setUp() {
         localDataSource = mockk()
         networkDataSource = mockk()
-        repository = FalesiaRepositoryImpl(localDataSource, networkDataSource, Dispatchers.Unconfined)
+        repository = FalesiaRepositoryImpl(localDataSource, networkDataSource, Dispatchers.Unconfined) { NOW }
     }
 
     // ── observeAllFalesie ─────────────────────────────────────────────────
@@ -170,6 +175,99 @@ class FalesiaRepositoryImplTest {
 
         assertTrue(result.isLeft())
         assertTrue((result as Either.Left).value is SyncError.StorageFailure)
+    }
+
+    @Test
+    fun `syncFalesie stores every crag with id from url, mapped routes and the sync time`() = runTest {
+        coEvery { networkDataSource.fetchElencoFalesie() } returns
+            Either.Right(listOf(fakeListItem("arco"), fakeListItem("finale")))
+        coEvery { networkDataSource.fetchDettagliFalesia(any()) } returns
+            Either.Right(fakeDetail(vie = listOf(ViaNetworkModel(nome = "Spigolo", grado = "6b"))))
+        val saved = mutableListOf<Pair<FalesiaEntity, List<ViaEntity>>>()
+        val entity = slot<FalesiaEntity>()
+        val vie = slot<List<ViaEntity>>()
+        coEvery { localDataSource.upsertFalesiaWithVie(capture(entity), capture(vie)) } answers {
+            saved += entity.captured to vie.captured
+        }
+
+        repository.syncFalesie()
+
+        assertEquals(listOf("arco", "finale"), saved.map { it.first.id })
+        assertTrue(saved.all { it.first.lastUpdated == NOW })
+        assertEquals(listOf("arco", "finale"), saved.map { it.second.single().falesiaId })
+        assertEquals("6b", saved.first().second.single().grado)
+    }
+
+    @Test
+    fun `syncFalesie fetches the details of every crag beyond the concurrency chunk`() = runTest {
+        val ids = (1..12).map { "crag$it" }
+        coEvery { networkDataSource.fetchElencoFalesie() } returns Either.Right(ids.map { fakeListItem(it) })
+        coEvery { networkDataSource.fetchDettagliFalesia(any()) } returns Either.Right(fakeDetail())
+        coEvery { localDataSource.upsertFalesiaWithVie(any(), any()) } returns Unit
+
+        val result = repository.syncFalesie()
+
+        assertTrue(result.isRight())
+        ids.forEach { id ->
+            coVerify(exactly = 1) { networkDataSource.fetchDettagliFalesia("https://www.falesiaonline.it/falesia/$id") }
+        }
+        coVerify(exactly = 12) { localDataSource.upsertFalesiaWithVie(any(), any()) }
+    }
+
+    @Test
+    fun `syncFalesie saves nothing when one detail page fails`() = runTest {
+        coEvery { networkDataSource.fetchElencoFalesie() } returns
+            Either.Right(listOf(fakeListItem("arco"), fakeListItem("finale")))
+        coEvery { networkDataSource.fetchDettagliFalesia(match { it.endsWith("arco") }) } returns
+            Either.Right(fakeDetail())
+        coEvery { networkDataSource.fetchDettagliFalesia(match { it.endsWith("finale") }) } returns
+            Either.Left(SyncError.NetworkFailure(RuntimeException("timeout")))
+
+        val result = repository.syncFalesie()
+
+        assertTrue(result.isLeft())
+        coVerify(exactly = 0) { localDataSource.upsertFalesiaWithVie(any(), any()) }
+    }
+
+    // ── upsertFalesie / deleteAllFalesie / timestamps ─────────────────────
+
+    @Test
+    fun `upsertFalesie writes each crag with its own routes`() = runTest {
+        coEvery { localDataSource.upsertFalesiaWithVie(any(), any()) } returns Unit
+        val withRoute = fakeDomain("arco").copy(vie = listOf(Via(nome = "Spigolo", grado = "6b")))
+
+        val result = repository.upsertFalesie(listOf(withRoute, fakeDomain("finale")))
+
+        assertTrue(result.isRight())
+        coVerify { localDataSource.upsertFalesiaWithVie(match { it.id == "arco" }, match { it.single().falesiaId == "arco" }) }
+        coVerify { localDataSource.upsertFalesiaWithVie(match { it.id == "finale" }, emptyList()) }
+    }
+
+    @Test
+    fun `upsertFalesie returns Left DatabaseError when a write fails`() = runTest {
+        coEvery { localDataSource.upsertFalesiaWithVie(any(), any()) } throws RuntimeException("disk full")
+
+        val result = repository.upsertFalesie(listOf(fakeDomain("arco")))
+
+        assertTrue((result as Either.Left).value is FalesiaError.DatabaseError)
+    }
+
+    @Test
+    fun `deleteAllFalesie returns Left DatabaseError when exception thrown`() = runTest {
+        coEvery { localDataSource.deleteAllFalesie() } throws RuntimeException("locked")
+
+        val result = repository.deleteAllFalesie()
+
+        assertTrue((result as Either.Left).value is FalesiaError.DatabaseError)
+    }
+
+    @Test
+    fun `newest and oldest timestamps come from the local db`() = runTest {
+        coEvery { localDataSource.getNewestUpdateTimestamp() } returns 200L
+        coEvery { localDataSource.getOldestUpdateTimestamp() } returns 100L
+
+        assertEquals(200L, repository.getNewestUpdateTimestamp())
+        assertEquals(100L, repository.getOldestUpdateTimestamp())
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────

@@ -17,6 +17,8 @@ interface FalesiaRepository {
     suspend fun countFalesie(): Int
     /** Returns the oldest lastUpdated timestamp across all crags, used for freshness checks. */
     suspend fun getOldestUpdateTimestamp(): Long?
+    /** Returns the newest lastUpdated timestamp: when the last successful sync ran. */
+    suspend fun getNewestUpdateTimestamp(): Long?
 
     // ── Write ─────────────────────────────────────────────────────────────
     suspend fun upsertFalesia(falesia: Falesia): Either<FalesiaError, Unit>

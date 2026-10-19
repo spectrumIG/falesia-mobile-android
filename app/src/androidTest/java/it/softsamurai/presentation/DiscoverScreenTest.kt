@@ -38,13 +38,13 @@ class DiscoverScreenTest {
     private fun setScreen(
         uiState: FalesiaItemUiState,
         darkTheme: Boolean = false,
-        syncErrorEvent: MutableSharedFlow<Unit> = MutableSharedFlow(),
+        events: MutableSharedFlow<DiscoverEvent> = MutableSharedFlow(),
         onCragClick: (String) -> Unit = {},
     ) = composeRule.setContent {
         AppTheme(darkTheme = darkTheme) {
             DiscoverScreen(
                 uiState = uiState,
-                syncErrorEvent = syncErrorEvent,
+                events = events,
                 onCragClick = onCragClick
             )
         }
@@ -121,21 +121,33 @@ class DiscoverScreenTest {
         composeRule.onNodeWithTag(TAG_PULL_TO_REFRESH).assertIsDisplayed()
     }
 
-    @Test
-    fun syncErrorEvent_showsSnackbar() {
+    /** Emits [event] once the screen collects events and checks that [messageRes] is shown. */
+    private fun assertEventShowsSnackbar(event: DiscoverEvent, @StringRes messageRes: Int) {
         // A buffer slot so tryEmit never drops the event, as the ViewModel's buffered Channel does.
-        val errorFlow = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
-        setScreen(FalesiaItemUiState.Success(fakecrags), syncErrorEvent = errorFlow)
+        val events = MutableSharedFlow<DiscoverEvent>(extraBufferCapacity = 1)
+        setScreen(FalesiaItemUiState.Success(fakecrags), events = events)
         // Let LaunchedEffect subscribe before emitting.
         composeRule.waitForIdle()
 
-        errorFlow.tryEmit(Unit)
+        events.tryEmit(event)
 
-        val message = string(R.string.sync_error_snackbar)
+        val message = string(messageRes)
         composeRule.waitUntil(SNACKBAR_TIMEOUT_MS) {
             composeRule.onAllNodesWithText(message).fetchSemanticsNodes().isNotEmpty()
         }
         composeRule.onNodeWithText(message).assertIsDisplayed()
+    }
+
+    @Test
+    fun syncFailedEvent_showsErrorSnackbar() {
+        assertEventShowsSnackbar(DiscoverEvent.SyncFailed, R.string.sync_error_snackbar)
+    }
+
+    @Test
+    fun alreadyUpToDateEvent_showsUpToDateSnackbar_andKeepsList() {
+        assertEventShowsSnackbar(DiscoverEvent.AlreadyUpToDate, R.string.refresh_up_to_date)
+
+        composeRule.onNodeWithText("Monte Arrubiu").assertIsDisplayed()
     }
 
     private val fakecrags = listOf(

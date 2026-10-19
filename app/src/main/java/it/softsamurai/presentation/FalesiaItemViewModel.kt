@@ -6,7 +6,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.softsamurai.domain.model.Falesia
 import it.softsamurai.domain.usecase.GetAllFalesieUseCase
-import it.softsamurai.domain.usecase.SyncCragsUseCase
+import it.softsamurai.domain.usecase.RefreshCragsUseCase
+import it.softsamurai.domain.usecase.RefreshOutcome
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,19 +23,30 @@ import javax.inject.Inject
 @HiltViewModel
 class FalesiaItemViewModel @Inject constructor(
     getAllFalesie: GetAllFalesieUseCase,
-    private val syncCrags: SyncCragsUseCase,
+    private val refreshCrags: RefreshCragsUseCase,
 ) : ViewModel() {
 
     private val _isRefreshing = MutableStateFlow(false)
 
-    private val _syncErrorEvent = Channel<Unit>(Channel.BUFFERED)
-    val syncErrorEvent: Flow<Unit> = _syncErrorEvent.receiveAsFlow()
+    private val _events = Channel<DiscoverEvent>(Channel.BUFFERED)
 
+    /** One-shot UI effects of a refresh (snackbars). */
+    val events: Flow<DiscoverEvent> = _events.receiveAsFlow()
+
+    /**
+     * Pull-to-refresh. Ignored while a refresh is running; the list keeps showing the DB, which a successful
+     * sync updates through [uiState]'s Room flow.
+     */
     fun onRefresh() {
+        if (_isRefreshing.value) return
+        _isRefreshing.value = true
         viewModelScope.launch {
-            _isRefreshing.value = true
-            val result = syncCrags()
-            if (result.isLeft()) _syncErrorEvent.send(Unit)
+            refreshCrags().fold(
+                ifLeft = { _events.send(DiscoverEvent.SyncFailed) },
+                ifRight = { outcome ->
+                    if (outcome == RefreshOutcome.AlreadyUpToDate) _events.send(DiscoverEvent.AlreadyUpToDate)
+                },
+            )
             _isRefreshing.value = false
         }
     }
@@ -52,6 +64,14 @@ class FalesiaItemViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = FalesiaItemUiState.Loading,
         )
+}
+
+sealed interface DiscoverEvent {
+    /** The sync failed: the saved data stays on screen. */
+    data object SyncFailed : DiscoverEvent
+
+    /** The refresh was skipped because the last sync is recent. */
+    data object AlreadyUpToDate : DiscoverEvent
 }
 
 @Stable

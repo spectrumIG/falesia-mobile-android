@@ -7,6 +7,7 @@ import it.softsamurai.domain.error.FalesiaError
 import it.softsamurai.domain.error.SyncError
 import it.softsamurai.domain.model.Falesia
 import it.softsamurai.domain.repository.FalesiaRepository
+import it.softsamurai.domain.time.TimeProvider
 import it.softsamurai.repository.local.FalesiaLocalDataSource
 import it.softsamurai.repository.mapper.idFromUrl
 import it.softsamurai.repository.mapper.toDomain
@@ -29,6 +30,7 @@ class FalesiaRepositoryImpl @Inject constructor(
     private val localDataSource: FalesiaLocalDataSource,
     private val networkDataSource: FalesiaNetworkDataSource,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    private val timeProvider: TimeProvider,
 ) : FalesiaRepository {
 
     // ── Observe ───────────────────────────────────────────────────────────
@@ -51,6 +53,9 @@ class FalesiaRepositoryImpl @Inject constructor(
 
     override suspend fun getOldestUpdateTimestamp(): Long? =
         localDataSource.getOldestUpdateTimestamp()
+
+    override suspend fun getNewestUpdateTimestamp(): Long? =
+        localDataSource.getNewestUpdateTimestamp()
 
     // ── Write ─────────────────────────────────────────────────────────────
 
@@ -88,7 +93,7 @@ class FalesiaRepositoryImpl @Inject constructor(
             val listItems: List<FalesiaListItemNetworkModel> =
                 networkDataSource.fetchElencoFalesie().bind()
 
-            val now = System.currentTimeMillis()
+            val now = timeProvider.nowMillis()
 
             // Step 2: fetch each crag's detail page concurrently, SYNC_CONCURRENCY at a time
             val detailResults: List<Either<SyncError, Pair<FalesiaListItemNetworkModel, FalesiaDetailNetworkModel>>> =

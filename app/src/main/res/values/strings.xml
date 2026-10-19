@@ -21,6 +21,7 @@
     <string name="cd_view_crag">Open %1$s</string>
     <string name="cd_crag_photo">Photo of %1$s</string>
     <string name="sync_error_snackbar">Couldn\'t refresh. Showing saved data.</string>
+    <string name="refresh_up_to_date">Data is already up to date.</string>
 
     <!-- Crag details -->
     <string name="crag_details_title">Crag Details</string>
