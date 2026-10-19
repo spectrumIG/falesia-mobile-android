@@ -1,55 +1,121 @@
 package it.softsamurai.presentation
 
+import androidx.annotation.StringRes
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import androidx.test.platform.app.InstrumentationRegistry
+import it.softsamurai.R
 import it.softsamurai.core.ui.AppTheme
 import it.softsamurai.domain.model.Falesia
 import it.softsamurai.domain.model.Via
 import it.softsamurai.presentation.screen.DiscoverScreen
+import it.softsamurai.presentation.screen.TAG_CRAG_CARD
 import it.softsamurai.presentation.screen.TAG_PULL_TO_REFRESH
 import kotlinx.coroutines.flow.MutableSharedFlow
+import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
+import java.util.Locale
+
+private const val SNACKBAR_TIMEOUT_MS = 5_000L
 
 class DiscoverScreenTest {
 
     @get:Rule
     val composeRule = createComposeRule()
 
-    @Test
-    fun successState_displaysListOfCrags() {
-        composeRule.setContent {
-            AppTheme {
-                DiscoverScreen(uiState = FalesiaItemUiState.Success(fakecrags))
-            }
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+
+    private fun string(@StringRes id: Int, vararg args: Any) = context.getString(id, *args)
+
+    private fun setScreen(
+        uiState: FalesiaItemUiState,
+        darkTheme: Boolean = false,
+        syncErrorEvent: MutableSharedFlow<Unit> = MutableSharedFlow(),
+        onCragClick: (String) -> Unit = {},
+    ) = composeRule.setContent {
+        AppTheme(darkTheme = darkTheme) {
+            DiscoverScreen(
+                uiState = uiState,
+                syncErrorEvent = syncErrorEvent,
+                onCragClick = onCragClick
+            )
         }
+    }
+
+    @Test
+    fun successState_displaysListOfCrags_lightTheme() {
+        setScreen(FalesiaItemUiState.Success(fakecrags), darkTheme = false)
 
         composeRule.onNodeWithText("Monte Arrubiu").assertIsDisplayed()
         composeRule.onNodeWithText("Finale Ligure").assertIsDisplayed()
     }
 
     @Test
+    fun successState_displaysListOfCrags_darkTheme() {
+        setScreen(FalesiaItemUiState.Success(fakecrags), darkTheme = true)
+
+        composeRule.onNodeWithText("Monte Arrubiu").assertIsDisplayed()
+        composeRule.onNodeWithText("Finale Ligure").assertIsDisplayed()
+    }
+
+    @Test
+    fun header_showsTitleSearchFiltersAndSection() {
+        setScreen(FalesiaItemUiState.Success(fakecrags))
+
+        composeRule.onNodeWithText(string(R.string.crag_atlas)).assertIsDisplayed()
+        composeRule.onNodeWithContentDescription(string(R.string.search_placeholder))
+            .assertIsDisplayed()
+        composeRule.onNodeWithText(string(R.string.filter_style)).assertIsDisplayed()
+        composeRule.onNodeWithText(string(R.string.nearby_crags)).assertIsDisplayed()
+    }
+
+    @Test
+    fun cragCard_showsUppercaseStatLabels() {
+        setScreen(FalesiaItemUiState.Success(fakecrags))
+
+        val routesLabel = string(R.string.label_routes).uppercase(Locale.getDefault())
+        composeRule.onAllNodesWithText(routesLabel).onFirst().assertIsDisplayed()
+    }
+
+    @Test
+    fun clickOnCard_opensCragById() {
+        var opened: String? = null
+        setScreen(FalesiaItemUiState.Success(fakecrags), onCragClick = { opened = it })
+
+        composeRule.onAllNodesWithTag(TAG_CRAG_CARD).onFirst().performClick()
+
+        assertEquals("monte-arrubiu", opened)
+    }
+
+    @Test
+    fun clickOnChevron_opensCragById() {
+        var opened: String? = null
+        setScreen(FalesiaItemUiState.Success(fakecrags), onCragClick = { opened = it })
+
+        composeRule.onNodeWithContentDescription(string(R.string.cd_view_crag, "Monte Arrubiu"))
+            .performClick()
+
+        assertEquals("monte-arrubiu", opened)
+    }
+
+    @Test
     fun successState_pullToRefreshBoxIsPresent() {
-        composeRule.setContent {
-            AppTheme {
-                DiscoverScreen(uiState = FalesiaItemUiState.Success(fakecrags))
-            }
-        }
+        setScreen(FalesiaItemUiState.Success(fakecrags))
 
         composeRule.onNodeWithTag(TAG_PULL_TO_REFRESH).assertIsDisplayed()
     }
 
     @Test
     fun refreshingState_listStillVisible() {
-        composeRule.setContent {
-            AppTheme {
-                DiscoverScreen(
-                    uiState = FalesiaItemUiState.Success(fakecrags, isRefreshing = true),
-                )
-            }
-        }
+        setScreen(FalesiaItemUiState.Success(fakecrags, isRefreshing = true))
 
         composeRule.onNodeWithText("Monte Arrubiu").assertIsDisplayed()
         composeRule.onNodeWithTag(TAG_PULL_TO_REFRESH).assertIsDisplayed()
@@ -57,19 +123,19 @@ class DiscoverScreenTest {
 
     @Test
     fun syncErrorEvent_showsSnackbar() {
-        val errorFlow = MutableSharedFlow<Unit>()
+        // A buffer slot so tryEmit never drops the event, as the ViewModel's buffered Channel does.
+        val errorFlow = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+        setScreen(FalesiaItemUiState.Success(fakecrags), syncErrorEvent = errorFlow)
+        // Let LaunchedEffect subscribe before emitting.
+        composeRule.waitForIdle()
 
-        composeRule.setContent {
-            AppTheme {
-                DiscoverScreen(
-                    uiState = FalesiaItemUiState.Success(fakecrags),
-                    syncErrorEvent = errorFlow,
-                )
-            }
+        errorFlow.tryEmit(Unit)
+
+        val message = string(R.string.sync_error_snackbar)
+        composeRule.waitUntil(SNACKBAR_TIMEOUT_MS) {
+            composeRule.onAllNodesWithText(message).fetchSemanticsNodes().isNotEmpty()
         }
-
-        composeRule.runOnUiThread { errorFlow.tryEmit(Unit) }
-        composeRule.onNodeWithText("Couldn't refresh. Showing cached data.").assertIsDisplayed()
+        composeRule.onNodeWithText(message).assertIsDisplayed()
     }
 
     private val fakecrags = listOf(

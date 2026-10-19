@@ -1,26 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">FalesiaMobile</string>
+    <string name="app_name">Falesia Mobile</string>
     <string name="home_title_lbl">Falesia Mobile</string>
+
+    <!-- Comuni -->
+    <string name="cd_menu">Menu</string>
+    <string name="cd_back">Indietro</string>
+    <string name="placeholder_coming_soon">Prossimamente</string>
 
     <!-- Schermata Scopri -->
     <string name="crag_atlas">Atlante Falesie</string>
-    <string name="cd_menu">Menu</string>
-    <string name="search_placeholder">Cerca aree di arrampicata…</string>
-    <string name="nearby_crags">Falesie Vicine</string>
-    <string name="map_view">Vista Mappa</string>
-    <string name="label_routes">VIE</string>
-    <string name="label_best_grade">GRADO MIGLIORE</string>
+    <string name="search_placeholder">Cerca zone di arrampicata…</string>
+    <string name="nearby_crags">Falesie vicine</string>
+    <string name="map_view">Vista mappa</string>
+    <string name="label_routes">Vie</string>
+    <string name="label_best_grade">Grado migliore</string>
     <string name="filter_style">Stile</string>
-    <string name="filter_grade_range">Intervallo Gradi</string>
+    <string name="filter_grade_range">Gradi</string>
     <string name="filter_distance">Distanza</string>
-    <string name="cd_view_crag">Visualizza %1$s</string>
+    <string name="cd_view_crag">Apri %1$s</string>
+    <string name="cd_crag_photo">Foto di %1$s</string>
+    <string name="sync_error_snackbar">Aggiornamento non riuscito. Mostro i dati salvati.</string>
 
-    <string name="sync_error_snackbar">Aggiornamento non riuscito. Mostro dati in cache.</string>
+    <!-- Dettaglio falesia -->
+    <string name="crag_details_title">Dettaglio falesia</string>
 
     <!-- Navigazione inferiore -->
     <string name="nav_discover">Scopri</string>
     <string name="nav_logbook">Diario</string>
-    <string name="nav_ticklist">Lista Obiettivi</string>
+    <string name="nav_ticklist">Obiettivi</string>
     <string name="nav_profile">Profilo</string>
 </resources>

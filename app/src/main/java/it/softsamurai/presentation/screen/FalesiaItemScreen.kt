@@ -1,80 +1,82 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package it.softsamurai.presentation.screen
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import it.softsamurai.R
 import it.softsamurai.core.ui.AppTheme
+import it.softsamurai.core.ui.FalesiaTheme
+import it.softsamurai.core.ui.component.FalesiaFilterChipRow
+import it.softsamurai.core.ui.component.FalesiaIconButton
+import it.softsamurai.core.ui.component.FalesiaSearchField
+import it.softsamurai.core.ui.component.FalesiaTopAppBar
+import it.softsamurai.core.ui.component.SectionHeader
+import it.softsamurai.core.ui.component.TopBarNavigation
 import it.softsamurai.domain.model.Falesia
 import it.softsamurai.domain.model.Via
 import it.softsamurai.presentation.FalesiaItemUiState
 import it.softsamurai.presentation.FalesiaItemViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
+import java.util.Locale
+import it.softsamurai.core.ui.R as CoreUiR
 
 const val TAG_PULL_TO_REFRESH = "pull_to_refresh"
+const val TAG_CRAG_CARD = "crag_card"
+
+private const val CRAG_PHOTO_ASPECT_RATIO = 16f / 9f
+private val LocationIconSize = 14.dp
+private val CardRestElevation = 1.dp
 
 @Composable
 fun DiscoverRoute(
+    onCragClick: (falesiaId: String) -> Unit,
     viewModel: FalesiaItemViewModel = hiltViewModel<FalesiaItemViewModel>(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -82,19 +84,21 @@ fun DiscoverRoute(
         uiState = uiState,
         syncErrorEvent = viewModel.syncErrorEvent,
         onRefresh = viewModel::onRefresh,
+        onCragClick = onCragClick,
     )
 }
 
+/** Discover: crag list under a sticky header with search and filters (screens/Main.dc.html). */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiscoverScreen(
     uiState: FalesiaItemUiState,
     syncErrorEvent: Flow<Unit> = emptyFlow(),
     onRefresh: () -> Unit = {},
+    onCragClick: (falesiaId: String) -> Unit = {},
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val snackbarHostState = remember { SnackbarHostState() }
     val syncErrorMessage = stringResource(R.string.sync_error_snackbar)
-    var searchQuery by remember { mutableStateOf("") }
 
     LaunchedEffect(syncErrorEvent) {
         syncErrorEvent.collect {
@@ -103,61 +107,9 @@ fun DiscoverScreen(
     }
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        containerColor = FalesiaTheme.colors.bg,
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = {
-            Column(modifier = Modifier.background(MaterialTheme.colorScheme.surface)) {
-                CenterAlignedTopAppBar(
-                    title = {
-                        Text(
-                            text = stringResource(R.string.crag_atlas),
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = {}) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_menu),
-                                contentDescription = stringResource(R.string.cd_menu),
-                                tint = MaterialTheme.colorScheme.primary,
-                            )
-                        }
-                    },
-                    scrollBehavior = scrollBehavior,
-                )
-                // Search bar
-                OutlinedTextField(
-                    value = searchQuery,
-                    onValueChange = { searchQuery = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    placeholder = {
-                        Text(
-                            stringResource(R.string.search_placeholder),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_search),
-                            contentDescription = null,
-                        )
-                    },
-                    shape = RoundedCornerShape(12.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
-                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    ),
-                    singleLine = true,
-                )
-                Spacer(Modifier.height(12.dp))
-                // Filter chips
-                FilterChipsRow()
-                Spacer(Modifier.height(4.dp))
-            }
-        },
+        topBar = { DiscoverHeader() },
     ) { innerPadding ->
         when (uiState) {
             is FalesiaItemUiState.Loading -> LoadingContent(innerPadding)
@@ -170,77 +122,72 @@ fun DiscoverScreen(
                     .padding(top = innerPadding.calculateTopPadding())
                     .testTag(TAG_PULL_TO_REFRESH),
             ) {
-                CragListContent(uiState.data, innerPadding)
+                CragListContent(uiState.data, innerPadding, onCragClick)
             }
         }
     }
 }
 
 @Composable
-private fun FilterChipsRow() {
+private fun DiscoverHeader() {
+    val spacing = FalesiaTheme.spacing
+    var searchQuery by rememberSaveable { mutableStateOf("") }
     val filters = listOf(
         stringResource(R.string.filter_style),
         stringResource(R.string.filter_grade_range),
         stringResource(R.string.filter_distance),
     )
-    var selected by remember { mutableStateOf(filters.first()) }
+    var selectedFilter by rememberSaveable { mutableStateOf<String?>(null) }
 
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp),
+    FalesiaTopAppBar(
+        title = stringResource(R.string.crag_atlas),
+        navigation = TopBarNavigation.Menu(stringResource(R.string.cd_menu)),
+        containerColor = FalesiaTheme.colors.bgGlass95,
     ) {
-        items(filters) { filter ->
-            val isSelected = filter == selected
-            FilterChip(
-                selected = isSelected,
-                onClick = { selected = filter },
-                label = { Text(filter, style = MaterialTheme.typography.labelLarge) },
-                trailingIcon = {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_expand_more),
-                        contentDescription = null,
-                        modifier = Modifier.size(FilterChipDefaults.IconSize),
-                    )
-                },
-                shape = RoundedCornerShape(12.dp),
-            )
-        }
+        FalesiaSearchField(
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
+            placeholder = stringResource(R.string.search_placeholder),
+            modifier = Modifier.padding(
+                start = spacing.space4,
+                end = spacing.space4,
+                bottom = spacing.space4
+            ),
+        )
+        // The first chip is selected until the user picks another one (design component FilterChip).
+        FalesiaFilterChipRow(
+            labels = filters,
+            selected = selectedFilter ?: filters.first(),
+            onSelect = { selectedFilter = it },
+            modifier = Modifier.padding(bottom = spacing.space4),
+        )
     }
 }
 
 @Composable
-private fun CragListContent(crags: List<Falesia>, innerPadding: PaddingValues) {
+private fun CragListContent(
+    crags: List<Falesia>,
+    innerPadding: PaddingValues,
+    onCragClick: (falesiaId: String) -> Unit,
+) {
+    val spacing = FalesiaTheme.spacing
     LazyColumn(
         contentPadding = PaddingValues(
-            top = 16.dp,
-            bottom = innerPadding.calculateBottomPadding() + 16.dp,
-            start = 16.dp,
-            end = 16.dp,
+            top = spacing.space6,
+            bottom = innerPadding.calculateBottomPadding() + spacing.space10,
+            start = spacing.space4,
+            end = spacing.space4,
         ),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(spacing.space6),
     ) {
         item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = stringResource(R.string.nearby_crags),
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f),
-                )
-                TextButton(onClick = {}) {
-                    Text(
-                        stringResource(R.string.map_view),
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.labelLarge,
-                    )
-                }
-            }
+            SectionHeader(
+                title = stringResource(R.string.nearby_crags),
+                actionLabel = stringResource(R.string.map_view),
+            )
         }
-        items(crags) { crag ->
-            CragCard(crag = crag)
+        items(crags, key = { it.id }) { crag ->
+            CragCard(crag = crag, onClick = { onCragClick(crag.id) })
         }
     }
 }
@@ -253,7 +200,7 @@ private fun LoadingContent(innerPadding: PaddingValues) {
             .padding(innerPadding),
         contentAlignment = Alignment.Center,
     ) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
     }
 }
 
@@ -262,100 +209,111 @@ private fun ErrorContent(uiState: FalesiaItemUiState.Error, innerPadding: Paddin
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(innerPadding),
+            .padding(innerPadding)
+            .padding(FalesiaTheme.spacing.space4),
         contentAlignment = Alignment.Center,
     ) {
         Text(
             text = uiState.message,
             color = MaterialTheme.colorScheme.error,
-            style = MaterialTheme.typography.bodyLarge,
+            style = FalesiaTheme.typography.body,
         )
     }
 }
 
+/**
+ * A crag in the Discover list (design component `CragCard`): 16:9 photo, name, location, two stats and the
+ * round chevron. The whole card opens the crag; the chevron is its visible affordance.
+ */
 @Composable
-fun CragCard(crag: Falesia, modifier: Modifier = Modifier) {
+fun CragCard(
+    crag: Falesia,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val colors = FalesiaTheme.colors
+    val spacing = FalesiaTheme.spacing
+    // shadow-sm only where the card is opaque (light); under the dark translucent fill it would show through.
+    val elevation = if (colors.surfaceCard.alpha == 1f) CardRestElevation else 0.dp
+
     Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        onClick = onClick,
+        modifier = modifier
+            .fillMaxWidth()
+            .testTag(TAG_CRAG_CARD),
+        shape = RoundedCornerShape(FalesiaTheme.radius.xl),
+        border = BorderStroke(FalesiaTheme.size.hairline, colors.line),
+        elevation = CardDefaults.cardElevation(defaultElevation = elevation),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            containerColor = colors.surfaceCard,
+            contentColor = colors.ink
         ),
     ) {
-        Column {
-            // Cover image
-            AsyncImage(
-                model = crag.pictureUrl,
-                contentDescription = crag.nome,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp)
-                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
-                contentScale = ContentScale.Crop,
+        AsyncImage(
+            model = crag.pictureUrl,
+            contentDescription = stringResource(R.string.cd_crag_photo, crag.nome),
+            placeholder = ColorPainter(colors.primary10),
+            error = ColorPainter(colors.primary10),
+            fallback = ColorPainter(colors.primary10),
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(CRAG_PHOTO_ASPECT_RATIO),
+            contentScale = ContentScale.Crop,
+        )
+
+        Column(modifier = Modifier.padding(spacing.space5)) {
+            Text(
+                text = crag.nome,
+                style = FalesiaTheme.typography.cardTitle,
+                color = colors.ink,
+            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(spacing.space1),
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_location_on),
+                    contentDescription = null,
+                    modifier = Modifier.size(LocationIconSize),
+                    tint = colors.inkMuted,
+                )
+                Text(
+                    text = crag.zona,
+                    style = FalesiaTheme.typography.bodySm,
+                    color = colors.inkMuted,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+
+            HorizontalDivider(
+                modifier = Modifier.padding(top = spacing.space6, bottom = spacing.space4),
+                thickness = FalesiaTheme.size.hairline,
+                color = colors.lineDivider,
             )
 
-            Column(modifier = Modifier.padding(16.dp)) {
-                // Name + location row
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Top,
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = crag.nome,
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
-                        )
-                        Spacer(Modifier.height(2.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_location_on),
-                                contentDescription = null,
-                                modifier = Modifier.size(14.dp),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                            Spacer(Modifier.width(2.dp))
-                            Text(
-                                text = crag.zona,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                    }
-                }
-
-                Spacer(Modifier.height(12.dp))
-                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                Spacer(Modifier.height(12.dp))
-
-                // Stats + action row
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(spacing.space4),
+            ) {
+                StatColumn(
+                    label = stringResource(R.string.label_routes),
+                    value = crag.numeroVie.toString(),
+                )
+                crag.vie.firstOrNull()?.let { via ->
                     StatColumn(
-                        label = stringResource(R.string.label_routes),
-                        value = crag.numeroVie.toString(),
+                        label = stringResource(R.string.label_best_grade),
+                        value = via.grado,
                     )
-                    crag.vie.firstOrNull()?.let { via ->
-                        Spacer(Modifier.width(24.dp))
-                        StatColumn(
-                            label = stringResource(R.string.label_best_grade),
-                            value = via.grado,
-                        )
-                    }
-                    Spacer(Modifier.weight(1f))
-                    FilledIconButton(
-                        onClick = {},
-                        modifier = Modifier.size(40.dp),
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_arrow_forward),
-                            contentDescription = stringResource(R.string.cd_view_crag, crag.nome),
-                        )
-                    }
+                }
+                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
+                    FalesiaIconButton(
+                        icon = CoreUiR.drawable.ic_chevron_right,
+                        contentDescription = stringResource(R.string.cd_view_crag, crag.nome),
+                        onClick = onClick,
+                        filled = true,
+                    )
                 }
             }
         }
@@ -366,15 +324,14 @@ fun CragCard(crag: Falesia, modifier: Modifier = Modifier) {
 private fun StatColumn(label: String, value: String) {
     Column {
         Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontWeight = FontWeight.Bold,
+            text = label.uppercase(Locale.getDefault()),
+            style = FalesiaTheme.typography.label,
+            color = FalesiaTheme.colors.inkMuted,
         )
         Text(
             text = value,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
+            style = FalesiaTheme.typography.stat,
+            color = FalesiaTheme.colors.ink,
         )
     }
 }
@@ -383,8 +340,9 @@ private fun StatColumn(label: String, value: String) {
 @Composable
 fun FalesiaItemRoute(
     modifier: Modifier = Modifier,
+    onCragClick: (falesiaId: String) -> Unit = {},
     viewModel: FalesiaItemViewModel = hiltViewModel(),
-) = DiscoverRoute(viewModel)
+) = DiscoverRoute(onCragClick, viewModel)
 
 // ──────────────────────── Previews ────────────────────────
 
@@ -430,7 +388,7 @@ private val previewCrags = listOf(
     ),
 )
 
-@Preview(name = "Loading — phone", showBackground = true, device = Devices.PHONE)
+@PreviewLightDark
 @Composable
 private fun DiscoverScreenLoadingPreview() {
     AppTheme {
@@ -438,7 +396,7 @@ private fun DiscoverScreenLoadingPreview() {
     }
 }
 
-@Preview(name = "Error — phone", showBackground = true, device = Devices.PHONE)
+@PreviewLightDark
 @Composable
 private fun DiscoverScreenErrorPreview() {
     AppTheme {
@@ -446,7 +404,7 @@ private fun DiscoverScreenErrorPreview() {
     }
 }
 
-@Preview(name = "Success — phone", showBackground = true, device = Devices.PHONE)
+@PreviewLightDark
 @Composable
 private fun DiscoverScreenSuccessPreview() {
     AppTheme {
@@ -463,19 +421,11 @@ private fun DiscoverScreenRefreshingPreview() {
 }
 
 @Preview(
-    name = "Success — dark theme",
+    name = "Success — tablet, dark",
     showBackground = true,
-    device = Devices.PHONE,
+    device = Devices.TABLET,
     uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
-@Composable
-private fun DiscoverScreenDarkPreview() {
-    AppTheme {
-        DiscoverScreen(uiState = FalesiaItemUiState.Success(previewCrags))
-    }
-}
-
-@Preview(name = "Success — tablet", showBackground = true, device = Devices.TABLET)
 @Composable
 private fun DiscoverScreenTabletPreview() {
     AppTheme {
@@ -491,49 +441,25 @@ private fun DiscoverScreenLargeFontPreview() {
     }
 }
 
-@Preview(name = "CragCard — no vie", showBackground = true)
+@PreviewLightDark
 @Composable
 private fun CragCardNoViePreview() {
     AppTheme {
         CragCard(
-            crag = Falesia(
-                id = "arco",
-                nome = "Arco",
-                zona = "Trentino-Alto Adige",
-                pictureUrl = null,
-                latitude = 45.92,
-                longitude = 10.88,
-                numeroVie = 0,
-                linkDettagli = "https://example.com/arco",
-                vie = emptyList(),
-                lastUpdated = 0L,
-            ),
+            crag = previewCrags.last(),
+            onClick = {},
             modifier = Modifier.padding(16.dp),
         )
     }
 }
 
-@Preview(name = "CragCard — with grade", showBackground = true)
+@PreviewLightDark
 @Composable
 private fun CragCardWithGradePreview() {
     AppTheme {
         CragCard(
             crag = previewCrags.first(),
-            modifier = Modifier.padding(16.dp),
-        )
-    }
-}
-
-@Preview(
-    name = "CragCard — dark theme",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-)
-@Composable
-private fun CragCardDarkPreview() {
-    AppTheme {
-        CragCard(
-            crag = previewCrags.first(),
+            onClick = {},
             modifier = Modifier.padding(16.dp),
         )
     }

@@ -3,6 +3,7 @@ package it.softsamurai.presentation
 import app.cash.turbine.test
 import arrow.core.Either
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import it.softsamurai.domain.error.SyncError
 import it.softsamurai.domain.model.Falesia
@@ -12,6 +13,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -35,7 +37,7 @@ class FalesiaItemViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        getAllFalesie = mockk { every { invoke() } returns falesieFlow }
+        getAllFalesie = mockk<GetAllFalesieUseCase>().also { every { it() } returns falesieFlow }
         syncCrags = mockk()
         viewModel = FalesiaItemViewModel(getAllFalesie, syncCrags)
     }
@@ -72,8 +74,8 @@ class FalesiaItemViewModelTest {
         falesieFlow.emit(listOf(fakeFalesia("1")))
 
         viewModel.uiState.test {
-            awaitItem() // Loading
-            awaitItem() // Success(isRefreshing=false)
+            // The StateFlow conflates: Loading may already be replaced by Success when collection starts.
+            if (awaitItem() is FalesiaItemUiState.Loading) awaitItem() // Success(isRefreshing=false)
 
             viewModel.onRefresh()
 
@@ -93,6 +95,8 @@ class FalesiaItemViewModelTest {
     fun `onRefresh emits syncErrorEvent and resets isRefreshing on sync failure`() = runTest {
         coEvery { syncCrags() } returns Either.Left(SyncError.NetworkFailure(RuntimeException("timeout")))
         falesieFlow.emit(listOf(fakeFalesia("1")))
+        // uiState is WhileSubscribed: keep a subscriber so it reflects the data.
+        backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
 
         viewModel.syncErrorEvent.test {
             viewModel.onRefresh()

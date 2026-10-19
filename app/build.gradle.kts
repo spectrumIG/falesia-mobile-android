@@ -125,6 +125,7 @@ dependencies {
 
     // Core Android dependencies
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
 
@@ -185,6 +186,7 @@ dependencies {
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)
     // Instrumented tests
+    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 

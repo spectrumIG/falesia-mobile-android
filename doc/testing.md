@@ -8,8 +8,14 @@
   - **Domain**: use cases (e.g. `CheckDbFreshnessUseCaseTest`, `SyncCragsUseCaseTest`).
   - **Data**: repository (`FalesiaRepositoryImplTest`), mappers (`FalesiaMapperTest`), scraping/parsing helpers
     (`ResolveImageUrlTest`; add HTML fixture tests for selectors, see [scraping.md](scraping.md)).
-  - **Presentation**: ViewModels (`FalesiaItemViewModelTest`), navigation config (`NavigationConfigTest`).
-  - **UI**: `DiscoverScreenTest`, `NavigationTest` (instrumented).
+  - **Presentation**: ViewModels (`FalesiaItemViewModelTest`), navigation config
+    (`NavigationConfigTest`), back stack rules (`TopLevelNavigationTest`).
+  - **Resources**: EN/IT string parity (`StringResourcesParityTest`, reads `src/main/res` from the
+    module dir).
+  - **Theme** (`:core-ui`): design tokens in code match `tokens.json` (`ThemeTokensTest`).
+  - **UI**: `DiscoverScreenTest`, `NavigationTest`, `PlaceholderScreenTest` (instrumented). Read
+    expected texts from resources (`context.getString`), never hardcode them: tests must pass in
+    every device locale. Cover light and dark (`AppTheme(darkTheme = …)`) where it matters.
 - Cover both `Right` and `Left` paths of every `Either`.
 
 ## Tooling & style
@@ -22,7 +28,8 @@
 
 ## Commands
 ```bash
-./gradlew :app:testDebugUnitTest            # unit tests
-./gradlew :app:connectedDebugAndroidTest    # instrumented tests (device/emulator required)
+./gradlew :core-ui:testDebugUnitTest :app:testDebugUnitTest   # unit tests
+./gradlew :app:connectedDebugAndroidTest                       # instrumented tests (device/emulator required)
 ```
-Known issue: the instrumented runner class is missing, see [known-issues.md](known-issues.md).
+
+Instrumented tests run on `it.softsamurai.core.testing.HiltTestRunner` (`app/src/androidTest`).

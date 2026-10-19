@@ -1,27 +1,24 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package it.softsamurai.presentation.screen
 
-import android.content.res.Configuration
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import it.softsamurai.R
+import it.softsamurai.core.ui.AppTheme
+import it.softsamurai.core.ui.FalesiaTheme
+import it.softsamurai.core.ui.component.FalesiaTopAppBar
+import it.softsamurai.core.ui.component.TopBarNavigation
 
+/** App-name top bar for top-level screens, built on the design system's [FalesiaTopAppBar]. */
 @Composable
 fun MainAppBar(modifier: Modifier = Modifier) {
-    CenterAlignedTopAppBar(
-        title = { HomeMainTitle() },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-        ),
-        scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(),
+    FalesiaTopAppBar(
+        title = stringResource(R.string.home_title_lbl),
+        navigation = TopBarNavigation.Menu(stringResource(R.string.cd_menu)),
+        modifier = modifier,
     )
 }
 
@@ -29,28 +26,18 @@ fun MainAppBar(modifier: Modifier = Modifier) {
 internal fun HomeMainTitle(modifier: Modifier = Modifier) {
     Text(
         text = stringResource(R.string.home_title_lbl),
-        style = MaterialTheme.typography.headlineLarge,
+        style = FalesiaTheme.typography.screenTitle,
+        color = FalesiaTheme.colors.ink,
+        modifier = modifier,
     )
 }
 
 // ──────────────────────── Previews ────────────────────────
 
-@Preview(name = "AppBar — light", showBackground = true)
+@PreviewLightDark
 @Composable
-private fun MainAppBarLightPreview() {
-    MaterialTheme {
-        MainAppBar()
-    }
-}
-
-@Preview(
-    name = "AppBar — dark theme",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-)
-@Composable
-private fun MainAppBarDarkPreview() {
-    MaterialTheme {
+private fun MainAppBarPreview() {
+    AppTheme {
         MainAppBar()
     }
 }
@@ -58,7 +45,7 @@ private fun MainAppBarDarkPreview() {
 @Preview(name = "AppBar — large font", showBackground = true, fontScale = 1.5f)
 @Composable
 private fun MainAppBarLargeFontPreview() {
-    MaterialTheme {
+    AppTheme {
         MainAppBar()
     }
 }
@@ -66,7 +53,7 @@ private fun MainAppBarLargeFontPreview() {
 @Preview(name = "HomeMainTitle — standalone", showBackground = true)
 @Composable
 private fun HomeMainTitlePreview() {
-    MaterialTheme {
+    AppTheme {
         HomeMainTitle()
     }
 }

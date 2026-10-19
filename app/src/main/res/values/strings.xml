@@ -1,22 +1,29 @@
-
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">FalesiaMobile</string>
+    <string name="app_name">Falesia Mobile</string>
     <string name="home_title_lbl">Falesia Mobile</string>
+
+    <!-- Common -->
+    <string name="cd_menu">Menu</string>
+    <string name="cd_back">Back</string>
+    <string name="placeholder_coming_soon">Coming soon</string>
 
     <!-- Discover screen -->
     <string name="crag_atlas">Crag Atlas</string>
-    <string name="cd_menu">Menu</string>
     <string name="search_placeholder">Search climbing areas…</string>
     <string name="nearby_crags">Nearby Crags</string>
     <string name="map_view">Map View</string>
-    <string name="label_routes">ROUTES</string>
-    <string name="label_best_grade">BEST GRADE</string>
+    <string name="label_routes">Routes</string>
+    <string name="label_best_grade">Best grade</string>
     <string name="filter_style">Style</string>
     <string name="filter_grade_range">Grade Range</string>
     <string name="filter_distance">Distance</string>
-    <string name="cd_view_crag">View %1$s</string>
+    <string name="cd_view_crag">Open %1$s</string>
+    <string name="cd_crag_photo">Photo of %1$s</string>
+    <string name="sync_error_snackbar">Couldn\'t refresh. Showing saved data.</string>
 
-    <string name="sync_error_snackbar">Couldn\'t refresh. Showing cached data.</string>
+    <!-- Crag details -->
+    <string name="crag_details_title">Crag Details</string>
 
     <!-- Bottom navigation -->
     <string name="nav_discover">Discover</string>

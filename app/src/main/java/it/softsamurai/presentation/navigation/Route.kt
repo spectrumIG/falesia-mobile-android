@@ -3,17 +3,39 @@ package it.softsamurai.presentation.navigation
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
+/**
+ * Navigation 3 destinations. Top-level destinations (bottom bar tabs) are objects; detail destinations are
+ * data classes carrying the id of what they show, so the back stack is typed and saveable.
+ */
 @Serializable
-sealed interface AppRoute: NavKey {
-    @Serializable
-    data object Discover : AppRoute
+sealed interface AppRoute : NavKey {
+
+    /** The bottom bar tab that stays selected while this route is on screen. */
+    val topLevel: AppRoute
 
     @Serializable
-    data object Logbook : AppRoute
+    data object Discover : AppRoute {
+        override val topLevel: AppRoute get() = this
+    }
 
     @Serializable
-    data object Ticklist : AppRoute
+    data object Logbook : AppRoute {
+        override val topLevel: AppRoute get() = this
+    }
 
     @Serializable
-    data object Profile : AppRoute
+    data object Ticklist : AppRoute {
+        override val topLevel: AppRoute get() = this
+    }
+
+    @Serializable
+    data object Profile : AppRoute {
+        override val topLevel: AppRoute get() = this
+    }
+
+    /** Details of one crag, reached from Discover; [falesiaId] is `Falesia.id`. */
+    @Serializable
+    data class CragDetails(val falesiaId: String) : AppRoute {
+        override val topLevel: AppRoute get() = Discover
+    }
 }
