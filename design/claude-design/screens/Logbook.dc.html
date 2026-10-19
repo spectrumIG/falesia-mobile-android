@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Logbook</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="../design-system/tokens.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;900&amp;family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&amp;display=swap">
+<style>
+body{margin:0}
+button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer}
+h1,h2,h3,h4,p{margin:0}
+.ms{font-family:'Material Symbols Outlined';font-weight:400;font-style:normal;font-size:24px;line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap;direction:ltr;display:inline-block;font-feature-settings:'liga';-webkit-font-smoothing:antialiased;font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+.fill{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+.tile-stat{background:var(--primary-5)}
+[data-theme="light"] .tile-stat{background:var(--primary-10)}
+a{color:var(--primary)}a:hover{color:var(--primary)}
+</style>
+</helmet>
+<div data-theme="{{theme}}" style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; position: relative; overflow: hidden; background: var(--bg); color: var(--ink); font-family: 'Lexend', sans-serif">
+<header style="position: sticky; top: 0; z-index: 20; padding: 16px; background: var(--bg-glass-80); backdrop-filter: blur(12px); border-bottom: 1px solid var(--primary-10)">
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px">
+<button aria-label="Menu" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-full); color: var(--ink-secondary)"><span class="ms" aria-hidden="true">menu</span></button>
+<h1 style="font-size: 20px; line-height: 28px; font-weight: 700; letter-spacing: -0.025em">My Logbook</h1>
+<button aria-label="Filter" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-full); color: var(--ink-secondary)"><span class="ms" aria-hidden="true">tune</span></button>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+<div class="tile-stat" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px; border-radius: var(--radius-xl); border: 1px solid var(--primary-20); text-align: center"><span style="margin-bottom: 4px; color: var(--primary); font-size: 12px; line-height: 16px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em">Sends</span><span style="font-size: 24px; line-height: 32px; font-weight: 700">128</span></div>
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px; border-radius: var(--radius-xl); background: var(--primary); text-align: center; box-shadow: var(--shadow-primary)"><span style="margin-bottom: 4px; color: var(--on-primary); font-size: 12px; line-height: 16px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em">Hardest</span><span style="color: var(--on-primary); font-size: 24px; line-height: 32px; font-weight: 700">7c+</span></div>
+<div class="tile-stat" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px; border-radius: var(--radius-xl); border: 1px solid var(--primary-20); text-align: center"><span style="margin-bottom: 4px; color: var(--primary); font-size: 12px; line-height: 16px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em">Days</span><span style="font-size: 24px; line-height: 32px; font-weight: 700">42</span></div>
+</div>
+</header>
+<main style="flex: 1; padding: 24px 16px 128px; display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<h2 style="font-size: 18px; line-height: 28px; font-weight: 600">Recent Activity</h2>
+<a href="#" style="color: var(--primary); text-decoration: none; font-size: 14px; line-height: 20px; font-weight: 500">View All</a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<article style="padding: 16px; border-radius: var(--radius-xl); background: var(--surface-card-neutral); border: 1px solid var(--line-neutral); box-shadow: var(--shadow-sm)">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px">
+<div style="display: flex; gap: 12px">
+<img src="images/log-moonlight-buttress.jpg" alt="Limestone climbing route" style="display: block; width: 48px; height: 48px; flex-shrink: 0; border-radius: var(--radius-lg); border: 1px solid var(--line-neutral); object-fit: cover; box-sizing: border-box">
+<div><h3 style="font-size: 16px; line-height: 24px; font-weight: 700">Moonlight Buttress</h3><p style="display: flex; align-items: center; gap: 4px; color: var(--ink-muted); font-size: 12px; line-height: 16px"><span class="ms" aria-hidden="true" style="font-size: 14px">location_on</span>Zion National Park, UT</p></div>
+</div>
+<div style="text-align: right"><span style="color: var(--primary); font-size: 18px; line-height: 28px; font-weight: 700">5.12d</span><p style="color: var(--ink-faint); font-size: 10px; line-height: 15px; font-weight: 700; text-transform: uppercase">Trad</p></div>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line-neutral-divider)">
+<div style="display: flex; gap: 8px"><span style="padding: 4px 8px; border-radius: var(--radius); background: var(--success-soft); color: var(--success); font-size: 10px; line-height: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.025em">Flash</span><span style="padding: 4px 8px; border-radius: var(--radius); background: var(--primary-10); color: var(--primary); font-size: 10px; line-height: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.025em">Multi-pitch</span></div>
+<span style="color: var(--ink-faint); font-size: 12px; line-height: 16px">Oct 24, 2023</span>
+</div>
+</article>
+<article style="padding: 16px; border-radius: var(--radius-xl); background: var(--surface-card-neutral); border: 1px solid var(--line-neutral); box-shadow: var(--shadow-sm)">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px">
+<div style="display: flex; gap: 12px">
+<img src="images/log-midnight-lightning.jpg" alt="Climber on a granite boulder problem" style="display: block; width: 48px; height: 48px; flex-shrink: 0; border-radius: var(--radius-lg); border: 1px solid var(--line-neutral); object-fit: cover; box-sizing: border-box">
+<div><h3 style="font-size: 16px; line-height: 24px; font-weight: 700">Midnight Lightning</h3><p style="display: flex; align-items: center; gap: 4px; color: var(--ink-muted); font-size: 12px; line-height: 16px"><span class="ms" aria-hidden="true" style="font-size: 14px">location_on</span>Yosemite Valley, CA</p></div>
+</div>
+<div style="text-align: right"><span style="color: var(--primary); font-size: 18px; line-height: 28px; font-weight: 700">V8</span><p style="color: var(--ink-faint); font-size: 10px; line-height: 15px; font-weight: 700; text-transform: uppercase">Bouldering</p></div>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line-neutral-divider)">
+<div style="display: flex; gap: 8px"><span style="padding: 4px 8px; border-radius: var(--radius); background: var(--info-soft); color: var(--info); font-size: 10px; line-height: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.025em">Redpoint</span></div>
+<span style="color: var(--ink-faint); font-size: 12px; line-height: 16px">Oct 20, 2023</span>
+</div>
+</article>
+<article style="padding: 16px; border-radius: var(--radius-xl); background: var(--surface-card-neutral); border: 1px solid var(--line-neutral); box-shadow: var(--shadow-sm); opacity: 0.8">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px">
+<div style="display: flex; gap: 12px">
+<img src="images/log-to-bolt-or-not.jpg" alt="Steep overhanging sport climbing wall" style="display: block; width: 48px; height: 48px; flex-shrink: 0; border-radius: var(--radius-lg); border: 1px solid var(--line-neutral); object-fit: cover; box-sizing: border-box">
+<div><h3 style="font-size: 16px; line-height: 24px; font-weight: 700">To Bolt or Not to Be</h3><p style="display: flex; align-items: center; gap: 4px; color: var(--ink-muted); font-size: 12px; line-height: 16px"><span class="ms" aria-hidden="true" style="font-size: 14px">location_on</span>Smith Rock, OR</p></div>
+</div>
+<div style="text-align: right"><span style="color: var(--primary); font-size: 18px; line-height: 28px; font-weight: 700">5.14a</span><p style="color: var(--ink-faint); font-size: 10px; line-height: 15px; font-weight: 700; text-transform: uppercase">Sport</p></div>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line-neutral-divider)">
+<div style="display: flex; gap: 8px"><span style="padding: 4px 8px; border-radius: var(--radius); background: var(--special-soft); color: var(--special); font-size: 10px; line-height: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.025em">Onsight</span></div>
+<span style="color: var(--ink-faint); font-size: 12px; line-height: 16px">Oct 15, 2023</span>
+</div>
+</article>
+</div>
+</main>
+<button aria-label="Log ascent" style="position: absolute; right: 24px; bottom: 96px; z-index: 30; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-xl); background: var(--primary); color: var(--on-primary); box-shadow: var(--shadow-xl)"><span class="ms" aria-hidden="true" style="font-size: 30px; font-weight: 700">add</span></button>
+<nav aria-label="Main" style="position: absolute; left: 0; right: 0; bottom: 0; z-index: 40; background: var(--bg); border-top: 1px solid var(--primary-10); padding: 8px 16px 24px">
+<div style="display: flex; justify-content: space-between; max-width: 448px; margin: 0 auto">
+<a href="#" style="display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 64px; color: var(--nav-inactive); text-decoration: none; font-size: 12px; line-height: 16px; font-weight: 500"><span class="ms" aria-hidden="true">explore</span>Discover</a>
+<a href="#" aria-current="page" style="display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 64px; color: var(--primary); text-decoration: none; font-size: 12px; line-height: 16px; font-weight: 600"><span class="ms fill" aria-hidden="true">menu_book</span>Logbook</a>
+<a href="#" style="display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 64px; color: var(--nav-inactive); text-decoration: none; font-size: 12px; line-height: 16px; font-weight: 500"><span class="ms" aria-hidden="true">check_circle</span>Ticklist</a>
+<a href="#" style="display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 64px; color: var(--nav-inactive); text-decoration: none; font-size: 12px; line-height: 16px; font-weight: 500"><span class="ms" aria-hidden="true">person</span>Profile</a>
+</div>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { theme: this.props.theme ?? 'dark' };
+  }
+}
+</script>
+</body>
+</html>

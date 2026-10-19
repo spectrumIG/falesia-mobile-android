@@ -1,0 +1,53 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Falesia Mobile</title>
+<style>
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--font-display); overflow: hidden; }
+  .cover { position: relative; height: 288px; overflow: hidden; }
+  .art { position: absolute; top: 0; left: 480px; width: 480px; height: 288px; overflow: hidden; }
+  .art svg { display: block; width: 520px; height: 288px; }
+  .brand { fill: var(--primary); }
+  .mid { fill: var(--primary-40); }
+  .tint { fill: var(--primary-20); }
+  .faint { fill: var(--primary-10); }
+  .blk { rx: var(--radius-xl); }
+  .pill { rx: var(--radius-lg); }
+  .route { fill: none; stroke: var(--on-primary); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+  .dot { fill: var(--on-primary); }
+  .crux { fill: var(--overlay-strong); rx: 12px; }
+  .words { position: absolute; left: var(--space-6); bottom: var(--space-6); max-width: 440px; }
+  .name { margin: 0; font-size: 96px; line-height: .95; font-weight: 700; letter-spacing: -0.025em; color: var(--ink); }
+  .tag { margin: var(--space-2) 0 0 4px; font-size: 14px; line-height: 20px; color: var(--ink-muted); }
+</style>
+</head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 520 288" width="520" height="288">
+<!--
+  blocks      primary 192×288 slab bled off the top (the brand orange, largest) · primary-40 152×192 · primary-20 152×144 bleeding off the right · primary-10 56×32 pill once — about 30% of 960×288
+  arrangement one tall primary slab with satellites stepping down to the right, bottoms on one line space-6 above the edge, space-4 gutters
+  pattern     the topo line from "The topo draws the line in primary, 6 units wide … with round caps and dots at both ends": one route zig-zag cut into the slab in on-primary, with its crux pill
+  scales      sides in space-6 multiples; gutters space-4; corners radius-xl, pill radius-lg, crux 12 as in the topo
+-->
+<rect class="brand blk" x="16" y="-24" width="192" height="288" rx="24"/>
+<rect class="mid blk" x="224" y="72" width="152" height="192" rx="24"/>
+<rect class="tint blk" x="392" y="120" width="152" height="144" rx="24"/>
+<rect class="faint pill" x="224" y="24" width="56" height="32" rx="16"/>
+<polyline class="route" points="116,240 108,196 84,160 128,108 96,56 108,16"/>
+<circle class="dot" cx="116" cy="240" r="8"/>
+<circle class="dot" cx="108" cy="16" r="8"/>
+<rect class="crux" x="136" y="96" width="56" height="24" rx="12"/>
+</svg>
+</div>
+<div class="words">
+<h1 class="name">Falesia Mobile</h1>
+<p class="tag">Crags and routes, readable offline.</p>
+</div>
+</div>
+</body>
+</html>
