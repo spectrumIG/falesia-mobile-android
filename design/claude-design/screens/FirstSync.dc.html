@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>First download</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="../design-system/tokens.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;900&amp;family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&amp;display=swap">
+<style>
+body{margin:0}
+button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer}
+h1,h2,h3,h4,p{margin:0}
+.ms{font-family:'Material Symbols Outlined';font-weight:400;font-style:normal;font-size:24px;line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap;direction:ltr;display:inline-block;font-feature-settings:'liga';-webkit-font-smoothing:antialiased;font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+.fill{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+a{color:var(--primary)}a:hover{color:var(--primary)}
+</style>
+</helmet>
+<div data-theme="{{theme}}" style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; position: relative; overflow: hidden; background: var(--bg); color: var(--ink); font-family: 'Lexend', sans-serif">
+<div style="display: flex; align-items: center; height: 56px; padding: 8px 24px 0">
+<p style="color: var(--primary); font-size: 12px; line-height: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em">Crag Atlas</p>
+</div>
+<div style="display: flex; justify-content: center; padding: 24px 0 32px">
+<img src="images/tour-welcome.png" alt="Climber silhouetted against a sunset on a rock face" style="display: block; width: 168px; height: 168px; border-radius: var(--radius-full); box-shadow: var(--shadow-2xl)">
+</div>
+<div style="padding: 0 24px; display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h1 style="font-size: 28px; line-height: 34px; font-weight: 700; letter-spacing: -0.025em">Downloading crags</h1>
+<p style="color: var(--ink-body); font-size: 16px; line-height: 26px">This happens only once. You can leave the app: the download goes on in the background.</p>
+</div>
+<div style="padding: 16px; border-radius: var(--radius-xl); background: var(--surface-card); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div role="progressbar" aria-label="Download progress" aria-valuemin="0" aria-valuemax="110" aria-valuenow="37" style="height: 8px; border-radius: var(--radius-full); background: var(--primary-10); overflow: hidden"><div style="width: 34%; height: 100%; border-radius: var(--radius-full); background: var(--primary)"></div></div>
+<div style="display: flex; justify-content: space-between; color: var(--ink-muted); font-size: 12px; line-height: 16px; font-weight: 500"><span>37 of 110 crags</span><span>34%</span></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 12px; padding-top: 16px; border-top: 1px solid var(--line-divider)">
+<div style="display: flex; align-items: center; gap: 12px"><span class="ms fill" aria-hidden="true" style="color: var(--success)">check_circle</span><span style="flex: 1; font-size: 14px; line-height: 20px; font-weight: 500">Crag list</span><span style="color: var(--ink-muted); font-size: 12px; line-height: 16px">Done</span></div>
+<div style="display: flex; align-items: center; gap: 12px"><span class="ms" aria-hidden="true" style="color: var(--primary)">downloading</span><span style="flex: 1; font-size: 14px; line-height: 20px; font-weight: 600">Crags and routes</span><span style="color: var(--primary); font-size: 12px; line-height: 16px; font-weight: 600">37 / 110</span></div>
+<div style="display: flex; align-items: center; gap: 12px"><span class="ms" aria-hidden="true" style="color: var(--ink-faint)">radio_button_unchecked</span><span style="flex: 1; color: var(--ink-muted); font-size: 14px; line-height: 20px; font-weight: 500">Ready offline</span></div>
+</div>
+</div>
+<div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border-radius: var(--radius-xl); background: var(--note); border: 1px solid var(--note-line)">
+<span class="ms" aria-hidden="true" style="font-size: 20px; color: var(--ink-muted)">signal_cellular_alt</span>
+<p style="color: var(--ink-muted); font-size: 12px; line-height: 18px">Not on Wi-Fi? The download uses your mobile data. It needs a connection only this first time: after that, everything works offline.</p>
+</div>
+</div>
+<div style="margin-top: auto; padding: 24px 24px 40px">
+<a href="Main.dc.html" style="height: 48px; display: flex; align-items: center; justify-content: center; gap: 8px; border-radius: var(--radius-xl); background: var(--button-secondary); color: var(--ink); text-decoration: none; font-size: 16px; line-height: 24px; font-weight: 700">Continue in the background</a>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { theme: this.props.theme ?? 'dark' };
+  }
+}
+</script>
+</body>
+</html>

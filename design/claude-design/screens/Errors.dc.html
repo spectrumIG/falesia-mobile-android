@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Errors and feedback</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="../design-system/tokens.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;900&amp;family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&amp;display=swap">
+<style>
+body{margin:0}
+button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer}
+h1,h2,h3,h4,p{margin:0}
+.ms{font-family:'Material Symbols Outlined';font-weight:400;font-style:normal;font-size:24px;line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap;direction:ltr;display:inline-block;font-feature-settings:'liga';-webkit-font-smoothing:antialiased;font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+.fill{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+a{color:var(--primary)}a:hover{color:var(--primary)}
+
+.fm-snackbar{box-sizing:border-box;display:flex;align-items:center;gap:12px;min-height:48px;padding:12px 8px 12px 16px;border-radius:var(--radius-lg);background:var(--inverse-surface);color:var(--on-inverse);box-shadow:var(--shadow-lg);font-size:14px;line-height:20px}
+.fm-snackbar .ms{font-size:20px;flex-shrink:0}
+.fm-snackbar-text{flex:1;min-width:0}
+.fm-snackbar-action{flex-shrink:0;padding:8px 12px;border-radius:var(--radius-full);color:var(--inverse-primary);font-size:14px;line-height:20px;font-weight:700}
+.fm-snackbar-success .ms{color:var(--inverse-success)}
+.fm-snackbar-error .ms{color:var(--inverse-danger)}
+.fm-snackbar-info .ms{color:var(--inverse-info)}
+.fm-banner{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-radius:var(--radius-xl);background:var(--note);border:1px solid var(--note-line);font-size:14px;line-height:20px}
+.fm-banner>.ms{font-size:20px;color:var(--ink-muted);flex-shrink:0}
+.fm-banner-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.fm-banner-title{font-weight:600}
+.fm-banner-text{color:var(--ink-muted);font-size:12px;line-height:16px}
+.fm-banner-action{align-self:center;flex-shrink:0;padding:6px 10px;border-radius:var(--radius-full);color:var(--ink);font-size:13px;line-height:18px;font-weight:700;text-decoration:underline}
+.fm-banner-warning{background:var(--primary-10);border-color:var(--primary-20)}
+.fm-banner-warning>.ms{color:var(--primary)}
+.fm-banner-error{background:var(--danger-soft);border-color:var(--danger-line)}
+.fm-banner-error>.ms{color:var(--danger)}
+.fm-state{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding:24px 16px}
+.fm-state-icon{width:72px;height:72px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;background:var(--primary-10);color:var(--primary)}
+.fm-state-icon .ms{font-size:36px}
+.fm-state-error .fm-state-icon{background:var(--danger-soft);color:var(--danger)}
+.fm-state-title{font-size:20px;line-height:28px;font-weight:700}
+.fm-state-text{max-width:300px;color:var(--ink-body);font-size:14px;line-height:22px}
+.fm-state-actions{display:flex;flex-direction:column;align-items:stretch;gap:8px;width:100%;max-width:280px;margin-top:8px}
+.fm-progress{height:8px;border-radius:var(--radius-full);background:var(--primary-10);overflow:hidden}
+.fm-progress-fill{height:100%;border-radius:var(--radius-full);background:var(--primary)}
+.fm-progress-meta{display:flex;justify-content:space-between;color:var(--ink-muted);font-size:12px;line-height:16px;font-weight:500}
+.btn{height:44px;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:var(--radius-xl);font-size:14px;line-height:20px;font-weight:700}
+.btn .ms{font-size:20px}
+.btn-primary{background:var(--primary);color:var(--on-primary)}
+.btn-secondary{background:var(--button-secondary);color:var(--ink)}
+.btn-text{color:var(--ink-muted)}
+.btn-disabled{background:var(--button-secondary);color:var(--ink-faint);opacity:.6}
+
+.sec{display:flex;flex-direction:column;gap:24px}
+.sec-head{display:flex;flex-direction:column;gap:4px}
+.sec-over{color:var(--primary);font-size:12px;line-height:16px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.sec-title{font-size:24px;line-height:32px;font-weight:700;letter-spacing:-.025em}
+.sec-desc{color:var(--ink-muted);font-size:14px;line-height:20px;max-width:760px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:start}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;align-items:start}
+.card{box-sizing:border-box;background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-xl);padding:20px;display:flex;flex-direction:column;gap:12px}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.card-name{font-size:16px;line-height:24px;font-weight:700}
+.chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:var(--radius-full);font-size:11px;line-height:16px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink);white-space:nowrap}
+.chip:before{content:'';width:6px;height:6px;border-radius:9999px}
+.chip-exists{background:var(--success-soft)}
+.chip-exists:before{background:var(--success)}
+.chip-new{background:var(--primary-10)}
+.chip-new:before{background:var(--primary)}
+.when{color:var(--ink-body);font-size:13px;line-height:20px}
+.code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11.5px;line-height:17px;color:var(--ink-muted);background:var(--note);border:1px solid var(--note-line);border-radius:8px;padding:6px 8px;word-break:break-word}
+.spec{box-sizing:border-box;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-lg);padding:16px;margin-top:4px}
+.phone{box-sizing:border-box;height:452px;display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--line);border-radius:24px;overflow:hidden;margin-top:4px}
+.phone-bar{display:flex;align-items:center;gap:8px;height:48px;padding:0 12px;border-bottom:1px solid var(--line-divider);font-size:16px;line-height:24px;font-weight:700}
+.phone-bar .ms{font-size:22px;color:var(--ink-muted)}
+.phone-body{flex:1;display:flex;align-items:center;justify-content:center}
+.rule{box-sizing:border-box;background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-xl);padding:20px;display:flex;flex-direction:column;gap:8px}
+.rule-title{display:flex;align-items:center;gap:8px;font-size:16px;line-height:24px;font-weight:700}
+.rule-title .ms{color:var(--primary)}
+.rule p{color:var(--ink-body);font-size:13px;line-height:20px}
+.sk{background:var(--chip);border-radius:6px}
+</style>
+</helmet>
+<div data-theme="{{theme}}" style="width: 1280px; height: 3500px; box-sizing: border-box; padding: 56px; display: flex; flex-direction: column; gap: 64px; overflow: hidden; background: var(--bg); color: var(--ink); font-family: 'Lexend', sans-serif">
+
+<header style="display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<p class="sec-over">Crag Atlas · Feedback</p>
+<h1 style="font-size: 40px; line-height: 48px; font-weight: 700; letter-spacing: -0.025em">Errors &amp; feedback</h1>
+<p style="color: var(--ink-body); font-size: 16px; line-height: 26px; max-width: 820px">Every message the app can show when something goes wrong, is slow or is empty. The app is offline-first: a failed refresh never hides the saved data, it only tells the user the data could be older. Each card says when it appears and what in the code triggers it.</p>
+</div>
+<div class="grid3">
+<div class="rule"><p class="rule-title"><span class="ms" aria-hidden="true">chat_bubble</span>Snackbar</p><p>The one-shot result of something the user did. Disappears by itself, at most one action, never stacks.</p></div>
+<div class="rule"><p class="rule-title"><span class="ms" aria-hidden="true">info</span>Banner</p><p>A lasting condition, like being offline or data that is old. Stays at the top of the list until the condition ends.</p></div>
+<div class="rule"><p class="rule-title"><span class="ms" aria-hidden="true">crop_free</span>State panel</p><p>There is nothing to show. Replaces the content, says why in plain words and offers the way out.</p></div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px; color: var(--ink-muted); font-size: 13px; line-height: 20px">
+<span class="chip chip-exists">Exists</span><span>in the app today (maybe restyled)</span>
+<span class="chip chip-new" style="margin-left: 16px">New</span><span>proposed, needs code</span>
+</div>
+</header>
+
+<section class="sec">
+<div class="sec-head"><p class="sec-over">01</p><h2 class="sec-title">Snackbars</h2><p class="sec-desc">Inverse colours (light on dark, dark on light) so they stand out on both themes. Shown above the bottom bar.</p></div>
+<div class="grid3">
+
+<div class="card">
+<div class="card-head"><p class="card-name">Refresh failed</p><span class="chip chip-exists">Exists</span></div>
+<p class="when">A pull-to-refresh fails. The list keeps the saved data. The Retry action is new.</p>
+<p class="code">DiscoverEvent.SyncFailed</p>
+<div class="spec"><div class="fm-snackbar fm-snackbar-error" role="status"><span class="ms" aria-hidden="true">sync_problem</span><span class="fm-snackbar-text">Couldn't refresh. Showing saved data.</span><button class="fm-snackbar-action">Retry</button></div></div>
+</div>
+
+<div class="card">
+<div class="card-head"><p class="card-name">Already up to date</p><span class="chip chip-exists">Exists</span></div>
+<p class="when">A pull-to-refresh within 24 hours of the last update: nothing is downloaded.</p>
+<p class="code">DiscoverEvent.AlreadyUpToDate</p>
+<div class="spec"><div class="fm-snackbar fm-snackbar-info" role="status"><span class="ms" aria-hidden="true">info</span><span class="fm-snackbar-text">Data is already up to date.</span></div></div>
+</div>
+
+<div class="card">
+<div class="card-head"><p class="card-name">Offline refresh</p><span class="chip chip-new">New</span></div>
+<p class="when">A pull-to-refresh with no connection. Tells the real reason instead of a generic failure.</p>
+<p class="code">SyncError.NetworkFailure + no network</p>
+<div class="spec"><div class="fm-snackbar" role="status"><span class="ms" aria-hidden="true">cloud_off</span><span class="fm-snackbar-text">You're offline. Showing saved data.</span></div></div>
+</div>
+
+<div class="card">
+<div class="card-head"><p class="card-name">Crags updated</p><span class="chip chip-new">New</span></div>
+<p class="when">A pull-to-refresh that downloaded new data. Confirms the refresh did something.</p>
+<p class="code">new DiscoverEvent after a successful sync</p>
+<div class="spec"><div class="fm-snackbar fm-snackbar-success" role="status"><span class="ms" aria-hidden="true">check_circle</span><span class="fm-snackbar-text">Crags updated.</span></div></div>
+</div>
+
+<div class="card">
+<div class="card-head"><p class="card-name">No maps app</p><span class="chip chip-new">New</span></div>
+<p class="when">"Open navigation" finds no app able to open the location.</p>
+<p class="code">ActivityNotFoundException on the geo: intent</p>
+<div class="spec"><div class="fm-snackbar fm-snackbar-error" role="status"><span class="ms" aria-hidden="true">map</span><span class="fm-snackbar-text">No maps app found to open navigation.</span></div></div>
+</div>
+
+<div class="card">
+<div class="card-head"><p class="card-name">Couldn't save</p><span class="chip chip-new">New</span></div>
+<p class="when">The download worked but writing to the database failed. The previous data is still there.</p>
+<p class="code">SyncError.StorageFailure</p>
+<div class="spec"><div class="fm-snackbar fm-snackbar-error" role="status"><span class="ms" aria-hidden="true">sd_card_alert</span><span class="fm-snackbar-text">Couldn't save the new data.</span><button class="fm-snackbar-action">Retry</button></div></div>
+</div>
+
+</div>
+</section>
+
+<section class="sec">
+<div class="sec-head"><p class="sec-over">02</p><h2 class="sec-title">Banners</h2><p class="sec-desc">Inline at the top of Discover, above the first crag card. They explain why the data could be old; they never block it.</p></div>
+<div class="grid3">
+
+<div class="card">
+<div class="card-head"><p class="card-name">Offline</p><span class="chip chip-new">New</span></div>
+<p class="when">No connection while browsing. Goes away by itself when the connection comes back.</p>
+<p class="code">connectivity monitor (not in the app yet) + newest lastUpdated</p>
+<div class="spec"><div class="fm-banner" role="status"><span class="ms" aria-hidden="true">cloud_off</span><div class="fm-banner-body"><p class="fm-banner-title">You're offline</p><p class="fm-banner-text">Showing data saved 3 days ago.</p></div></div></div>
+</div>
+
+<div class="card">
+<div class="card-head"><p class="card-name">Old data</p><span class="chip chip-new">New</span></div>
+<p class="when">The newest data is older than the one-week freshness threshold and no refresh worked.</p>
+<p class="code">freshness check (1 week) failed + last sync failed</p>
+<div class="spec"><div class="fm-banner fm-banner-warning" role="status"><span class="ms" aria-hidden="true">history</span><div class="fm-banner-body"><p class="fm-banner-title">Data more than a week old</p><p class="fm-banner-text">Connect to the internet to refresh it.</p></div></div></div>
+</div>
+
+<div class="card">
+<div class="card-head"><p class="card-name">Update failed</p><span class="chip chip-new">New</span></div>
+<p class="when">The background update gave up after its retries. Today this failure is silent.</p>
+<p class="code">SyncWorker: MAX_RETRIES = 3 → Result.failure()</p>
+<div class="spec"><div class="fm-banner fm-banner-error" role="alert"><span class="ms" aria-hidden="true">error</span><div class="fm-banner-body"><p class="fm-banner-title">Last update failed</p><p class="fm-banner-text">Showing saved data.</p></div><button class="fm-banner-action">Retry</button></div></div>
+</div>
+
+</div>
+</section>
+
+<section class="sec">
+<div class="sec-head"><p class="sec-over">03</p><h2 class="sec-title">Full-screen states</h2><p class="sec-desc">Only when there is nothing saved to show. The first one replaces today's endless spinner when the first download fails.</p></div>
+<div class="grid4">
+
+<div class="card" style="padding: 16px">
+<div class="card-head"><p class="card-name">First launch offline</p><span class="chip chip-new">New</span></div>
+<p class="when">Nothing saved yet and the first download fails. Today: endless spinner.</p>
+<p class="code">Loading (empty DB) + SyncError.NetworkFailure</p>
+<div class="phone"><div class="phone-bar">Discover</div><div class="phone-body"><div class="fm-state fm-state-error" role="alert"><div class="fm-state-icon"><span class="ms" aria-hidden="true">wifi_off</span></div><p class="fm-state-title">No connection</p><p class="fm-state-text">The app needs the internet once to download the crags. After that it works offline.</p><div class="fm-state-actions"><button class="btn btn-primary"><span class="ms" aria-hidden="true">refresh</span>Try again</button><button class="btn btn-secondary">Network settings</button></div></div></div></div>
+</div>
+
+<div class="card" style="padding: 16px">
+<div class="card-head"><p class="card-name">Couldn't load</p><span class="chip chip-exists">Exists</span></div>
+<p class="when">Reading the saved crags fails. Today it shows the raw error message.</p>
+<p class="code">FalesiaItemUiState.Error</p>
+<div class="phone"><div class="phone-bar">Discover</div><div class="phone-body"><div class="fm-state fm-state-error" role="alert"><div class="fm-state-icon"><span class="ms" aria-hidden="true">error</span></div><p class="fm-state-title">Couldn't load the crags</p><p class="fm-state-text">Something went wrong while reading the saved data.</p><div class="fm-state-actions"><button class="btn btn-primary"><span class="ms" aria-hidden="true">refresh</span>Try again</button><button class="btn btn-text">Show details</button></div></div></div></div>
+</div>
+
+<div class="card" style="padding: 16px">
+<div class="card-head"><p class="card-name">Crag not found</p><span class="chip chip-new">New</span></div>
+<p class="when">Crag details opened for an id that is not in the database.</p>
+<p class="code">FalesiaError.NotFound</p>
+<div class="phone"><div class="phone-bar"><span class="ms" aria-hidden="true">arrow_back</span>Crag details</div><div class="phone-body"><div class="fm-state" role="status"><div class="fm-state-icon"><span class="ms" aria-hidden="true">landscape</span></div><p class="fm-state-title">Crag not found</p><p class="fm-state-text">This crag is no longer in the catalogue.</p><div class="fm-state-actions"><button class="btn btn-secondary">Back to Discover</button></div></div></div></div>
+</div>
+
+<div class="card" style="padding: 16px">
+<div class="card-head"><p class="card-name">No results</p><span class="chip chip-new">New</span></div>
+<p class="when">Search or filters match no crag. Search is not wired yet (known issue #9).</p>
+<p class="code">filtered list is empty</p>
+<div class="phone"><div class="phone-bar">Discover</div><div class="phone-body"><div class="fm-state" role="status"><div class="fm-state-icon"><span class="ms" aria-hidden="true">search_off</span></div><p class="fm-state-title">No crags match "Arco"</p><p class="fm-state-text">Try another name or clear the filters.</p><div class="fm-state-actions"><button class="btn btn-secondary">Clear filters</button></div></div></div></div>
+</div>
+
+</div>
+</section>
+
+<section class="sec">
+<div class="sec-head"><p class="sec-over">04</p><h2 class="sec-title">Inline states</h2><p class="sec-desc">A single part of a screen is missing. The rest of the screen works normally.</p></div>
+<div class="grid3">
+
+<div class="card">
+<div class="card-head"><p class="card-name">Photo unavailable</p><span class="chip chip-new">New</span></div>
+<p class="when">The crag photo fails to load or the crag has none.</p>
+<p class="code">AsyncImage error / null image</p>
+<div class="spec" style="padding: 0; overflow: hidden"><div style="height: 148px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; background: var(--note); color: var(--ink-muted)"><span class="ms" aria-hidden="true" style="font-size: 32px">hide_image</span><span style="font-size: 12px; line-height: 16px; font-weight: 500">Photo not available</span></div><div style="padding: 12px 16px"><p style="font-size: 16px; line-height: 24px; font-weight: 700">Avane</p></div></div>
+</div>
+
+<div class="card">
+<div class="card-head"><p class="card-name">Location missing</p><span class="chip chip-new">New</span></div>
+<p class="when">The crag has no coordinates: no map, "Open navigation" disabled. Today no crag has them (known issue #10).</p>
+<p class="code">Falesia without coordinates</p>
+<div class="spec" style="display: flex; flex-direction: column; gap: 12px"><div style="height: 96px; border-radius: var(--radius-lg); background: var(--note); border: 1px dashed var(--note-line); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--ink-muted)"><span class="ms" aria-hidden="true">location_off</span><span style="font-size: 12px; line-height: 16px; font-weight: 500">Location not available</span></div><button class="btn btn-disabled" disabled><span class="ms" aria-hidden="true">directions</span>Open navigation</button></div>
+</div>
+
+<div class="card">
+<div class="card-head"><p class="card-name">No routes</p><span class="chip chip-new">New</span></div>
+<p class="when">The crag has no routes saved. Today every crag (known issue #10).</p>
+<p class="code">falesia.vie.isEmpty()</p>
+<div class="spec"><p style="font-size: 18px; line-height: 28px; font-weight: 700">Routes</p><div class="fm-state" style="padding: 16px 8px 4px; gap: 8px"><span class="ms" aria-hidden="true" style="font-size: 32px; color: var(--ink-faint)">format_list_bulleted</span><p style="font-size: 14px; line-height: 20px; font-weight: 600">No routes listed yet</p><p style="color: var(--ink-muted); font-size: 12px; line-height: 18px">falesiaonline.it has no routes for this crag.</p></div></div>
+</div>
+
+</div>
+</section>
+
+<section class="sec">
+<div class="sec-head"><p class="sec-over">05</p><h2 class="sec-title">Loading &amp; progress</h2><p class="sec-desc">Slow is fine when it is explained. The first download shows real progress; later refreshes stay light.</p></div>
+<div class="grid3">
+
+<div class="card">
+<div class="card-head"><p class="card-name">First download</p><span class="chip chip-new">New</span></div>
+<p class="when">First launch: the crag list, then one page per crag. Today: a plain spinner.</p>
+<p class="code">SyncWorker progress (setProgress → WorkInfo)</p>
+<div class="spec" style="display: flex; flex-direction: column; gap: 8px"><div class="fm-progress" role="progressbar" aria-valuemin="0" aria-valuemax="110" aria-valuenow="37"><div class="fm-progress-fill" style="width: 34%"></div></div><div class="fm-progress-meta"><span>37 of 110 crags</span><span>34%</span></div></div>
+</div>
+
+<div class="card">
+<div class="card-head"><p class="card-name">Pull to refresh</p><span class="chip chip-exists">Exists</span></div>
+<p class="when">The user pulls the list down. The saved crags stay visible underneath.</p>
+<p class="code">Success(isRefreshing = true)</p>
+<div class="spec" style="display: flex; flex-direction: column; align-items: center; gap: 12px"><div style="width: 40px; height: 40px; border-radius: var(--radius-full); background: var(--surface-card-neutral); box-shadow: var(--shadow-md); display: flex; align-items: center; justify-content: center"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle cx="12" cy="12" r="9" transform="rotate(-90 12 12)" style="fill: none; stroke: var(--primary); stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 57; stroke-dashoffset: 18"></circle></svg></div><div style="width: 100%; height: 40px; border-radius: var(--radius-lg); background: var(--surface-card); border: 1px solid var(--line)"></div></div>
+</div>
+
+<div class="card">
+<div class="card-head"><p class="card-name">Photo loading</p><span class="chip chip-new">New</span></div>
+<p class="when">The crag photo is still loading. Same size as the photo, so nothing jumps.</p>
+<p class="code">AsyncImage placeholder</p>
+<div class="spec" style="padding: 0; overflow: hidden"><div class="sk" style="height: 96px; border-radius: 0"></div><div style="padding: 12px 16px; display: flex; flex-direction: column; gap: 8px"><div class="sk" style="width: 60%; height: 14px"></div><div class="sk" style="width: 35%; height: 10px"></div></div></div>
+</div>
+
+</div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"$preview":{"width":1280,"height":3500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { theme: this.props.theme ?? 'dark' };
+  }
+}
+</script>
+</body>
+</html>
