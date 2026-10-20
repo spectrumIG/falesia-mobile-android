@@ -50,6 +50,10 @@
   `CragMapPage.html`; see `FalesiaHtmlParserTest`), plus URL helpers (`ResolveImageUrlTest`). The
   last three were saved from the Wayback Machine (2025–2026 copies) on 2026-10-20 while the site was
   down: see known issues.
+- Debug builds run on the saved Monsummano pages in `app/src/debug/assets/fixtures/` (`elenco.html`,
+  `falesia/<slug>.html`, `map/<slug>.html`, `settore/<id>.html`; see
+  [offline-first-and-sync.md](offline-first-and-sync.md)). To add a sample crag, save its pages there with the
+  same layout; the list keeps only the crags whose page is saved.
 - Be a polite client of a free public site: bounded concurrency (`SYNC_CONCURRENCY`), keep the `Referer` header,
   sync at most on demand / weekly, never add aggressive polling.
 - ksoup is KMP-compatible: do not introduce Jsoup or other JVM-only parsers.

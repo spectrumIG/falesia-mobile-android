@@ -8,6 +8,7 @@ import it.softsamurai.domain.error.FalesiaError
 import it.softsamurai.domain.error.SyncError
 import it.softsamurai.domain.model.Falesia
 import it.softsamurai.domain.repository.FalesiaRepository
+import it.softsamurai.domain.sync.DownloadMode
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -22,7 +23,7 @@ class RefreshCragDetailsUseCaseTest {
     @Before
     fun setUp() {
         repository = mockk()
-        useCase = RefreshCragDetailsUseCase(repository) { now }
+        useCase = RefreshCragDetailsUseCase(repository, { now }, { DownloadMode.Automatic })
         coEvery { repository.refreshCragDetails("arco") } returns Either.Right(Unit)
     }
 
@@ -91,6 +92,25 @@ class RefreshCragDetailsUseCaseTest {
         givenCrag(vieUpdatedAt = now + 60_000L)
 
         assertEquals(Either.Right(RefreshOutcome.Synced), useCase("arco"))
+    }
+
+    // ── Manual downloads (debug) ──
+
+    @Test
+    fun `in manual mode opening the crag never downloads`() = runTest {
+        val manual = RefreshCragDetailsUseCase(repository, { now }, { DownloadMode.Manual })
+        givenCrag(vieUpdatedAt = null)
+
+        assertEquals(Either.Right(RefreshOutcome.AlreadyUpToDate), manual("arco"))
+        coVerify(exactly = 0) { repository.refreshCragDetails(any()) }
+    }
+
+    @Test
+    fun `in manual mode the download button downloads stale routes`() = runTest {
+        val manual = RefreshCragDetailsUseCase(repository, { now }, { DownloadMode.Manual })
+        givenCrag(vieUpdatedAt = 0L)
+
+        assertEquals(Either.Right(RefreshOutcome.Synced), manual("arco", force = true))
     }
 
     // ── Failures ──

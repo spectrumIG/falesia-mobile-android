@@ -49,6 +49,9 @@
   (from google/material-design-icons, `symbols/android`), `_filled` variants for active items and
   where the design fills them.
 - `FalesiaColors.isDark` tells content not drawn with tokens which theme is on (the map style).
+- `FalesiaTopAppBar(action = TopBarAction(…))` adds an icon button on the right (with `isLoading`); it is the
+  debug download button (see [offline-first-and-sync.md](offline-first-and-sync.md), "Download mode"). Screens
+  take `manualDownloads`: when true they drop pull-to-refresh and show that button.
 - Window background (`themes.xml`, DayNight) uses `bg` per theme (`values/colors.xml`,
   `values-night/colors.xml`).
 

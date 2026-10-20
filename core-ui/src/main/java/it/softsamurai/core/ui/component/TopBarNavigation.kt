@@ -24,3 +24,14 @@ sealed interface TopBarNavigation {
         override val icon: Int get() = R.drawable.ic_arrow_back
     }
 }
+
+/**
+ * Trailing action of a [FalesiaTopAppBar]: an icon button on the right. While [isLoading] it shows a progress
+ * indicator and ignores clicks.
+ */
+data class TopBarAction(
+    @get:DrawableRes val icon: Int,
+    val contentDescription: String,
+    val onClick: () -> Unit,
+    val isLoading: Boolean = false,
+)

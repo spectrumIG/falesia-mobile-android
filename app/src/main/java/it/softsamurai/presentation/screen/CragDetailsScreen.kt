@@ -61,6 +61,7 @@ import it.softsamurai.core.ui.component.InfoTile
 import it.softsamurai.core.ui.component.RouteRow
 import it.softsamurai.core.ui.component.SectionHeader
 import it.softsamurai.core.ui.component.StyleTag
+import it.softsamurai.core.ui.component.TopBarAction
 import it.softsamurai.core.ui.component.TopBarNavigation
 import it.softsamurai.domain.model.Exposure
 import it.softsamurai.domain.model.Falesia
@@ -103,11 +104,15 @@ fun CragDetailsRoute(
         onBack = onBack,
         onSeeAllRoutes = onSeeAllRoutes,
         effects = viewModel.effects,
+        manualDownloads = viewModel.manualDownloads,
         modifier = modifier,
     )
 }
 
-/** Crag details (screens/CragDetails.dc.html), without the favourite button and the "+" FAB (read-only app). */
+/**
+ * Crag details (screens/CragDetails.dc.html), without the favourite button and the "+" FAB (read-only app).
+ * With [manualDownloads] (debug) there is no pull-to-refresh: the top bar download button sends Refresh.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CragDetailsScreen(
@@ -117,6 +122,7 @@ fun CragDetailsScreen(
     onBack: () -> Unit = {},
     onSeeAllRoutes: (falesiaId: String) -> Unit = {},
     effects: Flow<CragDetailsEffect> = emptyFlow(),
+    manualDownloads: Boolean = false,
 ) {
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -150,7 +156,17 @@ fun CragDetailsScreen(
         topBar = {
             FalesiaTopAppBar(
                 title = title,
-                navigation = TopBarNavigation.Back(stringResource(R.string.cd_back), onBack)
+                navigation = TopBarNavigation.Back(stringResource(R.string.cd_back), onBack),
+                action = if (manualDownloads && uiState is CragDetailsUiState.Content) {
+                    TopBarAction(
+                        icon = R.drawable.ic_cloud_download,
+                        contentDescription = stringResource(R.string.cd_download),
+                        onClick = { onIntent(CragDetailsIntent.Refresh) },
+                        isLoading = uiState.isRefreshing,
+                    )
+                } else {
+                    null
+                },
             )
         },
     ) { innerPadding ->
@@ -168,18 +184,20 @@ fun CragDetailsScreen(
                 )
             }
 
-            is CragDetailsUiState.Content -> PullToRefreshBox(
-                isRefreshing = uiState.isRefreshing,
-                onRefresh = { onIntent(CragDetailsIntent.Refresh) },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = innerPadding.calculateTopPadding()),
-            ) {
-                CragDetailsContent(
-                    uiState,
-                    onIntent,
-                    bottomPadding = innerPadding.calculateBottomPadding()
-                )
+            is CragDetailsUiState.Content -> if (manualDownloads) {
+                Box(Modifier.padding(top = innerPadding.calculateTopPadding())) {
+                    CragDetailsContent(uiState, onIntent, bottomPadding = innerPadding.calculateBottomPadding())
+                }
+            } else {
+                PullToRefreshBox(
+                    isRefreshing = uiState.isRefreshing,
+                    onRefresh = { onIntent(CragDetailsIntent.Refresh) },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = innerPadding.calculateTopPadding()),
+                ) {
+                    CragDetailsContent(uiState, onIntent, bottomPadding = innerPadding.calculateBottomPadding())
+                }
             }
         }
     }
@@ -233,6 +251,10 @@ private fun CragDetailsContent(
         }
         when {
             state.routesLoading -> item(key = "routes_loading") { RoutesLoading() }
+            state.routesNotDownloaded -> item(key = "routes_not_downloaded") {
+                Message(stringResource(R.string.routes_not_downloaded))
+            }
+
             state.routesError -> item(key = "routes_error") {
                 RoutesError(onRetry = { onIntent(CragDetailsIntent.Retry) })
             }

@@ -7,6 +7,25 @@
 - The app must be fully usable with no connectivity once data has been synced at least once.
 - Sync failures are non-fatal: they surface as an `Either.Left(SyncError)` and, at most, a one-shot UI effect.
 
+## Download mode: debug never downloads on its own
+`domain/sync/DownloadMode` (provided in `DataModule` from `BuildConfig.DEBUG`):
+- **Automatic** (release, `debugRelease`): everything below — startup and weekly sync, routes on crag open,
+  pull-to-refresh.
+- **Manual** (debug): debug builds are installed and restarted all day; automatic downloads would hammer a free
+  public site. So:
+  - `sync/StartupSync` cancels any scheduled sync (`SyncScheduler.cancelScheduledSyncs`) and, with an empty DB,
+    `repository/fixture/FixtureDataLoader` loads the sample data: saved pages of **Monsummano** (crag list,
+    crag page, map page, its 14 sector pages) in `app/src/debug/assets/fixtures/`, read by
+    `FixtureNetworkDataSource` and run through the real parser and `FalesiaRepositoryImpl`. Their timestamps are
+    0 ("never synced"), so the first manual download is never skipped.
+  - `RefreshCragDetailsUseCase(force = false)` (crag details / route list on open) does nothing.
+  - No pull-to-refresh: every screen that downloads data has a **download button** on the right of its top bar
+    (`TopBarAction`, `ic_cloud_download`): Discover (crag list, `RefreshCragsUseCase`), crag details and route
+    list (routes + parking, `RefreshCragDetailsUseCase(force = true)`). The 24-hour guards still apply.
+  - Any new screen that downloads data must follow this rule: automatic download only in `Automatic`, a
+    download button in `Manual` (ViewModels expose `manualDownloads` from `GetDownloadModeUseCase`).
+- Images (Coil) and map tiles (OpenFreeMap) are loaded in both modes: they are cached and are not scraping.
+
 ## Sync pipeline
 1. `SyncCragsUseCase` → `FalesiaRepositoryImpl.syncFalesie(): Either<SyncError, Unit>`:
    - fetch the crag list (one POST);

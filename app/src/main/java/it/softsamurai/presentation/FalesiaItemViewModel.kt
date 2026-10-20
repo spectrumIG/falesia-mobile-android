@@ -5,8 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.softsamurai.domain.model.Falesia
+import it.softsamurai.domain.sync.DownloadMode
 import it.softsamurai.domain.sync.SyncStatus
 import it.softsamurai.domain.usecase.GetAllFalesieUseCase
+import it.softsamurai.domain.usecase.GetDownloadModeUseCase
 import it.softsamurai.domain.usecase.ObserveSyncStatusUseCase
 import it.softsamurai.domain.usecase.RefreshCragsUseCase
 import it.softsamurai.domain.usecase.RefreshOutcome
@@ -28,7 +30,11 @@ class FalesiaItemViewModel @Inject constructor(
     getAllFalesie: GetAllFalesieUseCase,
     private val refreshCrags: RefreshCragsUseCase,
     observeSyncStatus: ObserveSyncStatusUseCase,
+    getDownloadMode: GetDownloadModeUseCase,
 ) : ViewModel() {
+
+    /** Debug builds: no pull-to-refresh, a download button in the top bar instead (see `DownloadMode`). */
+    val manualDownloads: Boolean = getDownloadMode() == DownloadMode.Manual
 
     private val _isRefreshing = MutableStateFlow(false)
 

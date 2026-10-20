@@ -10,6 +10,8 @@ import it.softsamurai.domain.error.SyncError
 import it.softsamurai.domain.model.Falesia
 import it.softsamurai.domain.model.GeoPoint
 import it.softsamurai.domain.model.Via
+import it.softsamurai.domain.sync.DownloadMode
+import it.softsamurai.domain.usecase.GetDownloadModeUseCase
 import it.softsamurai.domain.usecase.GetFalesiaWithVieUseCase
 import it.softsamurai.domain.usecase.RefreshCragDetailsUseCase
 import it.softsamurai.domain.usecase.RefreshOutcome
@@ -50,7 +52,12 @@ class CragDetailsViewModelTest {
         Dispatchers.resetMain()
     }
 
-    private fun viewModel() = CragDetailsViewModel("arco", getFalesia, refreshDetails)
+    private fun viewModel(mode: DownloadMode = DownloadMode.Automatic) = CragDetailsViewModel(
+        "arco",
+        getFalesia,
+        refreshDetails,
+        mockk<GetDownloadModeUseCase>().also { every { it() } returns mode },
+    )
 
     private fun TestScope.observe(viewModel: CragDetailsViewModel) {
         backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
@@ -243,6 +250,27 @@ class CragDetailsViewModelTest {
             viewModel.onIntent(CragDetailsIntent.SeeAllRoutes)
             assertEquals(CragDetailsEffect.NavigateToRouteList("arco"), awaitItem())
         }
+    }
+
+    // ── Manual downloads (debug) ──
+
+    @Test
+    fun `manual mode flags routes never downloaded`() = runTest {
+        crag.value = falesia().copy(vieUpdatedAt = null)
+        val viewModel = viewModel(DownloadMode.Manual)
+        observe(viewModel)
+
+        assertTrue(viewModel.manualDownloads)
+        assertTrue(viewModel.content().routesNotDownloaded)
+    }
+
+    @Test
+    fun `routes downloaded once are not flagged, automatic mode never flags`() {
+        val downloaded = reduceCragDetails(falesia().copy(vieUpdatedAt = 0L), RoutesStatus.Idle, false, true)
+        val automatic = reduceCragDetails(falesia().copy(vieUpdatedAt = null), RoutesStatus.Idle, false, false)
+
+        assertFalse((downloaded as CragDetailsUiState.Content).routesNotDownloaded)
+        assertFalse((automatic as CragDetailsUiState.Content).routesNotDownloaded)
     }
 
     // ── Helpers ──

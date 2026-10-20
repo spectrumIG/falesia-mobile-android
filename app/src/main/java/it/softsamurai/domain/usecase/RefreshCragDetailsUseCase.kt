@@ -4,6 +4,8 @@ import arrow.core.Either
 import arrow.core.raise.either
 import it.softsamurai.domain.error.SyncError
 import it.softsamurai.domain.repository.FalesiaRepository
+import it.softsamurai.domain.sync.DownloadMode
+import it.softsamurai.domain.sync.DownloadModeProvider
 import it.softsamurai.domain.time.TimeProvider
 import javax.inject.Inject
 
@@ -11,19 +13,24 @@ import javax.inject.Inject
  * Downloads a crag's routes (one request per sector) and parking when its details are shown. They are kept in
  * the DB, so the crag works offline afterwards.
  *
- * - Opening the crag ([force] = false) downloads them when missing or older than [ONE_WEEK_MILLIS].
- * - Pull-to-refresh ([force] = true) downloads them unless the last download is younger than
- *   [MANUAL_REFRESH_INTERVAL_MILLIS], like [RefreshCragsUseCase].
+ * - Opening the crag ([force] = false) downloads them when missing or older than [ONE_WEEK_MILLIS]; never in
+ *   [DownloadMode.Manual] (debug), where only the download button fetches data.
+ * - Pull-to-refresh or the download button ([force] = true) downloads them unless the last download is
+ *   younger than [MANUAL_REFRESH_INTERVAL_MILLIS], like [RefreshCragsUseCase].
  */
 class RefreshCragDetailsUseCase @Inject constructor(
     private val repository: FalesiaRepository,
     private val timeProvider: TimeProvider,
+    private val downloadMode: DownloadModeProvider,
 ) {
     suspend operator fun invoke(
         falesiaId: String,
         force: Boolean = false
     ): Either<SyncError, RefreshOutcome> =
         either {
+            if (!force && downloadMode.current() == DownloadMode.Manual) {
+                return@either RefreshOutcome.AlreadyUpToDate
+            }
             val falesia = repository.getFalesiaById(falesiaId)
                 .mapLeft { SyncError.CragNotFound(falesiaId) }
                 .bind()

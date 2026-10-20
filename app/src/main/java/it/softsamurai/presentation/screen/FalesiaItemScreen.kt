@@ -59,6 +59,7 @@ import it.softsamurai.core.ui.component.FalesiaPrimaryButton
 import it.softsamurai.core.ui.component.FalesiaSearchField
 import it.softsamurai.core.ui.component.FalesiaTopAppBar
 import it.softsamurai.core.ui.component.SectionHeader
+import it.softsamurai.core.ui.component.TopBarAction
 import it.softsamurai.core.ui.component.TopBarNavigation
 import it.softsamurai.domain.model.Falesia
 import it.softsamurai.domain.model.Via
@@ -92,11 +93,15 @@ fun DiscoverRoute(
         events = viewModel.events,
         onRefresh = viewModel::onRefresh,
         onCragClick = onCragClick,
+        manualDownloads = viewModel.manualDownloads,
         modifier = modifier,
     )
 }
 
-/** Discover: crag list under a sticky header with search and filters (screens/Main.dc.html). */
+/**
+ * Discover: crag list under a sticky header with search and filters (screens/Main.dc.html). With
+ * [manualDownloads] (debug) there is no pull-to-refresh: the top bar download button calls [onRefresh].
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiscoverScreen(
@@ -105,6 +110,7 @@ fun DiscoverScreen(
     events: Flow<DiscoverEvent> = emptyFlow(),
     onRefresh: () -> Unit = {},
     onCragClick: (falesiaId: String) -> Unit = {},
+    manualDownloads: Boolean = false,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val syncErrorMessage = stringResource(R.string.sync_error_snackbar)
@@ -124,28 +130,47 @@ fun DiscoverScreen(
         modifier = modifier,
         containerColor = FalesiaTheme.colors.bg,
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = { DiscoverHeader() },
+        topBar = {
+            DiscoverHeader(
+                downloadAction = if (manualDownloads) {
+                    TopBarAction(
+                        icon = R.drawable.ic_cloud_download,
+                        contentDescription = stringResource(R.string.cd_download),
+                        onClick = onRefresh,
+                        isLoading = (uiState as? FalesiaItemUiState.Success)?.isRefreshing == true,
+                    )
+                } else {
+                    null
+                },
+            )
+        },
     ) { innerPadding ->
         when (uiState) {
             is FalesiaItemUiState.Loading -> LoadingContent(innerPadding)
             is FalesiaItemUiState.SyncFailed -> SyncFailedContent(innerPadding, onRetry = onRefresh)
             is FalesiaItemUiState.Error -> ErrorContent(uiState, innerPadding)
-            is FalesiaItemUiState.Success -> PullToRefreshBox(
-                isRefreshing = uiState.isRefreshing,
-                onRefresh = onRefresh,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = innerPadding.calculateTopPadding())
-                    .testTag(TAG_PULL_TO_REFRESH),
-            ) {
-                CragListContent(uiState.data, innerPadding, onCragClick)
+            is FalesiaItemUiState.Success -> if (manualDownloads) {
+                Box(Modifier.padding(top = innerPadding.calculateTopPadding())) {
+                    CragListContent(uiState.data, innerPadding, onCragClick)
+                }
+            } else {
+                PullToRefreshBox(
+                    isRefreshing = uiState.isRefreshing,
+                    onRefresh = onRefresh,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = innerPadding.calculateTopPadding())
+                        .testTag(TAG_PULL_TO_REFRESH),
+                ) {
+                    CragListContent(uiState.data, innerPadding, onCragClick)
+                }
             }
         }
     }
 }
 
 @Composable
-private fun DiscoverHeader() {
+private fun DiscoverHeader(downloadAction: TopBarAction? = null) {
     val spacing = FalesiaTheme.spacing
     var searchQuery by rememberSaveable { mutableStateOf("") }
     val filters = listOf(
@@ -158,6 +183,7 @@ private fun DiscoverHeader() {
     FalesiaTopAppBar(
         title = stringResource(R.string.crag_atlas),
         navigation = TopBarNavigation.Menu(stringResource(R.string.cd_menu)),
+        action = downloadAction,
         containerColor = FalesiaTheme.colors.bgGlass95,
     ) {
         FalesiaSearchField(

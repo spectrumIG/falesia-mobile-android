@@ -16,6 +16,8 @@ import it.softsamurai.domain.model.featuredVie
 import it.softsamurai.domain.model.location
 import it.softsamurai.domain.model.mainExposures
 import it.softsamurai.domain.model.navigationTarget
+import it.softsamurai.domain.sync.DownloadMode
+import it.softsamurai.domain.usecase.GetDownloadModeUseCase
 import it.softsamurai.domain.usecase.GetFalesiaWithVieUseCase
 import it.softsamurai.domain.usecase.RefreshCragDetailsUseCase
 import it.softsamurai.domain.usecase.RefreshOutcome
@@ -33,7 +35,7 @@ import kotlinx.coroutines.launch
 enum class RoutesStatus { Idle, Loading, Failed }
 
 sealed interface CragDetailsIntent {
-    /** Pull-to-refresh: download the routes again unless they are very recent. */
+    /** Pull-to-refresh or the debug download button: download the routes again unless they are very recent. */
     data object Refresh : CragDetailsIntent
 
     /** Try the download again after a failure. */
@@ -66,6 +68,8 @@ sealed interface CragDetailsUiState {
         val routesLoading: Boolean = false,
         /** The download failed and there are no saved routes to show instead. */
         val routesError: Boolean = false,
+        /** Debug: the routes were never downloaded and only the download button fetches them. */
+        val routesNotDownloaded: Boolean = false,
         val isRefreshing: Boolean = false,
     ) : CragDetailsUiState
 }
@@ -75,6 +79,7 @@ internal fun reduceCragDetails(
     crag: Falesia?,
     status: RoutesStatus,
     isRefreshing: Boolean,
+    manualDownloads: Boolean = false,
 ): CragDetailsUiState = when (crag) {
     null -> CragDetailsUiState.NotFound
     else -> CragDetailsUiState.Content(
@@ -86,6 +91,7 @@ internal fun reduceCragDetails(
         navigationTarget = crag.navigationTarget(),
         routesLoading = status == RoutesStatus.Loading && crag.vie.isEmpty(),
         routesError = status == RoutesStatus.Failed && crag.vie.isEmpty(),
+        routesNotDownloaded = manualDownloads && crag.vie.isEmpty() && crag.vieUpdatedAt == null,
         isRefreshing = isRefreshing,
     )
 }
@@ -99,12 +105,16 @@ class CragDetailsViewModel @AssistedInject constructor(
     @Assisted private val falesiaId: String,
     getFalesiaWithVie: GetFalesiaWithVieUseCase,
     private val refreshCragDetails: RefreshCragDetailsUseCase,
+    getDownloadMode: GetDownloadModeUseCase,
 ) : ViewModel() {
 
     @AssistedFactory
     interface Factory {
         fun create(falesiaId: String): CragDetailsViewModel
     }
+
+    /** Debug builds: no download on open, no pull-to-refresh, a download button instead (see `DownloadMode`). */
+    val manualDownloads: Boolean = getDownloadMode() == DownloadMode.Manual
 
     private val routesStatus = MutableStateFlow(RoutesStatus.Idle)
     private val isRefreshing = MutableStateFlow(false)
@@ -114,7 +124,9 @@ class CragDetailsViewModel @AssistedInject constructor(
     val effects: Flow<CragDetailsEffect> = _effects.receiveAsFlow()
 
     val uiState: StateFlow<CragDetailsUiState> =
-        combine(getFalesiaWithVie(falesiaId), routesStatus, isRefreshing, ::reduceCragDetails)
+        combine(getFalesiaWithVie(falesiaId), routesStatus, isRefreshing) { crag, status, refreshing ->
+            reduceCragDetails(crag, status, refreshing, manualDownloads)
+        }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),

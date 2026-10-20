@@ -6,6 +6,7 @@
     <!-- Common -->
     <string name="cd_menu">Menu</string>
     <string name="cd_back">Back</string>
+    <string name="cd_download">Download from falesiaonline.it</string>
     <string name="placeholder_coming_soon">Coming soon</string>
 
     <!-- Discover screen -->
@@ -55,6 +56,7 @@
     <string name="routes_loading">Downloading the routes…</string>
     <string name="routes_error">Couldn\'t download the routes.</string>
     <string name="routes_empty">falesiaonline.it lists no routes for this crag.</string>
+    <string name="routes_not_downloaded">Routes not downloaded yet: use the download button at the top right.</string>
     <string name="retry">Retry</string>
     <string name="exposure_n">N</string>
     <string name="exposure_ne">NE</string>

@@ -2,6 +2,7 @@ package it.softsamurai.core.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,16 +26,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.dp
 import it.softsamurai.core.ui.AppTheme
 import it.softsamurai.core.ui.FalesiaTheme
 import it.softsamurai.core.ui.R
 import java.util.Locale
 
+private val ActionProgressSize = 20.dp
+private val ActionProgressStroke = 2.dp
+
 /**
  * Sticky bar at the top of every screen (design component `TopAppBar`).
  *
  * Without a [subtitle] the title is centered (`screen-title`); with one, title and uppercase subtitle
- * (`overline`, accent) are left aligned. [content] is stacked below the title row on the same glass
+ * (`overline`, accent) are left aligned. [action] adds an icon button on the right. [content] is stacked below the title row on the same glass
  * background, before the `primary-10` hairline (Discover puts search and chips there).
  */
 @Composable
@@ -42,6 +48,7 @@ fun FalesiaTopAppBar(
     modifier: Modifier = Modifier,
     navigation: TopBarNavigation? = null,
     subtitle: String? = null,
+    action: TopBarAction? = null,
     containerColor: Color = FalesiaTheme.colors.bgGlass80,
     content: @Composable ColumnScope.() -> Unit = {},
 ) {
@@ -79,7 +86,11 @@ fun FalesiaTopAppBar(
                         .semantics { heading() },
                 )
                 // Balances the leading button so the title stays centered on screen.
-                if (navigation != null) Spacer(Modifier.size(FalesiaTheme.size.iconButton))
+                if (action != null) {
+                    TopBarActionButton(action)
+                } else if (navigation != null) {
+                    Spacer(Modifier.size(FalesiaTheme.size.iconButton))
+                }
             } else {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
@@ -98,6 +109,7 @@ fun FalesiaTopAppBar(
                         overflow = TextOverflow.Ellipsis,
                     )
                 }
+                action?.let { TopBarActionButton(it) }
             }
         }
         content()
@@ -105,6 +117,21 @@ fun FalesiaTopAppBar(
             thickness = FalesiaTheme.size.hairline,
             color = FalesiaTheme.colors.primary10
         )
+    }
+}
+
+@Composable
+private fun TopBarActionButton(action: TopBarAction) {
+    if (action.isLoading) {
+        Box(Modifier.size(FalesiaTheme.size.iconButton), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(ActionProgressSize),
+                color = FalesiaTheme.colors.primaryText,
+                strokeWidth = ActionProgressStroke,
+            )
+        }
+    } else {
+        FalesiaIconButton(icon = action.icon, contentDescription = action.contentDescription, onClick = action.onClick)
     }
 }
 

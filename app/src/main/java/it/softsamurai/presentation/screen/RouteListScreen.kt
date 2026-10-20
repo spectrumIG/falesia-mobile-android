@@ -17,10 +17,14 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -41,15 +45,19 @@ import it.softsamurai.core.ui.component.FalesiaSearchField
 import it.softsamurai.core.ui.component.FalesiaTopAppBar
 import it.softsamurai.core.ui.component.RouteListItem
 import it.softsamurai.core.ui.component.SectionHeader
+import it.softsamurai.core.ui.component.TopBarAction
 import it.softsamurai.core.ui.component.TopBarNavigation
 import it.softsamurai.domain.model.GradeBand
 import it.softsamurai.domain.model.ViaStyle
 import it.softsamurai.presentation.RouteFilters
+import it.softsamurai.presentation.RouteListEffect
 import it.softsamurai.presentation.RouteListIntent
 import it.softsamurai.presentation.RouteListUiState
 import it.softsamurai.presentation.RouteListViewModel
 import it.softsamurai.presentation.RoutesStatus
 import it.softsamurai.presentation.reduceRouteList
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 const val TAG_ROUTE_LIST = "route_list"
 const val TAG_ROUTE_ITEM = "route_item"
@@ -74,13 +82,16 @@ fun RouteListRoute(
         uiState = uiState,
         onIntent = viewModel::onIntent,
         onBack = onBack,
-        modifier = modifier
+        effects = viewModel.effects,
+        manualDownloads = viewModel.manualDownloads,
+        modifier = modifier,
     )
 }
 
 /**
  * Route list of a crag (screens/RouteList.dc.html): search, filters by grade, sector and style, routes
  * grouped by sector. The design's Status filter, SENT/PROJECT tags and "+" FAB are left out (read-only app).
+ * With [manualDownloads] (debug) the top bar has a download button.
  */
 @Composable
 fun RouteListScreen(
@@ -88,16 +99,42 @@ fun RouteListScreen(
     onIntent: (RouteListIntent) -> Unit,
     modifier: Modifier = Modifier,
     onBack: () -> Unit = {},
+    effects: Flow<RouteListEffect> = emptyFlow(),
+    manualDownloads: Boolean = false,
 ) {
     val content = uiState as? RouteListUiState.Content
+    val snackbarHostState = remember { SnackbarHostState() }
+    val syncFailed = stringResource(R.string.sync_error_snackbar)
+    val upToDate = stringResource(R.string.refresh_up_to_date)
+    LaunchedEffect(effects) {
+        effects.collect { effect ->
+            snackbarHostState.showSnackbar(
+                when (effect) {
+                    RouteListEffect.SyncFailed -> syncFailed
+                    RouteListEffect.AlreadyUpToDate -> upToDate
+                },
+            )
+        }
+    }
     Scaffold(
         modifier = modifier.testTag(TAG_ROUTE_LIST),
         containerColor = FalesiaTheme.colors.bg,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             FalesiaTopAppBar(
                 title = content?.nome ?: stringResource(R.string.crag_details_title),
                 subtitle = content?.zona?.ifBlank { null },
                 navigation = TopBarNavigation.Back(stringResource(R.string.cd_back), onBack),
+                action = if (manualDownloads && content != null) {
+                    TopBarAction(
+                        icon = R.drawable.ic_cloud_download,
+                        contentDescription = stringResource(R.string.cd_download),
+                        onClick = { onIntent(RouteListIntent.Download) },
+                        isLoading = content.isDownloading,
+                    )
+                } else {
+                    null
+                },
             ) {
                 if (content != null && content.hasRoutes) RouteFiltersBar(content, onIntent)
             }
@@ -224,6 +261,10 @@ private fun RouteListContent(
                 ) {
                     CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
+            }
+
+            content.routesNotDownloaded -> item(key = "not_downloaded") {
+                Message(stringResource(R.string.routes_not_downloaded))
             }
 
             content.routesError -> item(key = "error") {

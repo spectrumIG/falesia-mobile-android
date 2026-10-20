@@ -14,12 +14,18 @@ import it.softsamurai.domain.model.GradeBand
 import it.softsamurai.domain.model.Settore
 import it.softsamurai.domain.model.Via
 import it.softsamurai.domain.model.ViaStyle
+import it.softsamurai.domain.sync.DownloadMode
+import it.softsamurai.domain.usecase.GetDownloadModeUseCase
 import it.softsamurai.domain.usecase.GetFalesiaWithVieUseCase
 import it.softsamurai.domain.usecase.RefreshCragDetailsUseCase
+import it.softsamurai.domain.usecase.RefreshOutcome
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -47,6 +53,14 @@ sealed interface RouteListIntent {
     data class StyleSelected(val style: ViaStyle?) : RouteListIntent
     data object ClearFilters : RouteListIntent
     data object Retry : RouteListIntent
+
+    /** Debug download button: download the routes again unless they are very recent. */
+    data object Download : RouteListIntent
+}
+
+sealed interface RouteListEffect {
+    data object SyncFailed : RouteListEffect
+    data object AlreadyUpToDate : RouteListEffect
 }
 
 @Immutable
@@ -65,6 +79,9 @@ sealed interface RouteListUiState {
         val hasRoutes: Boolean,
         val routesLoading: Boolean = false,
         val routesError: Boolean = false,
+        /** Debug: the routes were never downloaded and only the download button fetches them. */
+        val routesNotDownloaded: Boolean = false,
+        val isDownloading: Boolean = false,
     ) : RouteListUiState
 }
 
@@ -96,6 +113,8 @@ internal fun reduceRouteList(
     crag: Falesia?,
     filters: RouteFilters,
     status: RoutesStatus,
+    manualDownloads: Boolean = false,
+    isDownloading: Boolean = false,
 ): RouteListUiState = when (crag) {
     null -> RouteListUiState.NotFound
     else -> RouteListUiState.Content(
@@ -108,6 +127,8 @@ internal fun reduceRouteList(
         hasRoutes = crag.vie.isNotEmpty(),
         routesLoading = status == RoutesStatus.Loading && crag.vie.isEmpty(),
         routesError = status == RoutesStatus.Failed && crag.vie.isEmpty(),
+        routesNotDownloaded = manualDownloads && crag.vie.isEmpty() && crag.vieUpdatedAt == null,
+        isDownloading = isDownloading,
     )
 }
 
@@ -117,6 +138,7 @@ class RouteListViewModel @AssistedInject constructor(
     @Assisted private val falesiaId: String,
     getFalesiaWithVie: GetFalesiaWithVieUseCase,
     private val refreshCragDetails: RefreshCragDetailsUseCase,
+    getDownloadMode: GetDownloadModeUseCase,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -124,11 +146,21 @@ class RouteListViewModel @AssistedInject constructor(
         fun create(falesiaId: String): RouteListViewModel
     }
 
+    /** Debug builds: no download on open, a download button instead (see `DownloadMode`). */
+    val manualDownloads: Boolean = getDownloadMode() == DownloadMode.Manual
+
     private val filters = MutableStateFlow(RouteFilters())
     private val routesStatus = MutableStateFlow(RoutesStatus.Idle)
+    private val isDownloading = MutableStateFlow(false)
+    private val _effects = Channel<RouteListEffect>(Channel.BUFFERED)
+
+    /** One-shot UI effects of the download button (snackbars). */
+    val effects: Flow<RouteListEffect> = _effects.receiveAsFlow()
 
     val uiState: StateFlow<RouteListUiState> =
-        combine(getFalesiaWithVie(falesiaId), filters, routesStatus, ::reduceRouteList)
+        combine(getFalesiaWithVie(falesiaId), filters, routesStatus, isDownloading) { crag, filters, status, downloading ->
+            reduceRouteList(crag, filters, status, manualDownloads, downloading)
+        }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
@@ -171,6 +203,22 @@ class RouteListViewModel @AssistedInject constructor(
 
             RouteListIntent.ClearFilters -> filters.value = RouteFilters()
             RouteListIntent.Retry -> download()
+            RouteListIntent.Download -> forceDownload()
+        }
+    }
+
+    private fun forceDownload() {
+        if (isDownloading.value) return
+        isDownloading.value = true
+        viewModelScope.launch {
+            refreshCragDetails(falesiaId, force = true).fold(
+                ifLeft = { _effects.send(RouteListEffect.SyncFailed) },
+                ifRight = { outcome ->
+                    routesStatus.value = RoutesStatus.Idle
+                    if (outcome == RefreshOutcome.AlreadyUpToDate) _effects.send(RouteListEffect.AlreadyUpToDate)
+                },
+            )
+            isDownloading.value = false
         }
     }
 

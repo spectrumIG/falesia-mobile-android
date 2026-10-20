@@ -8,7 +8,9 @@ import io.mockk.every
 import io.mockk.mockk
 import it.softsamurai.domain.error.SyncError
 import it.softsamurai.domain.model.Falesia
+import it.softsamurai.domain.sync.DownloadMode
 import it.softsamurai.domain.sync.SyncStatus
+import it.softsamurai.domain.usecase.GetDownloadModeUseCase
 import it.softsamurai.domain.usecase.GetAllFalesieUseCase
 import it.softsamurai.domain.usecase.ObserveSyncStatusUseCase
 import it.softsamurai.domain.usecase.RefreshCragsUseCase
@@ -48,7 +50,7 @@ class FalesiaItemViewModelTest {
         refreshCrags = mockk()
         val observeSyncStatus =
             mockk<ObserveSyncStatusUseCase>().also { every { it() } returns syncStatus }
-        viewModel = FalesiaItemViewModel(getAllFalesie, refreshCrags, observeSyncStatus)
+        viewModel = FalesiaItemViewModel(getAllFalesie, refreshCrags, observeSyncStatus, downloadMode(DownloadMode.Automatic))
     }
 
     @After
@@ -186,6 +188,20 @@ class FalesiaItemViewModelTest {
         vie = emptyList(),
         lastUpdated = 0L,
     )
+
+    private fun downloadMode(mode: DownloadMode) = mockk<GetDownloadModeUseCase>().also { every { it() } returns mode }
+
+    @Test
+    fun `manual downloads follow the download mode`() {
+        assertFalse(viewModel.manualDownloads)
+        val debug = FalesiaItemViewModel(
+            getAllFalesie,
+            refreshCrags,
+            mockk<ObserveSyncStatusUseCase>().also { every { it() } returns syncStatus },
+            downloadMode(DownloadMode.Manual),
+        )
+        assertTrue(debug.manualDownloads)
+    }
 
     // ── Empty DB and failed sync ──
 

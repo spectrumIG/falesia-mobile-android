@@ -1,5 +1,6 @@
 package it.softsamurai.presentation
 
+import app.cash.turbine.test
 import arrow.core.Either
 import io.mockk.coEvery
 import io.mockk.every
@@ -10,6 +11,8 @@ import it.softsamurai.domain.model.GradeBand
 import it.softsamurai.domain.model.Settore
 import it.softsamurai.domain.model.Via
 import it.softsamurai.domain.model.ViaStyle
+import it.softsamurai.domain.sync.DownloadMode
+import it.softsamurai.domain.usecase.GetDownloadModeUseCase
 import it.softsamurai.domain.usecase.GetFalesiaWithVieUseCase
 import it.softsamurai.domain.usecase.RefreshCragDetailsUseCase
 import it.softsamurai.domain.usecase.RefreshOutcome
@@ -146,7 +149,7 @@ class RouteListViewModelTest {
 
     @Test
     fun `intents update the filters and clear resets them`() = runTest {
-        val viewModel = RouteListViewModel("arco", getFalesia, refreshDetails)
+        val viewModel = viewModel()
         backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
         fun filters() = (viewModel.uiState.value as RouteListUiState.Content).filters
 
@@ -170,11 +173,43 @@ class RouteListViewModelTest {
             )
         )
         every { getFalesia("arco") } returns MutableStateFlow(crag.copy(vie = emptyList()))
-        val viewModel = RouteListViewModel("arco", getFalesia, refreshDetails)
+        val viewModel = viewModel()
         backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
 
         assertTrue((viewModel.uiState.value as RouteListUiState.Content).routesError)
     }
+
+    @Test
+    fun `download button forces the download and reports an up-to-date result`() = runTest {
+        coEvery { refreshDetails("arco", true) } returns Either.Right(RefreshOutcome.AlreadyUpToDate)
+        val viewModel = viewModel(DownloadMode.Manual)
+        backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
+
+        viewModel.effects.test {
+            viewModel.onIntent(RouteListIntent.Download)
+            assertEquals(RouteListEffect.AlreadyUpToDate, awaitItem())
+        }
+        assertTrue(viewModel.manualDownloads)
+        assertFalse((viewModel.uiState.value as RouteListUiState.Content).isDownloading)
+    }
+
+    @Test
+    fun `download button failure shows a snackbar`() = runTest {
+        coEvery { refreshDetails("arco", true) } returns Either.Left(SyncError.NetworkFailure(RuntimeException()))
+        val viewModel = viewModel(DownloadMode.Manual)
+
+        viewModel.effects.test {
+            viewModel.onIntent(RouteListIntent.Download)
+            assertEquals(RouteListEffect.SyncFailed, awaitItem())
+        }
+    }
+
+    private fun viewModel(mode: DownloadMode = DownloadMode.Automatic) = RouteListViewModel(
+        "arco",
+        getFalesia,
+        refreshDetails,
+        mockk<GetDownloadModeUseCase>().also { every { it() } returns mode },
+    )
 
     // ── Helpers ──
 

@@ -8,4 +8,7 @@ interface SyncScheduler {
     /** Enqueues a weekly periodic sync.
      *  Uses KEEP policy: does not reschedule if already registered. */
     fun schedulePeriodicSync()
+
+    /** Cancels both syncs, e.g. left over from an earlier install, when downloads are manual (debug). */
+    fun cancelScheduledSyncs()
 }

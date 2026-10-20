@@ -14,7 +14,8 @@
     [scraping.md](scraping.md)).
     - **Sync**: the worker decision `syncWorkOutcome()` (`SyncWorkOutcomeTest`), the WorkManager →
       `SyncStatus`
-      mapping (`SyncStatusMappingTest`).
+      mapping (`SyncStatusMappingTest`), the startup per download mode (`StartupSyncTest`), the debug sample
+      data (`FixtureNetworkDataSourceTest`: fixture data source and `FixtureDataLoader` on saved pages).
     - **Presentation**: ViewModels (`FalesiaItemViewModelTest`, `CragDetailsViewModelTest`,
       `RouteListViewModelTest`: the pure `reduce…`/`filterVie` functions and the intents → effects),
       navigation config

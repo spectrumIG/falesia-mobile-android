@@ -53,6 +53,24 @@ class DiscoverScreenTest {
     }
 
     @Test
+    fun manualDownloads_showDownloadButton_insteadOfPullToRefresh() {
+        var refreshed = false
+        composeRule.setContent {
+            AppTheme {
+                DiscoverScreen(
+                    uiState = FalesiaItemUiState.Success(fakecrags),
+                    onRefresh = { refreshed = true },
+                    manualDownloads = true,
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag(TAG_PULL_TO_REFRESH).assertDoesNotExist()
+        composeRule.onNodeWithContentDescription(string(R.string.cd_download)).performClick()
+        assertTrue(refreshed)
+    }
+
+    @Test
     fun syncFailed_showsMessage_andRetryRefreshes() {
         var refreshed = false
         composeRule.setContent {

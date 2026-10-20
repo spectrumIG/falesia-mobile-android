@@ -6,6 +6,7 @@
     <!-- Comuni -->
     <string name="cd_menu">Menu</string>
     <string name="cd_back">Indietro</string>
+    <string name="cd_download">Scarica da falesiaonline.it</string>
     <string name="placeholder_coming_soon">Prossimamente</string>
 
     <!-- Schermata Scopri -->
@@ -55,6 +56,7 @@
     <string name="routes_loading">Scarico le vie…</string>
     <string name="routes_error">Impossibile scaricare le vie.</string>
     <string name="routes_empty">falesiaonline.it non elenca vie per questa falesia.</string>
+    <string name="routes_not_downloaded">Vie non ancora scaricate: usa il pulsante di download in alto a destra.</string>
     <string name="retry">Riprova</string>
     <string name="exposure_n">N</string>
     <string name="exposure_ne">NE</string>

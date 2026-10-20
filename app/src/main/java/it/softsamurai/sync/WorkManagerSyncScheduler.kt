@@ -42,4 +42,9 @@ class WorkManagerSyncScheduler @Inject constructor(
             request,
         )
     }
+
+    override fun cancelScheduledSyncs() {
+        workManager.cancelUniqueWork(IMMEDIATE_SYNC_WORK)
+        workManager.cancelUniqueWork(PERIODIC_SYNC_WORK)
+    }
 }
