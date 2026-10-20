@@ -4,6 +4,8 @@
 1. Code compiles: `./gradlew :app:compileDebugKotlin` (or IDE diagnostics). Check imports and Gradle deps
    explicitly; reading the code is not enough.
 2. Unit tests pass: `./gradlew :core-ui:testDebugUnitTest :app:testDebugUnitTest`.
+   UI changes: `./gradlew :app:verifyRoborazziDebug` passes, or the reference images are re-recorded on purpose
+   (`recordRoborazziDebug`, see [testing.md](testing.md)).
 3. Static analysis passes: `./gradlew detekt` (`maxIssues: 0`).
 4. New/changed behavior is tested ([testing.md](testing.md)).
 5. Relevant `doc/` files and [../AGENTS.md](../AGENTS.md) are updated.
