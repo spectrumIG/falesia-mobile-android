@@ -7,8 +7,8 @@ when a library is added, removed or upgraded significantly.
 
 | Area            | Library                                                                                                                                                | KMP-ready                                               |
 |-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
-| Language        | Kotlin 2.3.x, KSP                                                                                                                                      | ✅                                                      |
-| Build           | AGP 9.x, Gradle version catalog, configuration cache                                                                                                   | —                                                       |
+| Language        | Kotlin 2.4.x, KSP 2.3 (KSP2)                                                                                                                           | ✅                                                      |
+| Build           | AGP 9.4, Gradle 9.8, version catalog, configuration cache                                                                                                   | —                                                       |
 | UI              | Jetpack Compose (BOM), Material 3, `core-ui` theme module                                                                                              | ✅ via Compose Multiplatform                            |
 | Navigation      | Navigation 3 (`navigation3-ui/runtime`) + Material3 adaptive-navigation3, `lifecycle-viewmodel-navigation3` (one ViewModel store per back stack entry) | ⚠️ (check CMP support at migration time)                |
 | DI              | Hilt (+ `hilt-navigation-compose`, `hilt-work`)                                                                                                        | ❌ (candidates: Koin, Metro)                            |
@@ -32,15 +32,16 @@ when a library is added, removed or upgraded significantly.
   dark): OSM data, free, no API key, no usage limits. Never point the app at
   `tile.openstreetmap.org` (its usage policy forbids apps). Attribution "© OpenStreetMap
   contributors · OpenFreeMap" is shown under the map (`map_attribution`).
-- Pinned to **0.14.0**: 0.15+ need Kotlin 2.4, Compose 1.12 and `compileSdk 37`, which AGP 9.1 does
-  not support (known issue). The 0.15+ API is different (overlay composables, `MapState`): the
-  migration rewrites `CragMap.kt`.
+- Pinned to **0.14.0** (works with Kotlin 2.4, Compose 1.12, `compileSdk 37`). The build blockers of
+  0.15+ are gone, but 0.20 is a rewrite of the library (new MlnFfi renderer, `MapState` instead of
+  `CameraState`, `MapUiOptions`/`MapInteractions` instead of `MapOptions`, new style and camera API):
+  upgrading means rewriting `CragMap.kt` and checking the map on a device (known issue).
 - The MapLibre native library adds ~11–16 MB per ABI to the APK (all four ABIs in a universal APK);
   the consumer R8 rules come with the SDK.
 
 ## Library selection policy
-1. Use the **latest stable** Android/Kotlin technologies (alphas only when needed and justified, e.g.
-   adaptive-navigation3).
+1. Use the **latest stable** Android/Kotlin technologies (alphas/betas only when needed and justified; none
+   today). Kotlin stays on the latest stable release (2.5 is still in beta).
 2. **Prefer KMP-compatible libraries** whenever an equivalent exists (KMP conversion is a planned milestone).
    E.g. ksoup over Jsoup, Ktor over Retrofit/OkHttp, kotlinx-serialization over Gson/Moshi, kotlinx-datetime over
    `java.time`, Room KMP, Coil 3.
@@ -49,12 +50,14 @@ when a library is added, removed or upgraded significantly.
 5. Ask the user before introducing a new major library or replacing an existing one.
 
 ## Build basics
-- `compileSdk = 36`, `minSdk = 30`, Java/JVM target 17.
+- `compileSdk = 37` (Compose 1.12 and adaptive 1.3 require it), `minSdk = 30`, Java/JVM target 17.
 - **Gradle daemon JVM: 21**, pinned in `gradle/gradle-daemon-jvm.properties` (regenerate with
   `./gradlew updateDaemonJvm --jvm-version=21`). If no JDK 21 is installed, Gradle downloads one into
   `~/.gradle/jdks` through the foojay resolver (`settings.gradle.kts`; settings plugins cannot use the version
   catalog, so its version is written there). Reason: detekt 1.23.x bundles a Kotlin 2.0 compiler that cannot run on
-  Java 25. Revisit when moving to detekt 2.x.
+  Java 25. Revisit when moving to detekt 2.x (only alphas so far). detekt 1.23 also causes Gradle's "deprecated
+  features, incompatible with Gradle 10" warning (`Configuration.setVisible`, `ReportingExtension.file`).
+- KSP 2.3 works with AGP's built-in Kotlin: no `android.disallowKotlinSourceSets` workaround.
 - detekt tasks use `jvmTarget = 17` explicitly (by default they would use the daemon's JVM version).
 - Build types: `debug` (`.debug` suffix), `release` (minify + shrink, signed with `keystore.properties`),
   `debugRelease`.

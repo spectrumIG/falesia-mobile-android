@@ -39,7 +39,7 @@ roborazzi {
 android {
 
     namespace = "it.softsamurai"
-    compileSdk = 36
+    compileSdk = 37
     defaultConfig {
         applicationId = "it.softsamurai"
         minSdk = 30
