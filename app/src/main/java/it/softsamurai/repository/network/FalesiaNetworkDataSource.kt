@@ -1,6 +1,7 @@
 package it.softsamurai.repository.network
 
 import arrow.core.Either
+import arrow.core.flatMap
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.network.parseGetRequest
 import com.fleeksoft.ksoup.network.parsePostRequest
@@ -11,11 +12,18 @@ import io.ktor.http.HttpHeaders
 import it.softsamurai.domain.error.SyncError
 import it.softsamurai.repository.network.model.FalesiaDetailNetworkModel
 import it.softsamurai.repository.network.model.FalesiaListItemNetworkModel
+import it.softsamurai.repository.network.model.ViaNetworkModel
 import javax.inject.Inject
 
 interface FalesiaNetworkDataSource {
     suspend fun fetchElencoFalesie(): Either<SyncError, List<FalesiaListItemNetworkModel>>
     suspend fun fetchDettagliFalesia(url: String): Either<SyncError, FalesiaDetailNetworkModel>
+
+    /** Routes of one sector, from its page ([it.softsamurai.repository.network.model.SettoreNetworkModel.detailUrl]). */
+    suspend fun fetchVieSettore(url: String): Either<SyncError, List<ViaNetworkModel>>
+
+    /** Parking position (lat to lng) from the map page of the crag at [detailUrl]; null when it has none. */
+    suspend fun fetchParcheggio(detailUrl: String): Either<SyncError, Pair<Double, Double>?>
 }
 
 private const val BASE_REFERRER = "https://www.falesiaonline.it/falesie/sud-europa.html"
@@ -27,19 +35,24 @@ class FalesiaNetDataSourceImpl @Inject constructor(
 
     override suspend fun fetchElencoFalesie(): Either<SyncError, List<FalesiaListItemNetworkModel>> =
         Either.catch {
-            val document: Document = Ksoup.parsePostRequest(
+            Ksoup.parsePostRequest(
                 url = baseUrl,
                 httpRequestBuilder = {
                     headers { append(HttpHeaders.Referrer, BASE_REFERRER) }
                     setBody(POST_BODY)
                 },
             )
-            parseElencoFalesie(document)
-        }.mapLeft { SyncError.NetworkFailure(it) }
+        }.mapLeft { SyncError.NetworkFailure(it) }.flatMap(::parseElencoFalesieOrFail)
 
     override suspend fun fetchDettagliFalesia(url: String): Either<SyncError, FalesiaDetailNetworkModel> =
-        Either.catch {
-            val document: Document = Ksoup.parseGetRequest(url)
-            parseDettagliFalesia(document)
-        }.mapLeft { SyncError.NetworkFailure(it) }
+        get(url).flatMap(::parseDettagliFalesia)
+
+    override suspend fun fetchVieSettore(url: String): Either<SyncError, List<ViaNetworkModel>> =
+        get(url).flatMap(::parseVieSettore)
+
+    override suspend fun fetchParcheggio(detailUrl: String): Either<SyncError, Pair<Double, Double>?> =
+        get(mapUrlFromDetailUrl(detailUrl)).map(::parseParcheggio)
+
+    private suspend fun get(url: String): Either<SyncError, Document> =
+        Either.catch { Ksoup.parseGetRequest(url) }.mapLeft { SyncError.NetworkFailure(it) }
 }

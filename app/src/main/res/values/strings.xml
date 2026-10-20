@@ -6,6 +6,7 @@
     <!-- Common -->
     <string name="cd_menu">Menu</string>
     <string name="cd_back">Back</string>
+    <string name="cd_download">Download from falesiaonline.it</string>
     <string name="placeholder_coming_soon">Coming soon</string>
 
     <!-- Discover screen -->
@@ -14,7 +15,7 @@
     <string name="nearby_crags">Nearby Crags</string>
     <string name="map_view">Map View</string>
     <string name="label_routes">Routes</string>
-    <string name="label_best_grade">Best grade</string>
+    <string name="label_grades">Grades</string>
     <string name="filter_style">Style</string>
     <string name="filter_grade_range">Grade Range</string>
     <string name="filter_distance">Distance</string>
@@ -22,9 +23,73 @@
     <string name="cd_crag_photo">Photo of %1$s</string>
     <string name="sync_error_snackbar">Couldn\'t refresh. Showing saved data.</string>
     <string name="refresh_up_to_date">Data is already up to date.</string>
+    <string name="crags_sync_failed">Couldn\'t download the crags. Check your connection and try again.</string>
 
     <!-- Crag details -->
     <string name="crag_details_title">Crag Details</string>
+    <string name="crag_not_found">This crag is no longer in the saved data.</string>
+    <string name="info_approach">Approach</string>
+    <string name="info_exposure">Exposure</string>
+    <string name="approach_minutes">%1$d min</string>
+    <string name="approach_minutes_range">%1$d–%2$d min</string>
+    <string name="value_unknown">—</string>
+    <string name="about_crag">About this Crag</string>
+    <string name="about_crag_empty">falesiaonline.it has no description of this crag yet.</string>
+    <string name="location_title">Location</string>
+    <string name="latitude_north">%1$s° N</string>
+    <string name="latitude_south">%1$s° S</string>
+    <string name="longitude_east">%1$s° E</string>
+    <string name="longitude_west">%1$s° W</string>
+    <string name="map_parking">Parking</string>
+    <string name="map_parking_walk">Parking · %1$s walk</string>
+    <string name="map_attribution">© OpenStreetMap contributors · OpenFreeMap</string>
+    <string name="cd_map">Map of %1$s with its sectors and parking</string>
+    <string name="cd_zoom_in">Zoom in</string>
+    <string name="cd_zoom_out">Zoom out</string>
+    <string name="cd_recenter">Center on the crag</string>
+    <string name="open_navigation">Open navigation</string>
+    <string name="open_navigation_parking_hint">Opens your maps app with directions to the parking.</string>
+    <string name="open_navigation_crag_hint">Opens your maps app with directions to the crag.</string>
+    <string name="no_maps_app">No maps app installed.</string>
+    <string name="featured_routes">Featured Routes</string>
+    <string name="see_all">See all</string>
+    <string name="routes_loading">Downloading the routes…</string>
+    <string name="routes_error">Couldn\'t download the routes.</string>
+    <string name="routes_empty">falesiaonline.it lists no routes for this crag.</string>
+    <string name="routes_not_downloaded">Routes not downloaded yet: use the download button at the top right.</string>
+    <string name="retry">Retry</string>
+    <string name="exposure_n">N</string>
+    <string name="exposure_ne">NE</string>
+    <string name="exposure_e">E</string>
+    <string name="exposure_se">SE</string>
+    <string name="exposure_s">S</string>
+    <string name="exposure_sw">SW</string>
+    <string name="exposure_w">W</string>
+    <string name="exposure_nw">NW</string>
+    <string name="style_sport">Sport</string>
+    <string name="style_trad">Trad</string>
+    <string name="style_mixed">Mixed</string>
+
+    <!-- Route list -->
+    <string name="search_routes_placeholder">Search routes by name or grade…</string>
+    <string name="filter_grade">Grade</string>
+    <string name="filter_sector">Sector</string>
+    <string name="filter_all">All</string>
+    <string name="grade_band_up_to_5">Up to 5c+</string>
+    <string name="grade_band_6">6a–6c+</string>
+    <string name="grade_band_7">7a–7c+</string>
+    <string name="grade_band_8_plus">8a and harder</string>
+    <string name="label_grade">Grade</string>
+    <string name="route_list_no_match">No routes match the filters.</string>
+    <string name="clear_filters">Clear filters</string>
+    <plurals name="crag_rating_badge">
+        <item quantity="one">%1$s · %2$d vote</item>
+        <item quantity="other">%1$s · %2$d votes</item>
+    </plurals>
+    <plurals name="cd_rating">
+        <item quantity="one">Rated %1$s out of 5 by %2$d climber</item>
+        <item quantity="other">Rated %1$s out of 5 by %2$d climbers</item>
+    </plurals>
 
     <!-- Bottom navigation -->
     <string name="nav_discover">Discover</string>

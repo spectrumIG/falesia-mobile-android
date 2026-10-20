@@ -6,6 +6,7 @@
     <!-- Comuni -->
     <string name="cd_menu">Menu</string>
     <string name="cd_back">Indietro</string>
+    <string name="cd_download">Scarica da falesiaonline.it</string>
     <string name="placeholder_coming_soon">Prossimamente</string>
 
     <!-- Schermata Scopri -->
@@ -14,7 +15,7 @@
     <string name="nearby_crags">Falesie vicine</string>
     <string name="map_view">Vista mappa</string>
     <string name="label_routes">Vie</string>
-    <string name="label_best_grade">Grado migliore</string>
+    <string name="label_grades">Gradi</string>
     <string name="filter_style">Stile</string>
     <string name="filter_grade_range">Gradi</string>
     <string name="filter_distance">Distanza</string>
@@ -22,9 +23,73 @@
     <string name="cd_crag_photo">Foto di %1$s</string>
     <string name="sync_error_snackbar">Aggiornamento non riuscito. Mostro i dati salvati.</string>
     <string name="refresh_up_to_date">Dati già aggiornati.</string>
+    <string name="crags_sync_failed">Impossibile scaricare le falesie. Controlla la connessione e riprova.</string>
 
     <!-- Dettaglio falesia -->
     <string name="crag_details_title">Dettaglio falesia</string>
+    <string name="crag_not_found">Questa falesia non è più nei dati salvati.</string>
+    <string name="info_approach">Avvicinamento</string>
+    <string name="info_exposure">Esposizione</string>
+    <string name="approach_minutes">%1$d min</string>
+    <string name="approach_minutes_range">%1$d–%2$d min</string>
+    <string name="value_unknown">—</string>
+    <string name="about_crag">La falesia</string>
+    <string name="about_crag_empty">falesiaonline.it non ha ancora una descrizione di questa falesia.</string>
+    <string name="location_title">Posizione</string>
+    <string name="latitude_north">%1$s° N</string>
+    <string name="latitude_south">%1$s° S</string>
+    <string name="longitude_east">%1$s° E</string>
+    <string name="longitude_west">%1$s° O</string>
+    <string name="map_parking">Parcheggio</string>
+    <string name="map_parking_walk">Parcheggio · %1$s a piedi</string>
+    <string name="map_attribution">© contributori OpenStreetMap · OpenFreeMap</string>
+    <string name="cd_map">Mappa di %1$s con settori e parcheggio</string>
+    <string name="cd_zoom_in">Aumenta lo zoom</string>
+    <string name="cd_zoom_out">Riduci lo zoom</string>
+    <string name="cd_recenter">Centra sulla falesia</string>
+    <string name="open_navigation">Avvia navigazione</string>
+    <string name="open_navigation_parking_hint">Apre l\'app di mappe con le indicazioni per il parcheggio.</string>
+    <string name="open_navigation_crag_hint">Apre l\'app di mappe con le indicazioni per la falesia.</string>
+    <string name="no_maps_app">Nessuna app di mappe installata.</string>
+    <string name="featured_routes">Vie in evidenza</string>
+    <string name="see_all">Vedi tutte</string>
+    <string name="routes_loading">Scarico le vie…</string>
+    <string name="routes_error">Impossibile scaricare le vie.</string>
+    <string name="routes_empty">falesiaonline.it non elenca vie per questa falesia.</string>
+    <string name="routes_not_downloaded">Vie non ancora scaricate: usa il pulsante di download in alto a destra.</string>
+    <string name="retry">Riprova</string>
+    <string name="exposure_n">N</string>
+    <string name="exposure_ne">NE</string>
+    <string name="exposure_e">E</string>
+    <string name="exposure_se">SE</string>
+    <string name="exposure_s">S</string>
+    <string name="exposure_sw">SO</string>
+    <string name="exposure_w">O</string>
+    <string name="exposure_nw">NO</string>
+    <string name="style_sport">Sportiva</string>
+    <string name="style_trad">Trad</string>
+    <string name="style_mixed">Mista</string>
+
+    <!-- Lista vie -->
+    <string name="search_routes_placeholder">Cerca vie per nome o grado…</string>
+    <string name="filter_grade">Grado</string>
+    <string name="filter_sector">Settore</string>
+    <string name="filter_all">Tutti</string>
+    <string name="grade_band_up_to_5">Fino a 5c+</string>
+    <string name="grade_band_6">6a–6c+</string>
+    <string name="grade_band_7">7a–7c+</string>
+    <string name="grade_band_8_plus">8a e oltre</string>
+    <string name="label_grade">Grado</string>
+    <string name="route_list_no_match">Nessuna via corrisponde ai filtri.</string>
+    <string name="clear_filters">Azzera filtri</string>
+    <plurals name="crag_rating_badge">
+        <item quantity="one">%1$s · %2$d voto</item>
+        <item quantity="other">%1$s · %2$d voti</item>
+    </plurals>
+    <plurals name="cd_rating">
+        <item quantity="one">Voto %1$s su 5 da %2$d arrampicatore</item>
+        <item quantity="other">Voto %1$s su 5 da %2$d arrampicatori</item>
+    </plurals>
 
     <!-- Navigazione inferiore -->
     <string name="nav_discover">Scopri</string>

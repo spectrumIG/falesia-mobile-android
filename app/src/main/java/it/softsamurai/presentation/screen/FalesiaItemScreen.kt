@@ -41,6 +41,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,12 +55,15 @@ import it.softsamurai.core.ui.AppTheme
 import it.softsamurai.core.ui.FalesiaTheme
 import it.softsamurai.core.ui.component.FalesiaFilterChipRow
 import it.softsamurai.core.ui.component.FalesiaIconButton
+import it.softsamurai.core.ui.component.FalesiaPrimaryButton
 import it.softsamurai.core.ui.component.FalesiaSearchField
 import it.softsamurai.core.ui.component.FalesiaTopAppBar
 import it.softsamurai.core.ui.component.SectionHeader
+import it.softsamurai.core.ui.component.TopBarAction
 import it.softsamurai.core.ui.component.TopBarNavigation
 import it.softsamurai.domain.model.Falesia
 import it.softsamurai.domain.model.Via
+import it.softsamurai.domain.model.gradeRange
 import it.softsamurai.presentation.DiscoverEvent
 import it.softsamurai.presentation.FalesiaItemUiState
 import it.softsamurai.presentation.FalesiaItemViewModel
@@ -71,6 +75,7 @@ import it.softsamurai.core.ui.R as CoreUiR
 const val TAG_PULL_TO_REFRESH = "pull_to_refresh"
 const val TAG_CRAG_CARD = "crag_card"
 const val TAG_CRAG_LOCATION = "crag_location"
+const val TAG_SYNC_FAILED = "sync_failed"
 
 private const val CRAG_PHOTO_ASPECT_RATIO = 16f / 9f
 private val LocationIconSize = 14.dp
@@ -88,11 +93,15 @@ fun DiscoverRoute(
         events = viewModel.events,
         onRefresh = viewModel::onRefresh,
         onCragClick = onCragClick,
+        manualDownloads = viewModel.manualDownloads,
         modifier = modifier,
     )
 }
 
-/** Discover: crag list under a sticky header with search and filters (screens/Main.dc.html). */
+/**
+ * Discover: crag list under a sticky header with search and filters (screens/Main.dc.html). With
+ * [manualDownloads] (debug) there is no pull-to-refresh: the top bar download button calls [onRefresh].
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiscoverScreen(
@@ -101,6 +110,7 @@ fun DiscoverScreen(
     events: Flow<DiscoverEvent> = emptyFlow(),
     onRefresh: () -> Unit = {},
     onCragClick: (falesiaId: String) -> Unit = {},
+    manualDownloads: Boolean = false,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val syncErrorMessage = stringResource(R.string.sync_error_snackbar)
@@ -120,27 +130,47 @@ fun DiscoverScreen(
         modifier = modifier,
         containerColor = FalesiaTheme.colors.bg,
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = { DiscoverHeader() },
+        topBar = {
+            DiscoverHeader(
+                downloadAction = if (manualDownloads) {
+                    TopBarAction(
+                        icon = R.drawable.ic_cloud_download,
+                        contentDescription = stringResource(R.string.cd_download),
+                        onClick = onRefresh,
+                        isLoading = (uiState as? FalesiaItemUiState.Success)?.isRefreshing == true,
+                    )
+                } else {
+                    null
+                },
+            )
+        },
     ) { innerPadding ->
         when (uiState) {
             is FalesiaItemUiState.Loading -> LoadingContent(innerPadding)
+            is FalesiaItemUiState.SyncFailed -> SyncFailedContent(innerPadding, onRetry = onRefresh)
             is FalesiaItemUiState.Error -> ErrorContent(uiState, innerPadding)
-            is FalesiaItemUiState.Success -> PullToRefreshBox(
-                isRefreshing = uiState.isRefreshing,
-                onRefresh = onRefresh,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = innerPadding.calculateTopPadding())
-                    .testTag(TAG_PULL_TO_REFRESH),
-            ) {
-                CragListContent(uiState.data, innerPadding, onCragClick)
+            is FalesiaItemUiState.Success -> if (manualDownloads) {
+                Box(Modifier.padding(top = innerPadding.calculateTopPadding())) {
+                    CragListContent(uiState.data, innerPadding, onCragClick)
+                }
+            } else {
+                PullToRefreshBox(
+                    isRefreshing = uiState.isRefreshing,
+                    onRefresh = onRefresh,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = innerPadding.calculateTopPadding())
+                        .testTag(TAG_PULL_TO_REFRESH),
+                ) {
+                    CragListContent(uiState.data, innerPadding, onCragClick)
+                }
             }
         }
     }
 }
 
 @Composable
-private fun DiscoverHeader() {
+private fun DiscoverHeader(downloadAction: TopBarAction? = null) {
     val spacing = FalesiaTheme.spacing
     var searchQuery by rememberSaveable { mutableStateOf("") }
     val filters = listOf(
@@ -153,6 +183,7 @@ private fun DiscoverHeader() {
     FalesiaTopAppBar(
         title = stringResource(R.string.crag_atlas),
         navigation = TopBarNavigation.Menu(stringResource(R.string.cd_menu)),
+        action = downloadAction,
         containerColor = FalesiaTheme.colors.bgGlass95,
     ) {
         FalesiaSearchField(
@@ -212,6 +243,31 @@ private fun LoadingContent(innerPadding: PaddingValues) {
         contentAlignment = Alignment.Center,
     ) {
         CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+    }
+}
+
+/** No saved crags and the download failed (site down, no network): explain it and offer Retry. */
+@Composable
+private fun SyncFailedContent(innerPadding: PaddingValues, onRetry: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+            .padding(FalesiaTheme.spacing.space6)
+            .testTag(TAG_SYNC_FAILED),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(
+            FalesiaTheme.spacing.space4,
+            Alignment.CenterVertically
+        ),
+    ) {
+        Text(
+            text = stringResource(R.string.crags_sync_failed),
+            style = FalesiaTheme.typography.body,
+            color = FalesiaTheme.colors.inkMuted,
+            textAlign = TextAlign.Center,
+        )
+        FalesiaPrimaryButton(text = stringResource(R.string.retry), onClick = onRetry)
     }
 }
 
@@ -286,7 +342,7 @@ fun CragCard(
                     horizontalArrangement = Arrangement.spacedBy(spacing.space1),
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_location_on),
+                        painter = painterResource(CoreUiR.drawable.ic_location_on),
                         contentDescription = null,
                         modifier = Modifier.size(LocationIconSize),
                         tint = colors.inkMuted,
@@ -316,10 +372,10 @@ fun CragCard(
                     label = stringResource(R.string.label_routes),
                     value = crag.numeroVie.toString(),
                 )
-                crag.vie.firstOrNull()?.let { via ->
+                crag.gradeRange()?.let { range ->
                     StatColumn(
-                        label = stringResource(R.string.label_best_grade),
-                        value = via.grado,
+                        label = stringResource(R.string.label_grades),
+                        value = with(range) { if (start == endInclusive) "$start" else "$start–$endInclusive" },
                     )
                 }
                 Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
@@ -409,6 +465,12 @@ private fun DiscoverScreenLoadingPreview() {
     AppTheme {
         DiscoverScreen(uiState = FalesiaItemUiState.Loading)
     }
+}
+
+@PreviewLightDark
+@Composable
+private fun DiscoverScreenSyncFailedPreview() {
+    AppTheme { DiscoverScreen(uiState = FalesiaItemUiState.SyncFailed) }
 }
 
 @PreviewLightDark

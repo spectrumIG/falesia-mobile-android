@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Falesia Scalonaia | Mappe | falesiaonline</title>
+    <meta name="description"
+          content="Il progetto falesiaonline mantiene un archivio pubblico per la raccolta di informazioni riguardanti siti di arrampicata."/>
+    <meta name="keywords" content="falesia, falesie, crags, arrampicata, arrampicare, climbing"/>
+    <meta name="robots" content="index, follow, noodp"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="canonical" href="https://www.falesiaonline.it/falesia/map/scalonaia.html"/>
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon"/>
+    <meta property="og:type" content="article"/>
+    <meta property="og:url" content="https://www.falesiaonline.it"/>
+    <meta property="og:title" content="Falesiaonline"/>
+    <meta property="og:description"
+          content="Il progetto falesiaonline mantiene un archivio pubblico per la raccolta di informazioni riguardanti siti di arrampicata"/>
+    <meta property="og:image" content="https://www.falesiaonline.it/images/falesiaonline.jpg"/>
+    <!-- Mapbox GL -->
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css' rel='stylesheet'/>
+
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-12038608-1']);
+      _gaq.push(['_setDetectFlash', false]);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <script type="text/javascript" src="/js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="/js/leaflet.js"></script>
+    <script type="text/javascript" src="/js/leaflet-mapbox-gl.js"></script>
+    <script type="text/javascript" src="/js/L.Control.Locate.min.js"></script>
+    <script type="text/javascript" src="/js/Control.FullScreen.js"></script>
+    <script type="text/javascript" src="/js/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/default.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/fancybox-fol.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/leaflet.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/L.Control.Locate.min.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/Control.FullScreen.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/MarkerCluster.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/MarkerCluster.Default.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/font-awesome.min.css"/>
+</head>
+
+<body>
+<!-- Aggiornare anche gli iframes -->
+
+
+<div class="page">
+
+    <header id="headerMenu">
+        <div id="headerClippingFrame">
+            <div id="headerBackground">
+                <div id="headerForeground">
+                    <nav>
+                        <ul>
+                            <li class="">
+                                <a href="/"><img class="mobile" title="Home"
+                                                 src="/images/mobile_home.png"
+                                                 alt="Mobile_home"/><img class="desktop"
+                                                                         src="/images/logo_for_header.png"
+                                                                         alt="Logo_for_header"/><span>falesia</span><span>online</span></a>
+                            </li>
+
+                            <li class="selected">
+                                <a id="cragsLink" href="/falesie/sud-europa.html"><img
+                                        class="mobile" title="Falesie"
+                                        src="/images/mobile_crags.png" alt="Mobile_crags"/><span>Falesie</span></a>
+                            </li>
+
+                            <li class="">
+                                <a id="safetyLink" href="/sicurezza.html"><img class="mobile"
+                                                                               title="Sicurezza"
+                                                                               src="/images/mobile_safety.png"
+                                                                               alt="Mobile_safety"/><span>Sicurezza</span></a>
+                            </li>
+
+                            <li id="signinToggle" class="">
+                                <a title="entra" href="/login">&#xe608;</a></li>
+
+                            <li id="searchField">
+                                <input type="search" maxlength=64 placeholder="Cerca…"
+                                       data-ajaxurl1="/it/search/coarseFastSearch"
+                                       data-ajaxurl2="/it/search/fineSlowSearch">
+                            </li>
+
+                            <li class="hideOnMobile">
+                                <span id="onlineUsersCount"></span>
+                                <a id="facebookLink" title="facebook"
+                                   href="https://www.facebook.com/falesiaonline">&#xe607;</a>
+                            </li>
+
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <ul id="bread_crumb">
+            <li class="clickable" onclick="location.href='/falesie/sud-europa.html'">
+                Sud Europa
+            </li>
+            <li class="clickable" onclick="location.href='/falesie/italia.html'">
+                Italia
+            </li>
+            <li class="clickable" onclick="location.href='/falesie/toscana.html'">
+                Toscana
+            </li>
+            <li class="clickable" onclick="location.href='/falesie/toscana-sud-ovest.html'">
+                Toscana Sud Ovest
+            </li>
+            <li class="clickable" onclick="location.href='/falesie/monte-amiata.html'">
+                Monte Amiata
+            </li>
+            <li>
+                Scalonaia
+            </li>
+        </ul>
+        <div id="searchPane">
+            <div id="resultSlot1" class="resultSlot"></div>
+            <div id="resultSlot2" class="resultSlot"></div>
+        </div>
+    </header>
+
+    <div class="pageContent">
+        <main class="mainColumn">
+
+            <header class="pageHeader">
+                <div class="stars" id="stars_CRAG_95_H" title="Per votare entra nel tuo profilo">
+                    <img alt="star" width="25" height="25" src="/images/stelle/star_full.png"/><img
+                        alt="star" width="25" height="25" src="/images/stelle/star_full.png"/><img
+                        alt="star" width="25" height="25" src="/images/stelle/star_full.png"/><img
+                        alt="star" width="25" height="25" src="/images/stelle/star_half.png"/><img
+                        alt="star" width="25" height="25" src="/images/stelle/star_void.png"/><img
+                        alt="vote counter" id="H_CRAG_95_votecounter" width="25" height="25"
+                        src="/images/stelle/star_n.png"/>4
+                </div>
+                <h1>Falesia: Scalonaia</h1>
+                <div id="cragattributeicons_95" class="attributeiconscontainer">
+                    <div class="rock_icon" title="Roccia"><img
+                            src="/images/icone/rock_type_medium.png" alt="Rock_type_medium"/>Trachite
+                        (vulcanica)
+                    </div>
+                    <div class="season_icon" title="Stagioni"><img
+                            src="/images/icone/season_type_medium.png" alt="Season_type_medium"/>Mezze
+                        stagioni, Estate
+                    </div>
+                    <div class="edit_icon">Per editare entra nel tuo profilo</div>
+                </div>
+            </header>
+
+            <div id="secondary_menu">
+                <ul>
+
+                    <li class="clickable navigator"
+                        onclick="location.href='/falesia/scalonaia.html'">
+                        <span>Navigatore</span>
+                        <img height="21" src="/images/secondary_menu/navigator.png"
+                             alt="Navigator"/></li>
+
+
+                    <li class="clickable comments"
+                        onclick="location.href='/falesia/commenti/scalonaia.html'">
+                        <span>Discussioni</span>
+                        <img height="21" src="/images/secondary_menu/comments.png" alt="Comments"/>
+                        <span class="comment_numbers">0</span>
+                        <img height="21" src="/images/secondary_menu/warnings.png" alt="Warnings"/>
+                        <span class="comment_numbers">0</span>
+                    </li>
+
+                    <li class="selected map">
+                        <span>Mappa</span>
+                        <img height="21" src="/images/secondary_menu/map.png" alt="Map"/></li>
+
+                </ul>
+            </div>
+            <div class="largecragsearchmap">
+                <ul class="sectorGradeLegend" title="Legenda dei gradi medi dei settori">
+                    <li class="light" style="background: #ffffff"></li>
+                    <li class="light" style="background: #ffffff"></li>
+                    <li class="light" style="background: #ffffff"></li>
+                    <li class="light" style="background: #ffffff"></li>
+                    <li class="light" style="background: #ffffff"></li>
+                    <li class="dark" style="background: #ffffd5">5a</li>
+                    <li class="light" style="background: #ffffaa"></li>
+                    <li class="light" style="background: #ffff80"></li>
+                    <li class="light" style="background: #ffff55"></li>
+                    <li class="light" style="background: #ffff2b"></li>
+                    <li class="light" style="background: #ffff00"></li>
+                    <li class="dark" style="background: #ffd500">6a</li>
+                    <li class="light" style="background: #ffaa00"></li>
+                    <li class="light" style="background: #ff8000"></li>
+                    <li class="light" style="background: #ff5500"></li>
+                    <li class="light" style="background: #ff2b00"></li>
+                    <li class="light" style="background: #ff0000"></li>
+                    <li class="light" style="background: #d50000">7a</li>
+                    <li class="light" style="background: #aa0000"></li>
+                    <li class="light" style="background: #800000"></li>
+                    <li class="light" style="background: #550000"></li>
+                    <li class="light" style="background: #2b0000"></li>
+                    <li class="light" style="background: #000000"></li>
+                    <li class="light" style="background: #000000">8a</li>
+                    <li class="light" style="background: #000000"></li>
+                    <li class="light" style="background: #000000"></li>
+                    <li class="light" style="background: #000000"></li>
+                    <li class="light" style="background: #000000"></li>
+                    <li class="light" style="background: #000000"></li>
+                </ul>
+
+                <div id="cragMap" class="sectorMapNavigator extralarge"></div>
+            </div>
+
+            <article class="wide"><p>Istruzioni:
+                &target; Clicca sul simbolo del parcheggio per pianificare l'avvicinamento in auto
+                su GoogleMaps.
+                &target; Raggiunto il parcheggio attiva la geolocalizzazione e segui la tua
+                posizione lungo il percorso di avvicinamento ai settori.
+
+                Queste mappe si basano sui dati geografici del progetto collaborativo OpenStreetMap,
+                l'analogo di WikipediA per la cartografia. Puoi contribuire ad arricchirle di nuovi
+                dettagli (ad esempio aggiungendo o modificando un sentiero di avvicinamento ad una
+                falesia) editando le mappe direttamente sul sito di <a
+                        href="http://www.openstreetmap.org/#map=16/42.884588547781/11.579203605652">OpenStreetMap</a>.
+                Le tue modifiche compariranno qui nel giro di qualche settimana.
+            </p></article>
+
+
+            <script>
+                $(document).ready(function () {
+                    "use strict";
+                    var standard = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                                maxZoom: 19
+                            }),
+                            outdoors = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/outdoors-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmFsZXNpYW9ubGluZSIsImEiOiJFMFB0TDJJIn0.KyBTBgtLp_nnAj6tBMdaxg', {
+                                attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Migliora questa mappa</a></strong>',
+                                maxZoom: 19
+                            }),
+                            satellite = L.tileLayer('https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}@2x.jpg90?access_token=pk.eyJ1IjoiZmFsZXNpYW9ubGluZSIsImEiOiJFMFB0TDJJIn0.KyBTBgtLp_nnAj6tBMdaxg', {
+                                attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Migliora questa mappa</a></strong> © <a href="https://www.maxar.com/">Maxar</a>',
+                                maxNativeZoom: 18,
+                                maxZoom: 19
+                            }),
+                        southWest = new L.LatLng(42.882878692023, 11.579203605652),
+                      northEast = new L.LatLng(42.884588547781, 11.579632759094),
+                    bounds = new L.LatLngBounds(southWest, northEast),
+                        map = new L.Map("cragMap", {
+                            zoomSnap: 0.25,
+                            zoomDelta: 0.75,
+                            dragging: true,
+                            touchZoom: true,
+                            scrollWheelZoom: true,
+                            doubleClickZoom: true,
+                            boxZoom: true,
+                            keyboard: true,
+                            zoomControl: false,
+                            attributionControl: true,
+                            maxZoom: 19
+                        }),
+                        scale = L.control.scale({
+                            position: 'topright',
+                            metric: true,
+                            imperial: false
+                        }).addTo(map),
+                        layerControl = L.control.layers({
+                            'OpenStreetMap' : standard,
+                            'Mapbox Outdoors' : outdoors,
+                            'Mapbox Satellite' : satellite
+                        }, {}, {position:'topleft'}).addTo(map),
+                        zoomControl = L.control.zoom({
+                            position: 'topleft',
+                            zoomInTitle: '',
+                            zoomOutTitle: ''
+                        }).addTo(map);
+
+                        L.control.locate({
+                            position: 'topleft',
+                            drawCircle: true,
+                            follow: false,
+                            setView: false,
+                            keepCurrentZoomLevel: true,
+                            stopFollowingOnDrag: false,
+                            remainActive: false,
+                            markerClass: L.circleMarker,
+                            circleStyle: {weight: 2, clickable: false, keyboard: false},
+                            markerStyle: {weight: 2, clickable: false, keyboard: false},
+                            icon: 'fa fa-map-marker',
+                            showPopup: false,
+                            strings: {title: "Localizza la mia posizione"},
+                            locateOptions: {watch: true, enableHighAccuracy: true, maximumAge: 2000}
+                        }).addTo(map);
+
+                        var divIcon = L.divIcon({
+                        className: 'sectorMapIcon',
+                        iconSize: null,
+                        html: '<div style="background: #550000"></div>'
+                    }),
+                    sectorMarker = L.marker([42.882878692023, 11.579632759094], {
+                        icon: divIcon,
+                        clickable: true,
+                        keyboard: false,
+                        riseOnHover: true,
+                        title: 'Principale A'
+                    })
+                    .addTo(map)
+                    .on('click', function () {
+                        location.href='/sector_topo_sketch_or_photo/1199';
+                    });
+                        var divIcon = L.divIcon({
+                        className: 'sectorMapIcon',
+                        iconSize: null,
+                        html: '<div style="background: #ff2b00"></div>'
+                    }),
+                    sectorMarker = L.marker([42.882894415051, 11.579520106316], {
+                        icon: divIcon,
+                        clickable: true,
+                        keyboard: false,
+                        riseOnHover: true,
+                        title: 'Principale B'
+                    })
+                    .addTo(map)
+                    .on('click', function () {
+                        location.href='/sector_topo_sketch_or_photo/1202';
+                    });
+                        var divIcon = L.divIcon({
+                        className: 'sectorMapIcon',
+                        iconSize: null,
+                        html: '<div style="background: #ff5500"></div>'
+                    }),
+                    sectorMarker = L.marker([42.882906207319, 11.579412817955], {
+                        icon: divIcon,
+                        clickable: true,
+                        keyboard: false,
+                        riseOnHover: true,
+                        title: 'Principale C'
+                    })
+                    .addTo(map)
+                    .on('click', function () {
+                        location.href='/sector_topo_sketch_or_photo/1219';
+                    });
+                        var divIcon = L.divIcon({
+                        className: 'sectorMapIcon',
+                        iconSize: null,
+                        html: '<div style="background: #ff8000"></div>'
+                    }),
+                    sectorMarker = L.marker([42.882925861094, 11.579326987267], {
+                        icon: divIcon,
+                        clickable: true,
+                        keyboard: false,
+                        riseOnHover: true,
+                        title: 'Principale D'
+                    })
+                    .addTo(map)
+                    .on('click', function () {
+                        location.href='/sector_topo_sketch_or_photo/1221';
+                    });
+                        var divIcon = L.divIcon({
+                        className: 'sectorMapIcon',
+                        iconSize: null,
+                        html: '<div style="background: #ffaa00"></div>'
+                    }),
+                    sectorMarker = L.marker([42.882957307121, 11.579257249832], {
+                        icon: divIcon,
+                        clickable: true,
+                        keyboard: false,
+                        riseOnHover: true,
+                        title: 'Principale E'
+                    })
+                    .addTo(map)
+                    .on('click', function () {
+                        location.href='/sector_topo_sketch_or_photo/1223';
+                    });
+
+                    var myIcon = L.icon({
+                        iconUrl: '/images/park.png',
+                        iconSize: [18, 18]
+                    }),
+                        parkingLat = 42.884588547781,
+                        parkingLong = 11.579203605652,
+                        parking = L.marker([parkingLat, parkingLong], {
+                            icon: myIcon,
+                            keyboard: false,
+                            riseOnHover: true,
+                            title: 'Clicca per creare un percorso googlemaps alla falesia'
+                        })
+                        .addTo(map)
+                        .on('click', function () {
+                            location.href='http://maps.google.com/maps?saddr=&daddr='+parkingLat+','+parkingLong;
+                        });
+
+                    map.fitBounds(bounds, {paddingTopLeft: [20,50], paddingBottomRight: [30,20]}).addLayer(standard);
+
+                });
+            </script>
+        </main>
+
+        <aside class="sideColumn">
+
+
+            <div class="contextCommentsContainer">
+                <div class="header">Ultimi commenti in Scalonaia</div>
+                <div class="contextCommentFrame"
+                     onclick="location.href='/settore/commenti/1223/principale-e.html'">
+                    <div class="contextCommentTitle generic">
+                        <img src="/images/commenti/generic.png"/>
+                        <span>Via: </span>
+                        Ovolo malefico - 6c
+                    </div>
+
+                    <div class="contextCommentAuthor generic">
+		<span>
+			Lorenzo					</span>
+
+                        <span>
+			<img src="/images/commenti/comment_watch.png"/>
+			6 anni fa		</span>
+                    </div>
+
+                    <div class="contextCommentText generic">
+                        Il grado di 6c &egrave; inteso se si passa a sx degli spit. Se si passa a dx
+                        prendendo i buchi...
+                    </div>
+                </div>
+            </div>
+
+            <div class="contextCommentsContainer">
+                <div class="header">Ultime ripetizioni in Scalonaia</div>
+                <div class="contextCommentFrame"
+                     onclick="location.href='/sector_topo_sketch_or_photo_pitch/1221/15746'">
+                    <div class="contextAscentTitle">
+                        <img src="/images/ripetizioni/redpoint.png"/>
+                        Piopparello - 6b+
+                    </div>
+
+                    <div class="contextAscentAuthor">
+		<span>
+										LaZ84					</span>
+                        <span>
+			<img src="/images/commenti/comment_watch.png"/>
+			5 anni fa		</span>
+                    </div>
+                </div>
+                <div class="contextCommentFrame"
+                     onclick="location.href='/sector_topo_sketch_or_photo_pitch/1223/15757'">
+                    <div class="contextAscentTitle">
+                        <img src="/images/ripetizioni/onsight.png"/>
+                        Piede di capra - 5c+
+                    </div>
+
+                    <div class="contextAscentAuthor">
+		<span>
+										MF86					</span>
+                        <span>
+			<img src="/images/commenti/comment_watch.png"/>
+			7 anni fa		</span>
+                    </div>
+                </div>
+                <div class="contextCommentFrame"
+                     onclick="location.href='/sector_topo_sketch_or_photo_pitch/1221/15749'">
+                    <div class="contextAscentTitle">
+                        <img src="/images/ripetizioni/onsight.png"/>
+                        Bubbola minore - 6a+
+                    </div>
+
+                    <div class="contextAscentAuthor">
+		<span>
+										MF86					</span>
+                        <span>
+			<img src="/images/commenti/comment_watch.png"/>
+			7 anni fa		</span>
+                    </div>
+                </div>
+                <div class="contextCommentFrame"
+                     onclick="location.href='/sector_topo_sketch_or_photo_pitch/1223/15755'">
+                    <div class="contextAscentTitle">
+                        <img src="/images/ripetizioni/onsight.png"/>
+                        Galletto - 6a
+                    </div>
+
+                    <div class="contextAscentAuthor">
+		<span>
+										MF86					</span>
+                        <span>
+			<img src="/images/commenti/comment_watch.png"/>
+			7 anni fa		</span>
+                    </div>
+                </div>
+                <div class="contextCommentFrame"
+                     onclick="location.href='/sector_topo_sketch_or_photo_pitch/1219/15740'">
+                    <div class="contextAscentTitle">
+                        <img src="/images/ripetizioni/onsight.png"/>
+                        Peveraccio delle coliche - 6c+
+                    </div>
+
+                    <div class="contextAscentAuthor">
+		<span>
+										MF86					</span>
+                        <span>
+			<img src="/images/commenti/comment_watch.png"/>
+			7 anni fa		</span>
+                    </div>
+                </div>
+                <div class="contextCommentFrame"
+                     onclick="location.href='/sector_topo_sketch_or_photo_pitch/1199/15667'">
+                    <div class="contextAscentTitle">
+                        <img src="/images/ripetizioni/redpoint.png"/>
+                        Prugnolo bastardo - 7b+
+                    </div>
+
+                    <div class="contextAscentAuthor">
+		<span>
+										Utente anonimo
+					</span>
+                        <span>
+			<img src="/images/commenti/comment_watch.png"/>
+			7 anni fa		</span>
+                    </div>
+                </div>
+                <div class="contextCommentFrame"
+                     onclick="location.href='/sector_topo_sketch_or_photo_pitch/1219/15740'">
+                    <div class="contextAscentTitle">
+                        <img src="/images/ripetizioni/redpoint.png"/>
+                        Peveraccio delle coliche - 6c+
+                    </div>
+
+                    <div class="contextAscentAuthor">
+		<span>
+										Utente anonimo
+					</span>
+                        <span>
+			<img src="/images/commenti/comment_watch.png"/>
+			7 anni fa		</span>
+                    </div>
+                </div>
+                <div class="contextCommentFrame"
+                     onclick="location.href='/sector_topo_sketch_or_photo_pitch/1221/15746'">
+                    <div class="contextAscentTitle">
+                        <img src="/images/ripetizioni/redpoint.png"/>
+                        Piopparello - 6b+
+                    </div>
+
+                    <div class="contextAscentAuthor">
+		<span>
+										Utente anonimo
+					</span>
+                        <span>
+			<img src="/images/commenti/comment_watch.png"/>
+			9 anni fa		</span>
+                    </div>
+                </div>
+                <div class="contextCommentFrame"
+                     onclick="location.href='/sector_topo_sketch_or_photo_pitch/1221/15747'">
+                    <div class="contextAscentTitle">
+                        <img src="/images/ripetizioni/onsight.png"/>
+                        Cardonello - 6a
+                    </div>
+
+                    <div class="contextAscentAuthor">
+		<span>
+										Utente anonimo
+					</span>
+                        <span>
+			<img src="/images/commenti/comment_watch.png"/>
+			9 anni fa		</span>
+                    </div>
+                </div>
+                <div class="contextCommentFrame"
+                     onclick="location.href='/sector_topo_sketch_or_photo_pitch/1221/15748'">
+                    <div class="contextAscentTitle">
+                        <img src="/images/ripetizioni/onsight.png"/>
+                        Farinaccio - 6b+
+                    </div>
+
+                    <div class="contextAscentAuthor">
+		<span>
+										Utente anonimo
+					</span>
+                        <span>
+			<img src="/images/commenti/comment_watch.png"/>
+			9 anni fa		</span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="context_bolters">
+
+                <h3>Chiodatori e tracciatori in Scalonaia</h3>
+
+                <p>Nessun chiodatore o tracciatore presente.</p>
+
+            </div>
+        </aside>
+    </div>
+
+    <footer>
+
+        <ul>
+            <li class="allusers ">
+                <a href="/guide.html">Guide&#160;cartacee</a>
+            </li>
+
+            <li class="allusers ">
+                <a href="/chiodatori.html">Chiodatori&#160;e&#160;tracciatori</a>
+            </li>
+
+            <li class="">
+                <a href="/chi_siamo.html">Chi&#160;siamo</a>
+            </li>
+            <li class="">
+                <a href="/manifesto.html">Manifesto</a>
+            </li>
+            <li class="">
+                <a href="/licenza.html">Licenza</a>
+            </li>
+
+            <li class="">
+                <a href="/disclaimer.html">Disclaimer</a>
+            </li>
+
+            <li class="">
+                <a href="/privacy.html">Privacy</a>
+            </li>
+
+            <li class="">
+                <a href="/requisiti.html">Requisiti</a>
+            </li>
+
+            <li class="">
+                <a href="/contatti.html">Contatti</a>
+            </li>
+
+            <li class="">
+                <a href="/credits.html">Credits</a>
+            </li>
+
+            <li class="showOnMobile">
+                <a href="https://www.facebook.com/falesiaonline">Facebook</a>
+            </li>
+
+        </ul>
+
+        <div class="disclaimer">
+            <div>Avviso Importante!</div>
+            <p>I dati presentati su questo sito possono essere incompleti, fuorvianti o errati. E’
+                fondamentale quindi che l’arrampicatore valuti attentamente l’opportunità di recarsi
+                in una falesia e affrontare una via sulla base dei consigli di altri frequentatori,
+                della propria esperienza e di un'ispezione accurata della parete, valutandone la
+                solidità e le condizioni degli ancoraggi. Il progetto "falesiaonline" non fornisce
+                alcuna garanzia sulla validità dei dati presenti sul sito o sulla sicurezza dei
+                luoghi descritti, e non si assume alcuna responsabilità per eventuali danni causati
+                dall'utilizzo e dalla frequentazione degli stessi. Per ridurre gli inevitabili
+                rischi insiti nella pratica dell’arrampicata è indispensabile l’uso costante del
+                caschetto, anche per l’assicuratore, e l’impiego di un nodo di sicurezza in fondo
+                alla corda.</p>
+        </div>
+
+
+        <small>falesiaonline.it &copy;2026</small>
+    </footer>
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#onlineUsersCount').load('/it/sitewide/countOnlineUsers');
+    });
+</script>
+
+<script type="text/javascript" src="/js/tooltip_events.js"></script>
+<script type="text/javascript" src="/js/comment_events.js"></script>
+<script type="text/javascript" src="/js/stars_handling.js"></script>
+<script type="text/javascript" src="/js/fancyBox.js"></script>
+
+</body>
+</html>

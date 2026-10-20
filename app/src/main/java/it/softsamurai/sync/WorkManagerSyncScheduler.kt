@@ -10,7 +10,7 @@ import androidx.work.WorkManager
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-private const val IMMEDIATE_SYNC_WORK = "falesia_immediate_sync"
+internal const val IMMEDIATE_SYNC_WORK = "falesia_immediate_sync"
 private const val PERIODIC_SYNC_WORK = "falesia_periodic_sync"
 
 class WorkManagerSyncScheduler @Inject constructor(
@@ -41,5 +41,10 @@ class WorkManagerSyncScheduler @Inject constructor(
             ExistingPeriodicWorkPolicy.KEEP,
             request,
         )
+    }
+
+    override fun cancelScheduledSyncs() {
+        workManager.cancelUniqueWork(IMMEDIATE_SYNC_WORK)
+        workManager.cancelUniqueWork(PERIODIC_SYNC_WORK)
     }
 }

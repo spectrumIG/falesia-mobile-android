@@ -1,13 +1,16 @@
 package it.softsamurai.repository
 
 import arrow.core.Either
+import arrow.core.getOrElse
 import arrow.core.raise.either
+import arrow.core.raise.ensureNotNull
 import it.softsamurai.core.di.IoDispatcher
 import it.softsamurai.domain.error.FalesiaError
 import it.softsamurai.domain.error.SyncError
 import it.softsamurai.domain.model.Falesia
 import it.softsamurai.domain.repository.FalesiaRepository
 import it.softsamurai.domain.time.TimeProvider
+import it.softsamurai.repository.database.entity.SettoreEntity
 import it.softsamurai.repository.local.FalesiaLocalDataSource
 import it.softsamurai.repository.mapper.idFromUrl
 import it.softsamurai.repository.mapper.toDomain
@@ -15,6 +18,7 @@ import it.softsamurai.repository.mapper.toEntity
 import it.softsamurai.repository.network.FalesiaNetworkDataSource
 import it.softsamurai.repository.network.model.FalesiaDetailNetworkModel
 import it.softsamurai.repository.network.model.FalesiaListItemNetworkModel
+import it.softsamurai.repository.network.model.ViaNetworkModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -61,20 +65,12 @@ class FalesiaRepositoryImpl @Inject constructor(
 
     override suspend fun upsertFalesia(falesia: Falesia): Either<FalesiaError, Unit> =
         Either.catch {
-            localDataSource.upsertFalesiaWithVie(
-                entity = falesia.toEntity(),
-                vie = falesia.vie.map { it.toEntity(falesia.id) },
-            )
+            falesia.save()
         }.mapLeft { FalesiaError.DatabaseError(it) }
 
     override suspend fun upsertFalesie(falesie: List<Falesia>): Either<FalesiaError, Unit> =
         Either.catch {
-            falesie.forEach { falesia ->
-                localDataSource.upsertFalesiaWithVie(
-                    entity = falesia.toEntity(),
-                    vie = falesia.vie.map { it.toEntity(falesia.id) },
-                )
-            }
+            falesie.forEach { it.save() }
         }.mapLeft { FalesiaError.DatabaseError(it) }
 
     override suspend fun deleteFalesia(falesiaId: String): Either<FalesiaError, Unit> =
@@ -115,16 +111,74 @@ class FalesiaRepositoryImpl @Inject constructor(
             // Step 3: collect results — first failure short-circuits via bind()
             val pairs = detailResults.map { it.bind() }
 
-            // Step 4: persist atomically per crag
+            // Step 4: persist atomically per crag. Routes and parking are on-demand (refreshCragDetails):
+            // the sync keeps them for the sectors that are still there.
             Either.catch {
                 pairs.forEach { (listItem, detail) ->
                     val falesiaId = listItem.idFromUrl()
-                    localDataSource.upsertFalesiaWithVie(
+                    localDataSource.upsertFalesiaFromSync(
                         entity = listItem.toEntity(detail, now),
-                        vie = detail.vie.map { v -> v.toEntity(falesiaId) },
+                        settori = detail.settori.mapIndexed { index, settore ->
+                            settore.toEntity(
+                                falesiaId,
+                                index
+                            )
+                        },
                     )
                 }
             }.mapLeft { SyncError.StorageFailure(it) }.bind()
         }
+    }
+
+    override suspend fun refreshCragDetails(falesiaId: String): Either<SyncError, Unit> = either {
+        withContext(ioDispatcher) {
+            val saved = ensureNotNull(localDataSource.getFalesiaWithVieById(falesiaId)) {
+                SyncError.CragNotFound(falesiaId)
+            }
+
+            // Step 1: fetch every sector page, SYNC_CONCURRENCY at a time; first failure short-circuits
+            val results: List<Either<SyncError, Pair<SettoreEntity, List<ViaNetworkModel>>>> =
+                buildList {
+                    for (chunk in saved.settori.sortedBy { it.position }
+                        .chunked(SYNC_CONCURRENCY)) {
+                        addAll(
+                            coroutineScope {
+                                chunk.map { settore ->
+                                    async {
+                                        networkDataSource.fetchVieSettore(settore.linkDettagli)
+                                            .map { vie -> settore to vie }
+                                    }
+                                }.awaitAll()
+                            }
+                        )
+                    }
+                }
+            val vie = results.map { it.bind() }
+                .flatMap { (settore, vie) ->
+                    vie.mapIndexed { index, via -> via.toEntity(falesiaId, settore.id, index) }
+                }
+                // A route listed in two sectors is stored once, in the first one.
+                .distinctBy { it.id }
+
+            // Step 2: the parking is optional: if the map page fails, keep the one already saved
+            val parking = networkDataSource.fetchParcheggio(saved.falesia.linkDettagli).getOrElse {
+                saved.falesia.parkingLatitude?.let { lat -> saved.falesia.parkingLongitude?.let { lng -> lat to lng } }
+            }
+
+            // Step 3: persist routes, parking and timestamp atomically
+            Either.catch {
+                localDataSource.replaceDettagli(falesiaId, vie, parking, timeProvider.nowMillis())
+            }.mapLeft { SyncError.StorageFailure(it) }.bind()
+        }
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────
+
+    private suspend fun Falesia.save() {
+        localDataSource.upsertFalesiaWithVie(
+            entity = toEntity(),
+            settori = settori.mapIndexed { index, settore -> settore.toEntity(id, index) },
+            vie = vie.mapIndexed { index, via -> via.toEntity(id, index) },
+        )
     }
 }

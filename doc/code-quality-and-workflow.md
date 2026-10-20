@@ -12,7 +12,8 @@
 - Kotlin official code style (`kotlin.code.style=official`); match surrounding code (section comments like
   `// ── Observe ──` in repositories, KDoc only where it adds information).
 - Domain vocabulary is **Italian** and must be kept: `falesia`/`falesie` (crag/crags), `via`/`vie`
-  (route/routes), `zona`, `nome`. Everything else (code structure, comments, docs) in English.
+  (route/routes), `settore`/`settori` (sector/sectors), `zona`, `nome`, `grado`. Everything else
+  (code structure, comments, docs) in English.
 - `private const val` for magic numbers at file top (e.g. `SYNC_CONCURRENCY`, `MAX_RETRIES`).
 - detekt with `buildUponDefaultConfig`: `detekt.yml` holds only the project's overrides (Compose-aware naming,
   thresholds); fix findings in code, use `@Suppress` with a reason only when a rule is wrong for that case, no

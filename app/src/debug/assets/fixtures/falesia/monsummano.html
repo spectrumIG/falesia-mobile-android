@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Falesia Monsummano | Navigatore | falesiaonline</title>
+	<meta name="description"
+		  content="Il progetto falesiaonline mantiene un archivio pubblico per la raccolta di informazioni riguardanti siti di arrampicata."/>
+	<meta name="keywords" content="falesia, falesie, crags, arrampicata, arrampicare, climbing"/>
+	<meta name="robots" content="index, follow, noodp"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<link rel="canonical" href="https://www.falesiaonline.it/falesia/monsummano.html"/>
+	<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon"/>
+	<meta property="og:type" content="article"/>
+	<meta property="og:url" content="https://www.falesiaonline.it"/>
+	<meta property="og:title" content="Falesiaonline"/>
+	<meta property="og:description"
+		  content="Il progetto falesiaonline mantiene un archivio pubblico per la raccolta di informazioni riguardanti siti di arrampicata"/>
+	<meta property="og:image" content="https://www.falesiaonline.it/images/falesiaonline.jpg"/>
+	<!-- Mapbox GL -->
+	<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.js'></script>
+	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css' rel='stylesheet'/>
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-12038608-1']);
+      _gaq.push(['_setDetectFlash', false]);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+	</script>
+	<script type="text/javascript" src="/js/jquery-3.1.1.min.js"></script>
+	<script type="text/javascript" src="/js/leaflet.js"></script>
+	<script type="text/javascript" src="/js/leaflet-mapbox-gl.js"></script>
+	<script type="text/javascript" src="/js/L.Control.Locate.min.js"></script>
+	<script type="text/javascript" src="/js/Control.FullScreen.js"></script>
+	<script type="text/javascript" src="/js/leaflet.markercluster.js"></script>
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/default.css"/>
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/fancybox-fol.css"/>
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/leaflet.css"/>
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/L.Control.Locate.min.css"/>
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/Control.FullScreen.css"/>
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/MarkerCluster.css"/>
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/MarkerCluster.Default.css"/>
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/font-awesome.min.css"/>
+</head>
+
+<body>
+<!-- Aggiornare anche gli iframes -->
+
+
+<div class="page">
+
+	<header id="headerMenu">
+		<div id="headerClippingFrame">
+			<div id="headerBackground">
+				<div id="headerForeground">
+					<nav>
+						<ul>
+							<li class="">
+								<a href="/"><img class="mobile" title="Home"
+												 src="/images/mobile_home.png"
+												 alt="Mobile_home"/><img class="desktop"
+																		 src="/images/logo_for_header.png"
+																		 alt="Logo_for_header"/><span>falesia</span><span>online</span></a>
+							</li>
+
+							<li class="selected">
+								<a id="cragsLink" href="/falesie/sud-europa.html"><img
+										class="mobile" title="Falesie"
+										src="/images/mobile_crags.png" alt="Mobile_crags"/><span>Falesie</span></a>
+							</li>
+
+							<li class="">
+								<a id="safetyLink" href="/sicurezza.html"><img class="mobile"
+																			   title="Sicurezza"
+																			   src="/images/mobile_safety.png"
+																			   alt="Mobile_safety"/><span>Sicurezza</span></a>
+							</li>
+
+							<li id="signinToggle" class="">
+								<a title="entra" href="/login">&#xe608;</a></li>
+
+							<li id="searchField">
+								<input type="search" maxlength=64 placeholder="Cerca…"
+									   data-ajaxurl1="/it/search/coarseFastSearch"
+									   data-ajaxurl2="/it/search/fineSlowSearch">
+							</li>
+
+							<li class="hideOnMobile">
+								<span id="onlineUsersCount"></span>
+								<a id="facebookLink" title="facebook"
+								   href="https://www.facebook.com/falesiaonline">&#xe607;</a>
+							</li>
+
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+		<ul id="bread_crumb">
+			<li class="clickable" onclick="location.href='/falesie/sud-europa.html'">
+				Sud Europa
+			</li>
+			<li class="clickable" onclick="location.href='/falesie/italia.html'">
+				Italia
+			</li>
+			<li class="clickable" onclick="location.href='/falesie/toscana.html'">
+				Toscana
+			</li>
+			<li class="clickable" onclick="location.href='/falesie/toscana-nord-ovest.html'">
+				Toscana Nord Ovest
+			</li>
+			<li>
+				Monsummano
+			</li>
+		</ul>
+		<div id="searchPane">
+			<div id="resultSlot1" class="resultSlot"></div>
+			<div id="resultSlot2" class="resultSlot"></div>
+		</div>
+	</header>
+
+	<div class="pageContent">
+		<main class="mainColumn">
+
+			<header class="pageHeader">
+				<div class="stars" id="stars_CRAG_8_H" title="Per votare entra nel tuo profilo"><img
+						alt="star" width="25" height="25" src="/images/stelle/star_full.png"/><img
+						alt="star" width="25" height="25" src="/images/stelle/star_full.png"/><img
+						alt="star" width="25" height="25" src="/images/stelle/star_full.png"/><img
+						alt="star" width="25" height="25" src="/images/stelle/star_full.png"/><img
+						alt="star" width="25" height="25" src="/images/stelle/star_half.png"/><img
+						alt="vote counter" id="H_CRAG_8_votecounter" width="25" height="25"
+						src="/images/stelle/star_n.png"/>15
+				</div>
+				<h1>Falesia: Monsummano</h1>
+				<div id="cragattributeicons_8" class="attributeiconscontainer">
+					<div class="rock_icon" title="Roccia"><img
+							src="/images/icone/rock_type_medium.png" alt="Rock_type_medium"/>Calcare
+					</div>
+					<div class="season_icon" title="Stagioni"><img
+							src="/images/icone/season_type_medium.png" alt="Season_type_medium"/>Inverno,
+						Mezze stagioni
+					</div>
+					<div class="edit_icon">Per editare entra nel tuo profilo</div>
+				</div>
+			</header>
+
+			<div id="secondary_menu">
+				<ul>
+
+					<li class="selected navigator">
+						<span>Navigatore</span>
+						<img height="21" src="/images/secondary_menu/navigator.png"
+							 alt="Navigator"/></li>
+
+					<li class="clickable info"
+						onclick="location.href='/falesia/info/monsummano.html'">
+						<span>Info</span>
+						<img height="21" src="/images/secondary_menu/info.png" alt="Info"/></li>
+
+					<li class="clickable comments"
+						onclick="location.href='/falesia/commenti/monsummano.html'">
+						<span>Discussioni</span>
+						<img height="21" src="/images/secondary_menu/comments.png" alt="Comments"/>
+						<span class="comment_numbers">6</span>
+						<img height="21" src="/images/secondary_menu/warnings.png" alt="Warnings"/>
+						<span class="comment_numbers">4</span>
+					</li>
+
+					<li class="clickable map"
+						onclick="location.href='/falesia/map/monsummano.html'">
+						<span>Mappa</span>
+						<img height="21" src="/images/secondary_menu/map.png" alt="Map"/></li>
+
+				</ul>
+			</div>
+			<div class="cragColumns">
+				<div class="cragLeftColumn">
+					<div class="smallcragsearchmap">
+
+						<ul class="sectorGradeLegend small"
+							title="Legenda dei gradi medi dei settori">
+							<li class="light" style="background: #ffffff"></li>
+							<li class="light" style="background: #ffffff"></li>
+							<li class="light" style="background: #ffffff"></li>
+							<li class="light" style="background: #ffffff"></li>
+							<li class="light" style="background: #ffffff"></li>
+							<li class="dark" style="background: #ffffd5">5a</li>
+							<li class="light" style="background: #ffffaa"></li>
+							<li class="light" style="background: #ffff80"></li>
+							<li class="light" style="background: #ffff55"></li>
+							<li class="light" style="background: #ffff2b"></li>
+							<li class="light" style="background: #ffff00"></li>
+							<li class="dark" style="background: #ffd500">6a</li>
+							<li class="light" style="background: #ffaa00"></li>
+							<li class="light" style="background: #ff8000"></li>
+							<li class="light" style="background: #ff5500"></li>
+							<li class="light" style="background: #ff2b00"></li>
+							<li class="light" style="background: #ff0000"></li>
+							<li class="light" style="background: #d50000">7a</li>
+							<li class="light" style="background: #aa0000"></li>
+							<li class="light" style="background: #800000"></li>
+							<li class="light" style="background: #550000"></li>
+							<li class="light" style="background: #2b0000"></li>
+							<li class="light" style="background: #000000"></li>
+							<li class="light" style="background: #000000">8a</li>
+							<li class="light" style="background: #000000"></li>
+							<li class="light" style="background: #000000"></li>
+							<li class="light" style="background: #000000"></li>
+							<li class="light" style="background: #000000"></li>
+							<li class="light" style="background: #000000"></li>
+						</ul>
+
+						<div id="sectorMap" class="sectorMapNavigator large">
+						</div>
+					</div>
+
+					<script>
+						$(document).ready(function () {
+                            "use strict";
+                            var mapbox_accessToken = 'pk.eyJ1IjoiZmFsZXNpYW9ubGluZSIsImEiOiJFMFB0TDJJIn0.KyBTBgtLp_nnAj6tBMdaxg';
+                            var mapboxTiles = L.mapboxGL({
+                                        accessToken: mapbox_accessToken,
+                                        style: 'mapbox://styles/falesiaonline/ck6dz6uyq134l1ipmzpzi5qju',
+                                        attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Migliora questa mappa</a></strong>',
+                                    }),
+                            southWest = new L.LatLng(43.868677704799, 10.822906494141),
+                              northEast = new L.LatLng(43.872637760396, 10.830212831497),
+                            bounds = new L.LatLngBounds(southWest, northEast),
+                                map = new L.Map("sectorMap", {
+                                    zoomSnap: 0.25,
+                                    dragging: false,
+                                    touchZoom: false,
+                                    scrollWheelZoom: false,
+                                    doubleClickZoom: false,
+                                    boxZoom: false,
+                                    tap: false,
+                                    keyboard: false,
+                                    zoomControl: false,
+                                    attributionControl: true,
+                                    maxZoom: 18
+                                }),
+                                scale = L.control.scale({
+                                    position: 'topright',
+                                    metric: true,
+                                    imperial: false
+                                }).addTo(map);
+
+                                L.control.locate({
+                                    position: 'topleft',
+                                    drawCircle: true,
+                                    follow: false,
+                                    setView: false,
+                                    keepCurrentZoomLevel: true,
+                                    stopFollowingOnDrag: false,
+                                    remainActive: false,
+                                    markerClass: L.circleMarker,
+                                    circleStyle: {weight: 2, clickable: false, keyboard: false},
+                                    markerStyle: {weight: 2, clickable: false, keyboard: false},
+                                    icon: 'fa fa-map-marker',
+                                    showPopup: false,
+                                    strings: {title: "Localizza la mia posizione"},
+                                    locateOptions: {watch: true, enableHighAccuracy: true, maximumAge: 2000}
+                                }).addTo(map);
+
+                                var divIcon = L.divIcon({
+                                className: 'sectorMapIcon',
+                                iconSize: null,
+                                html: '<div style="background: #d50000"></div>'
+                            }),
+                            sectorMarker = L.marker([43.872637760396, 10.822906494141], {
+                                icon: divIcon,
+                                clickable: true,
+                                riseOnHover: true,
+                                title: 'Pilastro Rosso'
+                            })
+                            .addTo(map)
+                            .on('click', function () {
+                                location.href='/sector_topo_sketch_or_photo/1510';
+                            });
+                                var divIcon = L.divIcon({
+                                className: 'sectorMapIcon',
+                                iconSize: null,
+                                html: '<div style="background: #ffaa00"></div>'
+                            }),
+                            sectorMarker = L.marker([43.870023534459, 10.825679898262], {
+                                icon: divIcon,
+                                clickable: true,
+                                riseOnHover: true,
+                                title: 'il Paretone (sinistra)'
+                            })
+                            .addTo(map)
+                            .on('click', function () {
+                                location.href='/sector_topo_sketch_or_photo/12';
+                            });
+                                var divIcon = L.divIcon({
+                                className: 'sectorMapIcon',
+                                iconSize: null,
+                                html: '<div style="background: #ffd500"></div>'
+                            }),
+                            sectorMarker = L.marker([43.869779895135, 10.82603931427], {
+                                icon: divIcon,
+                                clickable: true,
+                                riseOnHover: true,
+                                title: 'il Paretone (centro)'
+                            })
+                            .addTo(map)
+                            .on('click', function () {
+                                location.href='/sector_topo_sketch_or_photo/441';
+                            });
+                                var divIcon = L.divIcon({
+                                className: 'sectorMapIcon',
+                                iconSize: null,
+                                html: '<div style="background: #ffffd5"></div>'
+                            }),
+                            sectorMarker = L.marker([43.86941056696, 10.826605260372], {
+                                icon: divIcon,
+                                clickable: true,
+                                riseOnHover: true,
+                                title: 'Osteria'
+                            })
+                            .addTo(map)
+                            .on('click', function () {
+                                location.href='/sector_topo_sketch_or_photo/903';
+                            });
+                                var divIcon = L.divIcon({
+                                className: 'sectorMapIcon',
+                                iconSize: null,
+                                html: '<div style="background: #ff5500"></div>'
+                            }),
+                            sectorMarker = L.marker([43.869207532171, 10.827251672745], {
+                                icon: divIcon,
+                                clickable: true,
+                                riseOnHover: true,
+                                title: 'Settore Nascosto (sinistra)'
+                            })
+                            .addTo(map)
+                            .on('click', function () {
+                                location.href='/sector_topo_sketch_or_photo/1070';
+                            });
+                                var divIcon = L.divIcon({
+                                className: 'sectorMapIcon',
+                                iconSize: null,
+                                html: '<div style="background: #ffffff"></div>'
+                            }),
+                            sectorMarker = L.marker([43.869342888774, 10.827219486237], {
+                                icon: divIcon,
+                                clickable: true,
+                                riseOnHover: true,
+                                title: 'Settore Nascosto (centro)'
+                            })
+                            .addTo(map)
+                            .on('click', function () {
+                                location.href='/sector_topo_sketch_or_photo/1069';
+                            });
+                                var divIcon = L.divIcon({
+                                className: 'sectorMapIcon',
+                                iconSize: null,
+                                html: '<div style="background: #ffff80"></div>'
+                            }),
+                            sectorMarker = L.marker([43.869339021446, 10.827391147614], {
+                                icon: divIcon,
+                                clickable: true,
+                                riseOnHover: true,
+                                title: 'Settore Nascosto (destra)'
+                            })
+                            .addTo(map)
+                            .on('click', function () {
+                                location.href='/sector_topo_sketch_or_photo/1067';
+                            });
+                                var divIcon = L.divIcon({
+                                className: 'sectorMapIcon',
+                                iconSize: null,
+                                html: '<div style="background: #ff8000"></div>'
+                            }),
+                            sectorMarker = L.marker([43.869466643113, 10.827316045761], {
+                                icon: divIcon,
+                                clickable: true,
+                                riseOnHover: true,
+                                title: 'Pala strapiombante'
+                            })
+                            .addTo(map)
+                            .on('click', function () {
+                                location.href='/sector_topo_sketch_or_photo/1037';
+                            });
+                                var divIcon = L.divIcon({
+                                className: 'sectorMapIcon',
+                                iconSize: null,
+                                html: '<div style="background: #ffffaa"></div>'
+                            }),
+                            sectorMarker = L.marker([43.869416367943, 10.827734470367], {
+                                icon: divIcon,
+                                clickable: true,
+                                riseOnHover: true,
+                                title: 'Cava Grigia (sinistra)'
+                            })
+                            .addTo(map)
+                            .on('click', function () {
+                                location.href='/sector_topo_sketch_or_photo/1090';
+                            });
+                                var divIcon = L.divIcon({
+                                className: 'sectorMapIcon',
+                                iconSize: null,
+                                html: '<div style="background: #ffffff"></div>'
+                            }),
+                            sectorMarker = L.marker([43.869281011508, 10.827962458134], {
+                                icon: divIcon,
+                                clickable: true,
+                                riseOnHover: true,
+                                title: 'Cava Grigia (centro)'
+                            })
+                            .addTo(map)
+                            .on('click', function () {
+                                location.href='/sector_topo_sketch_or_photo/711';
+                            });
+                                var divIcon = L.divIcon({
+                                className: 'sectorMapIcon',
+                                iconSize: null,
+                                html: '<div style="background: #ffff2b"></div>'
+                            }),
+                            sectorMarker = L.marker([43.86916692513, 10.828303098679], {
+                                icon: divIcon,
+                                clickable: true,
+                                riseOnHover: true,
+                                title: 'Cava Grigia (destra)'
+                            })
+                            .addTo(map)
+                            .on('click', function () {
+                                location.href='/sector_topo_sketch_or_photo/637';
+                            });
+                                var divIcon = L.divIcon({
+                                className: 'sectorMapIcon',
+                                iconSize: null,
+                                html: '<div style="background: #ffff55"></div>'
+                            }),
+                            sectorMarker = L.marker([43.869006430365, 10.829410851002], {
+                                icon: divIcon,
+                                clickable: true,
+                                riseOnHover: true,
+                                title: 'Cava Rossa (sinistra)'
+                            })
+                            .addTo(map)
+                            .on('click', function () {
+                                location.href='/sector_topo_sketch_or_photo/54';
+                            });
+                                var divIcon = L.divIcon({
+                                className: 'sectorMapIcon',
+                                iconSize: null,
+                                html: '<div style="background: #ff2b00"></div>'
+                            }),
+                            sectorMarker = L.marker([43.868998695667, 10.829856097698], {
+                                icon: divIcon,
+                                clickable: true,
+                                riseOnHover: true,
+                                title: 'Cava Rossa (centro)'
+                            })
+                            .addTo(map)
+                            .on('click', function () {
+                                location.href='/sector_topo_sketch_or_photo/238';
+                            });
+                                var divIcon = L.divIcon({
+                                className: 'sectorMapIcon',
+                                iconSize: null,
+                                html: '<div style="background: #ffaa00"></div>'
+                            }),
+                            sectorMarker = L.marker([43.868677704799, 10.830212831497], {
+                                icon: divIcon,
+                                clickable: true,
+                                riseOnHover: true,
+                                title: 'Cava Rossa (destra)'
+                            })
+                            .addTo(map)
+                            .on('click', function () {
+                                location.href='/sector_topo_sketch_or_photo/242';
+                            });
+
+                            map.fitBounds(bounds, {padding:[8,6]}).addLayer(mapboxTiles);
+
+                        });
+					</script>
+
+					<div id="objectPhoto" class="narrowArticle">
+						<img src="/uploads/assets/image/150224245784falesia_monsummano_.jpg">
+					</div>
+
+					<article class="narrow">
+						<p>Storica falesia invernale del Pistoiese suddivisa in vari settori.
+							<mark>Nel 2004 la Cava Rossa è stata teatro di una grossa frana ed è
+								attualmente dichiarata inagibile dalle autorità locali.
+							</mark>
+							Nonostante questo continua a essere frequentata, chiaramente a rischio e
+							pericolo per gli arrampicatori e in barba al divieto. A testimonianza
+							del perdurante pericolo un grosso masso è caduto, sempre in Cava Rossa,
+							nel Gennaio 2016!
+							<mark>Inoltre, il nulla osta comunale per l'accesso alla Cava Grigia è
+								limitato alle attività didattiche del CAI (corsi, aggiornamenti,
+								esercitazioni) (fonti CISASATER, CAI Toscana-Emilia Romagna
+								aggiornate al 2016).
+							</mark>
+						</p>
+					</article>
+
+				</div>
+
+				<div id="main_list" class="cragRightColumn">
+					<ul>
+
+						<li class="leafletshadow sectorleaflet ">
+
+							<a href="https://falesiaonline.it/settorefoto/1510/pilastro-rosso.html">
+								<div class="thumbnailframe">
+									<img alt="Pilastro Rosso" height="106" title="Pilastro Rosso"
+										 src="/images/falesie/Z-monsummano-pilastro-rosso-small.jpg"/>
+								</div>
+							</a>
+
+							<div class="stars" id="stars_SECTOR_1510_L"
+								 title="Per votare entra nel tuo profilo"><img alt="star" width="17"
+																			   height="17"
+																			   src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_full.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_full.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_void.png"/><img
+									alt="vote counter" id="L_SECTOR_1510_votecounter" width="17"
+									height="17" src="/images/stelle/star_n.png"/>1
+							</div>
+							<h4><a href="/settorefoto/1510/pilastro-rosso.html">Pilastro Rosso</a>
+							</h4>
+
+							<div class="indicatorrow firstrow">
+								<span class="indicator" title="Vie"><img height="16"
+																		 src="/images/icone/routes_small.png"
+																		 alt="Routes_small"/>20</span>
+								<span class="indicator">6a+<div title="Grado medio 7a"
+																style="background: #d50000"></div>7c+</span>
+								<span class="indicator" title="Discussioni generali"><img
+										height="16" src="/images/icone/comments_small.png"
+										alt="Comments_small"/>16</span>
+								<span class="indicator" title="Discussioni su pericoli"><img
+										height="16" src="/images/icone/warnings_small.png"
+										alt="Warnings_small"/>9</span>
+							</div>
+							<div class="indicatorrow otherrows">
+																	<span class="indicator protection">
+						<img src="/images/protezioni/bolted_small.png" height="14" title="Ancoraggi fissi" />
+					</span>
+								<span class="indicator" title="Sviluppo delle vie"><img height="14"
+																						src="/images/icone/route_length_small.png"
+																						alt="Route_length_small"/>13–28m</span>
+
+								<span class="indicator" title="Avvicinamento"><img height="14"
+																				   src="/images/icone/sector_approach_small.png"
+																				   alt="Sector_approach_small"/>6–15min</span>
+								<span class="indicator" title="Esposizione"><img height="14"
+																				 src="/images/icone/sector_orientation_small.png"
+																				 alt="Sector_orientation_small"/>NE</span>
+
+								<span class="indicator" title="Ripetizioni"><img height="14"
+																				 src="/images/icone/ascents_small.png"
+																				 alt="Ascents_small"/>104</span>
+							</div>
+						</li>
+
+						<li class="leafletshadow sectorleaflet ">
+
+							<a href="https://falesiaonline.it/settorefoto/12/il-paretone-sinistra.html">
+								<div class="thumbnailframe">
+									<img alt="il Paretone (sinistra)" height="106"
+										 title="il Paretone (sinistra)"
+										 src="/images/falesie/Z-monsummano-il-paretone-sinistra-small.jpg"/>
+								</div>
+							</a>
+
+							<div class="stars" id="stars_SECTOR_12_L"
+								 title="Per votare entra nel tuo profilo"><img alt="star" width="17"
+																			   height="17"
+																			   src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_full.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_full.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_half.png"/><img
+									alt="vote counter" id="L_SECTOR_12_votecounter" width="17"
+									height="17" src="/images/stelle/star_n.png"/>9
+							</div>
+							<h4><a href="/settorefoto/12/il-paretone-sinistra.html">il Paretone
+								(sinistra)</a></h4>
+
+							<div class="indicatorrow firstrow">
+								<span class="indicator" title="Vie"><img height="16"
+																		 src="/images/icone/routes_small.png"
+																		 alt="Routes_small"/>20</span>
+								<span class="indicator">5a<div title="Grado medio 6a+"
+															   style="background: #ffaa00"></div>7b</span>
+								<span class="indicator" title="Discussioni generali"><img
+										height="16" src="/images/icone/comments_small.png"
+										alt="Comments_small"/>38</span>
+								<span class="indicator" title="Discussioni su pericoli"><img
+										height="16" src="/images/icone/warnings_small.png"
+										alt="Warnings_small"/>7</span>
+							</div>
+							<div class="indicatorrow otherrows">
+																	<span class="indicator protection">
+						<img src="/images/protezioni/bolted_small.png" height="14" title="Ancoraggi fissi" />
+					</span>
+								<span class="indicator protection">
+						<img src="/images/protezioni/pitons_small.png" height="14" title="Chiodi" />
+					</span>
+								<span class="indicator" title="Sviluppo delle vie"><img height="14"
+																						src="/images/icone/route_length_small.png"
+																						alt="Route_length_small"/>8–40m</span>
+
+								<span class="indicator" title="Avvicinamento"><img height="14"
+																				   src="/images/icone/sector_approach_small.png"
+																				   alt="Sector_approach_small"/>12–21min</span>
+								<span class="indicator" title="Esposizione"><img height="14"
+																				 src="/images/icone/sector_orientation_small.png"
+																				 alt="Sector_orientation_small"/>SO</span>
+
+								<span class="indicator" title="Ripetizioni"><img height="14"
+																				 src="/images/icone/ascents_small.png"
+																				 alt="Ascents_small"/>402</span>
+							</div>
+						</li>
+
+						<li class="leafletshadow sectorleaflet ">
+
+							<a href="https://falesiaonline.it/settorefoto/441/il-paretone-centro.html">
+								<div class="thumbnailframe">
+									<img alt="il Paretone (centro)" height="106"
+										 title="il Paretone (centro)"
+										 src="/images/falesie/Z-monsummano-il-paretone-centro-small.jpg"/>
+								</div>
+							</a>
+
+							<div class="stars" id="stars_SECTOR_441_L"
+								 title="Per votare entra nel tuo profilo"><img alt="star" width="17"
+																			   height="17"
+																			   src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_full.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_half.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_void.png"/><img
+									alt="vote counter" id="L_SECTOR_441_votecounter" width="17"
+									height="17" src="/images/stelle/star_n.png"/>4
+							</div>
+							<h4><a href="/settorefoto/441/il-paretone-centro.html">il Paretone
+								(centro)</a></h4>
+
+							<div class="indicatorrow firstrow">
+								<span class="indicator" title="Vie"><img height="16"
+																		 src="/images/icone/routes_small.png"
+																		 alt="Routes_small"/>4</span>
+								<span class="indicator">5c+<div title="Grado medio 6a"
+																style="background: #ffd500"></div>6a+</span>
+								<span class="indicator" title="Discussioni generali"><img
+										height="16" src="/images/icone/comments_small.png"
+										alt="Comments_small"/>4</span>
+								<span class="indicator" title="Discussioni su pericoli"><img
+										height="16" src="/images/icone/warnings_small.png"
+										alt="Warnings_small"/>3</span>
+							</div>
+							<div class="indicatorrow otherrows">
+																	<span class="indicator protection">
+						<img src="/images/protezioni/bolted_small.png" height="14" title="Ancoraggi fissi" />
+					</span>
+								<span class="indicator" title="Sviluppo delle vie"><img height="14"
+																						src="/images/icone/route_length_small.png"
+																						alt="Route_length_small"/>13–35m</span>
+
+								<span class="indicator" title="Avvicinamento"><img height="14"
+																				   src="/images/icone/sector_approach_small.png"
+																				   alt="Sector_approach_small"/>9–20min</span>
+								<span class="indicator" title="Esposizione"><img height="14"
+																				 src="/images/icone/sector_orientation_small.png"
+																				 alt="Sector_orientation_small"/>SO</span>
+
+								<span class="indicator" title="Ripetizioni"><img height="14"
+																				 src="/images/icone/ascents_small.png"
+																				 alt="Ascents_small"/>33</span>
+							</div>
+						</li>
+
+						<li class="leafletshadow sectorleaflet ">
+
+							<a href="https://falesiaonline.it/settorefoto/903/osteria.html">
+								<div class="thumbnailframe">
+									<img alt="Osteria" height="106" title="Osteria"
+										 src="/images/falesie/Z-monsummano-osteria-small.jpg"/>
+								</div>
+							</a>
+
+							<div class="stars" id="stars_SECTOR_903_L"
+								 title="Per votare entra nel tuo profilo"><img alt="star" width="17"
+																			   height="17"
+																			   src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_full.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_void.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_void.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_void.png"/><img
+									alt="vote counter" id="L_SECTOR_903_votecounter" width="17"
+									height="17" src="/images/stelle/star_n.png"/>2
+							</div>
+							<h4><a href="/settorefoto/903/osteria.html">Osteria</a></h4>
+
+							<div class="indicatorrow firstrow">
+								<span class="indicator" title="Vie"><img height="16"
+																		 src="/images/icone/routes_small.png"
+																		 alt="Routes_small"/>22</span>
+								<span class="indicator">3b<div title="Grado medio 5a"
+															   style="background: #ffffd5"></div>6a+</span>
+								<span class="indicator" title="Discussioni generali"><img
+										height="16" src="/images/icone/comments_small.png"
+										alt="Comments_small"/>10</span>
+								<span class="indicator" title="Discussioni su pericoli"><img
+										height="16" src="/images/icone/warnings_small.png"
+										alt="Warnings_small"/>3</span>
+							</div>
+							<div class="indicatorrow otherrows">
+																	<span class="indicator protection">
+						<img src="/images/protezioni/bolted_small.png" height="14" title="Ancoraggi fissi" />
+					</span>
+								<span class="indicator" title="Sviluppo delle vie"><img height="14"
+																						src="/images/icone/route_length_small.png"
+																						alt="Route_length_small"/>8–33m</span>
+
+								<span class="indicator" title="Avvicinamento"><img height="14"
+																				   src="/images/icone/sector_approach_small.png"
+																				   alt="Sector_approach_small"/>10–23min</span>
+								<span class="indicator" title="Esposizione"><img height="14"
+																				 src="/images/icone/sector_orientation_small.png"
+																				 alt="Sector_orientation_small"/>SO</span>
+
+								<span class="indicator" title="Ripetizioni"><img height="14"
+																				 src="/images/icone/ascents_small.png"
+																				 alt="Ascents_small"/>212</span>
+							</div>
+						</li>
+
+						<li class="leafletshadow sectorleaflet ">
+
+							<a href="https://falesiaonline.it/settorefoto/1070/settore-nascosto-sinistra.html">
+								<div class="thumbnailframe">
+									<img alt="Settore Nascosto (sinistra)" height="106"
+										 title="Settore Nascosto (sinistra)"
+										 src="/images/falesie/Z-monsummano-settore-nascosto-sinistra-small.jpg"/>
+								</div>
+							</a>
+
+							<div class="stars" id="stars_SECTOR_1070_L"
+								 title="Per votare entra nel tuo profilo"><img alt="star" width="17"
+																			   height="17"
+																			   src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_full.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_half.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_void.png"/><img
+									alt="vote counter" id="L_SECTOR_1070_votecounter" width="17"
+									height="17" src="/images/stelle/star_n.png"/>4
+							</div>
+							<h4><a href="/settorefoto/1070/settore-nascosto-sinistra.html">Settore
+								Nascosto (sinistra)</a></h4>
+
+							<div class="indicatorrow firstrow">
+								<span class="indicator" title="Vie"><img height="16"
+																		 src="/images/icone/routes_small.png"
+																		 alt="Routes_small"/>8</span>
+								<span class="indicator">5b<div title="Grado medio 6b+"
+															   style="background: #ff5500"></div>8b</span>
+								<span class="indicator" title="Discussioni generali"><img
+										height="16" src="/images/icone/comments_small.png"
+										alt="Comments_small"/>6</span>
+								<span class="indicator" title="Discussioni su pericoli"><img
+										height="16" src="/images/icone/warnings_small.png"
+										alt="Warnings_small"/>1</span>
+							</div>
+							<div class="indicatorrow otherrows">
+																	<span class="indicator protection">
+						<img src="/images/protezioni/bolted_small.png" height="14" title="Ancoraggi fissi" />
+					</span>
+								<span class="indicator" title="Sviluppo delle vie"><img height="14"
+																						src="/images/icone/route_length_small.png"
+																						alt="Route_length_small"/>3–8m</span>
+
+								<span class="indicator" title="Avvicinamento"><img height="14"
+																				   src="/images/icone/sector_approach_small.png"
+																				   alt="Sector_approach_small"/>9–20min</span>
+								<span class="indicator" title="Esposizione"><img height="14"
+																				 src="/images/icone/sector_orientation_small.png"
+																				 alt="Sector_orientation_small"/>E</span>
+
+								<span class="indicator" title="Ripetizioni"><img height="14"
+																				 src="/images/icone/ascents_small.png"
+																				 alt="Ascents_small"/>108</span>
+							</div>
+						</li>
+
+						<li class="leafletshadow sectorleaflet ">
+
+							<a href="https://falesiaonline.it/settorefoto/1069/settore-nascosto-centro.html">
+								<div class="thumbnailframe">
+									<img alt="Settore Nascosto (centro)" height="106"
+										 title="Settore Nascosto (centro)"
+										 src="/images/falesie/Z-monsummano-settore-nascosto-centro-small.jpg"/>
+								</div>
+							</a>
+
+							<div class="stars" id="stars_SECTOR_1069_L"
+								 title="Per votare entra nel tuo profilo"><img alt="star" width="17"
+																			   height="17"
+																			   src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_full.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_half.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_void.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_void.png"/><img
+									alt="vote counter" id="L_SECTOR_1069_votecounter" width="17"
+									height="17" src="/images/stelle/star_n.png"/>2
+							</div>
+							<h4><a href="/settorefoto/1069/settore-nascosto-centro.html">Settore
+								Nascosto (centro)</a></h4>
+
+							<div class="indicatorrow firstrow">
+								<span class="indicator" title="Vie"><img height="16"
+																		 src="/images/icone/routes_small.png"
+																		 alt="Routes_small"/>4</span>
+								<span class="indicator">4a<div title="Grado medio 4b+"
+															   style="background: #ffffff"></div>5a</span>
+								<span class="indicator" title="Discussioni generali"><img
+										height="16" src="/images/icone/comments_small.png"
+										alt="Comments_small"/>2</span>
+								<span class="indicator" title="Discussioni su pericoli"><img
+										height="16" src="/images/icone/warnings_small.png"
+										alt="Warnings_small"/>1</span>
+							</div>
+							<div class="indicatorrow otherrows">
+																	<span class="indicator protection">
+						<img src="/images/protezioni/bolted_small.png" height="14" title="Ancoraggi fissi" />
+					</span>
+								<span class="indicator" title="Sviluppo delle vie"><img height="14"
+																						src="/images/icone/route_length_small.png"
+																						alt="Route_length_small"/>13–18m</span>
+
+								<span class="indicator" title="Avvicinamento"><img height="14"
+																				   src="/images/icone/sector_approach_small.png"
+																				   alt="Sector_approach_small"/>8–13min</span>
+
+								<span class="indicator" title="Ripetizioni"><img height="14"
+																				 src="/images/icone/ascents_small.png"
+																				 alt="Ascents_small"/>39</span>
+							</div>
+						</li>
+
+						<li class="leafletshadow sectorleaflet ">
+
+							<a href="https://falesiaonline.it/settorefoto/1067/settore-nascosto-destra.html">
+								<div class="thumbnailframe">
+									<img alt="Settore Nascosto (destra)" height="106"
+										 title="Settore Nascosto (destra)"
+										 src="/images/falesie/Z-monsummano-settore-nascosto-destra-small.jpg"/>
+								</div>
+							</a>
+
+							<div class="stars" id="stars_SECTOR_1067_L"
+								 title="Per votare entra nel tuo profilo"><img alt="star" width="17"
+																			   height="17"
+																			   src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_full.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_void.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_void.png"/><img
+									alt="vote counter" id="L_SECTOR_1067_votecounter" width="17"
+									height="17" src="/images/stelle/star_n.png"/>2
+							</div>
+							<h4><a href="/settorefoto/1067/settore-nascosto-destra.html">Settore
+								Nascosto (destra)</a></h4>
+
+							<div class="indicatorrow firstrow">
+								<span class="indicator" title="Vie"><img height="16"
+																		 src="/images/icone/routes_small.png"
+																		 alt="Routes_small"/>3</span>
+								<span class="indicator">4c<div title="Grado medio 5b"
+															   style="background: #ffff80"></div>6a</span>
+								<span class="indicator" title="Discussioni generali"><img
+										height="16" src="/images/icone/comments_small.png"
+										alt="Comments_small"/>3</span>
+								<span class="indicator" title="Discussioni su pericoli"><img
+										height="16" src="/images/icone/warnings_small.png"
+										alt="Warnings_small"/>0</span>
+							</div>
+							<div class="indicatorrow otherrows">
+																	<span class="indicator protection">
+						<img src="/images/protezioni/bolted_small.png" height="14" title="Ancoraggi fissi" />
+					</span>
+								<span class="indicator" title="Sviluppo delle vie"><img height="14"
+																						src="/images/icone/route_length_small.png"
+																						alt="Route_length_small"/>18–23m</span>
+
+								<span class="indicator" title="Avvicinamento"><img height="14"
+																				   src="/images/icone/sector_approach_small.png"
+																				   alt="Sector_approach_small"/>8–13min</span>
+								<span class="indicator" title="Esposizione"><img height="14"
+																				 src="/images/icone/sector_orientation_small.png"
+																				 alt="Sector_orientation_small"/>E</span>
+
+								<span class="indicator" title="Ripetizioni"><img height="14"
+																				 src="/images/icone/ascents_small.png"
+																				 alt="Ascents_small"/>13</span>
+							</div>
+						</li>
+
+						<li class="leafletshadow sectorleaflet ">
+
+							<a href="https://falesiaonline.it/settorefoto/1037/pala-strapiombante.html">
+								<div class="thumbnailframe">
+									<img alt="Pala strapiombante" height="106"
+										 title="Pala strapiombante"
+										 src="/images/falesie/Z-monsummano-pala-strapiombante-small.jpg"/>
+								</div>
+							</a>
+
+							<div class="stars" id="stars_SECTOR_1037_L"
+								 title="Per votare entra nel tuo profilo"><img alt="star" width="17"
+																			   height="17"
+																			   src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_full.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_full.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_half.png"/><img
+									alt="vote counter" id="L_SECTOR_1037_votecounter" width="17"
+									height="17" src="/images/stelle/star_n.png"/>5
+							</div>
+							<h4><a href="/settorefoto/1037/pala-strapiombante.html">Pala
+								strapiombante</a></h4>
+
+							<div class="indicatorrow firstrow">
+								<span class="indicator" title="Vie"><img height="16"
+																		 src="/images/icone/routes_small.png"
+																		 alt="Routes_small"/>19</span>
+								<span class="indicator">4a<div title="Grado medio 6b"
+															   style="background: #ff8000"></div>8a+</span>
+								<span class="indicator" title="Discussioni generali"><img
+										height="16" src="/images/icone/comments_small.png"
+										alt="Comments_small"/>17</span>
+								<span class="indicator" title="Discussioni su pericoli"><img
+										height="16" src="/images/icone/warnings_small.png"
+										alt="Warnings_small"/>6</span>
+							</div>
+							<div class="indicatorrow otherrows">
+																	<span class="indicator protection">
+						<img src="/images/protezioni/bolted_small.png" height="14" title="Ancoraggi fissi" />
+					</span>
+								<span class="indicator" title="Sviluppo delle vie"><img height="14"
+																						src="/images/icone/route_length_small.png"
+																						alt="Route_length_small"/>3–28m</span>
+
+								<span class="indicator" title="Avvicinamento"><img height="14"
+																				   src="/images/icone/sector_approach_small.png"
+																				   alt="Sector_approach_small"/>11–19min</span>
+								<span class="indicator" title="Esposizione"><img height="14"
+																				 src="/images/icone/sector_orientation_small.png"
+																				 alt="Sector_orientation_small"/>NE-E</span>
+
+								<span class="indicator" title="Ripetizioni"><img height="14"
+																				 src="/images/icone/ascents_small.png"
+																				 alt="Ascents_small"/>182</span>
+							</div>
+						</li>
+
+						<li class="leafletshadow sectorleaflet ">
+
+							<a href="https://falesiaonline.it/settorefoto/1090/cava-grigia-sinistra.html">
+								<div class="thumbnailframe">
+									<img alt="Cava Grigia (sinistra)" height="106"
+										 title="Cava Grigia (sinistra)"
+										 src="/images/falesie/Z-monsummano-cava-grigia-sinistra-small.jpg"/>
+								</div>
+							</a>
+
+							<div class="stars" id="stars_SECTOR_1090_L"
+								 title="Per votare entra nel tuo profilo"><img alt="star" width="17"
+																			   height="17"
+																			   src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_full.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_void.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_void.png"/><img
+									alt="vote counter" id="L_SECTOR_1090_votecounter" width="17"
+									height="17" src="/images/stelle/star_n.png"/>1
+							</div>
+							<h4><a href="/settorefoto/1090/cava-grigia-sinistra.html">Cava Grigia
+								(sinistra)</a></h4>
+
+							<div class="indicatorrow firstrow">
+								<span class="indicator" title="Vie"><img height="16"
+																		 src="/images/icone/routes_small.png"
+																		 alt="Routes_small"/>9</span>
+								<span class="indicator">4c<div title="Grado medio 5a+"
+															   style="background: #ffffaa"></div>5c+</span>
+								<span class="indicator" title="Discussioni generali"><img
+										height="16" src="/images/icone/comments_small.png"
+										alt="Comments_small"/>2</span>
+								<span class="indicator" title="Discussioni su pericoli"><img
+										height="16" src="/images/icone/warnings_small.png"
+										alt="Warnings_small"/>2</span>
+							</div>
+							<div class="indicatorrow otherrows">
+																	<span class="indicator protection">
+						<img src="/images/protezioni/bolted_small.png" height="14" title="Ancoraggi fissi" />
+					</span>
+								<span class="indicator" title="Sviluppo delle vie"><img height="14"
+																						src="/images/icone/route_length_small.png"
+																						alt="Route_length_small"/>28–75m</span>
+
+								<span class="indicator" title="Avvicinamento"><img height="14"
+																				   src="/images/icone/sector_approach_small.png"
+																				   alt="Sector_approach_small"/>8–13min</span>
+								<span class="indicator" title="Esposizione"><img height="14"
+																				 src="/images/icone/sector_orientation_small.png"
+																				 alt="Sector_orientation_small"/>S</span>
+
+								<span class="indicator" title="Ripetizioni"><img height="14"
+																				 src="/images/icone/ascents_small.png"
+																				 alt="Ascents_small"/>135</span>
+							</div>
+						</li>
+
+						<li class="leafletshadow sectorleaflet ">
+
+							<a href="https://falesiaonline.it/settorefoto/711/cava-grigia-centro.html">
+								<div class="thumbnailframe">
+									<img alt="Cava Grigia (centro)" height="106"
+										 title="Cava Grigia (centro)"
+										 src="/images/falesie/Z-monsummano-cava-grigia-centro-small.jpg"/>
+								</div>
+							</a>
+
+							<div class="stars" id="stars_SECTOR_711_L"
+								 title="Per votare entra nel tuo profilo"><img alt="star" width="17"
+																			   height="17"
+																			   src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_full.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_half.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_void.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_void.png"/><img
+									alt="vote counter" id="L_SECTOR_711_votecounter" width="17"
+									height="17" src="/images/stelle/star_n.png"/>3
+							</div>
+							<h4><a href="/settorefoto/711/cava-grigia-centro.html">Cava Grigia
+								(centro)</a></h4>
+
+							<div class="indicatorrow firstrow">
+								<span class="indicator" title="Vie"><img height="16"
+																		 src="/images/icone/routes_small.png"
+																		 alt="Routes_small"/>14</span>
+								<span class="indicator">3a<div title="Grado medio 4b+"
+															   style="background: #ffffff"></div>6a+</span>
+								<span class="indicator" title="Discussioni generali"><img
+										height="16" src="/images/icone/comments_small.png"
+										alt="Comments_small"/>0</span>
+								<span class="indicator" title="Discussioni su pericoli"><img
+										height="16" src="/images/icone/warnings_small.png"
+										alt="Warnings_small"/>0</span>
+							</div>
+							<div class="indicatorrow otherrows">
+																	<span class="indicator protection">
+						<img src="/images/protezioni/bolted_small.png" height="14" title="Ancoraggi fissi" />
+					</span>
+								<span class="indicator" title="Sviluppo delle vie"><img height="14"
+																						src="/images/icone/route_length_small.png"
+																						alt="Route_length_small"/>8–13m</span>
+
+								<span class="indicator" title="Avvicinamento"><img height="14"
+																				   src="/images/icone/sector_approach_small.png"
+																				   alt="Sector_approach_small"/>8–13min</span>
+								<span class="indicator" title="Esposizione"><img height="14"
+																				 src="/images/icone/sector_orientation_small.png"
+																				 alt="Sector_orientation_small"/>SO</span>
+
+								<span class="indicator" title="Ripetizioni"><img height="14"
+																				 src="/images/icone/ascents_small.png"
+																				 alt="Ascents_small"/>109</span>
+							</div>
+						</li>
+
+						<li class="leafletshadow sectorleaflet ">
+
+							<a href="https://falesiaonline.it/settorefoto/637/cava-grigia-destra.html">
+								<div class="thumbnailframe">
+									<img alt="Cava Grigia (destra)" height="106"
+										 title="Cava Grigia (destra)"
+										 src="/images/falesie/Z-monsummano-cava-grigia-destra-small.jpg"/>
+								</div>
+							</a>
+
+							<div class="stars" id="stars_SECTOR_637_L"
+								 title="Per votare entra nel tuo profilo"><img alt="star" width="17"
+																			   height="17"
+																			   src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_full.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_half.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_void.png"/><img
+									alt="vote counter" id="L_SECTOR_637_votecounter" width="17"
+									height="17" src="/images/stelle/star_n.png"/>4
+							</div>
+							<h4><a href="/settorefoto/637/cava-grigia-destra.html">Cava Grigia
+								(destra)</a></h4>
+
+							<div class="indicatorrow firstrow">
+								<span class="indicator" title="Vie"><img height="16"
+																		 src="/images/icone/routes_small.png"
+																		 alt="Routes_small"/>19</span>
+								<span class="indicator">3c<div title="Grado medio 5c"
+															   style="background: #ffff2b"></div>7c</span>
+								<span class="indicator" title="Discussioni generali"><img
+										height="16" src="/images/icone/comments_small.png"
+										alt="Comments_small"/>13</span>
+								<span class="indicator" title="Discussioni su pericoli"><img
+										height="16" src="/images/icone/warnings_small.png"
+										alt="Warnings_small"/>4</span>
+							</div>
+							<div class="indicatorrow otherrows">
+																	<span class="indicator protection">
+						<img src="/images/protezioni/bolted_small.png" height="14" title="Ancoraggi fissi" />
+					</span>
+								<span class="indicator" title="Sviluppo delle vie"><img height="14"
+																						src="/images/icone/route_length_small.png"
+																						alt="Route_length_small"/>9m</span>
+
+								<span class="indicator" title="Avvicinamento"><img height="14"
+																				   src="/images/icone/sector_approach_small.png"
+																				   alt="Sector_approach_small"/>9–17min</span>
+								<span class="indicator" title="Esposizione"><img height="14"
+																				 src="/images/icone/sector_orientation_small.png"
+																				 alt="Sector_orientation_small"/>SO</span>
+
+								<span class="indicator" title="Ripetizioni"><img height="14"
+																				 src="/images/icone/ascents_small.png"
+																				 alt="Ascents_small"/>428</span>
+							</div>
+						</li>
+
+						<li class="leafletshadow sectorleaflet ">
+
+							<a href="https://falesiaonline.it/settorefoto/54/cava-rossa-sinistra.html">
+								<div class="thumbnailframe">
+									<img alt="Cava Rossa (sinistra)" height="106"
+										 title="Cava Rossa (sinistra)"
+										 src="/images/falesie/Z-monsummano-cava-rossa-sinistra-small.jpg"/>
+								</div>
+							</a>
+
+							<div class="stars" id="stars_SECTOR_54_L"
+								 title="Per votare entra nel tuo profilo"><img alt="star" width="17"
+																			   height="17"
+																			   src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_full.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_void.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_void.png"/><img
+									alt="vote counter" id="L_SECTOR_54_votecounter" width="17"
+									height="17" src="/images/stelle/star_n.png"/>6
+							</div>
+							<h4><a href="/settorefoto/54/cava-rossa-sinistra.html">Cava Rossa
+								(sinistra)</a></h4>
+
+							<div class="indicatorrow firstrow">
+								<span class="indicator" title="Vie"><img height="16"
+																		 src="/images/icone/routes_small.png"
+																		 alt="Routes_small"/>29</span>
+								<span class="indicator">3c<div title="Grado medio 5b+"
+															   style="background: #ffff55"></div>7a+</span>
+								<span class="indicator" title="Discussioni generali"><img
+										height="16" src="/images/icone/comments_small.png"
+										alt="Comments_small"/>12</span>
+								<span class="indicator" title="Discussioni su pericoli"><img
+										height="16" src="/images/icone/warnings_small.png"
+										alt="Warnings_small"/>4</span>
+							</div>
+							<div class="indicatorrow otherrows">
+																	<span class="indicator protection">
+						<img src="/images/protezioni/bolted_small.png" height="14" title="Ancoraggi fissi" />
+					</span>
+								<span class="indicator" title="Sviluppo delle vie"><img height="14"
+																						src="/images/icone/route_length_small.png"
+																						alt="Route_length_small"/>8–23m</span>
+
+								<span class="indicator" title="Avvicinamento"><img height="14"
+																				   src="/images/icone/sector_approach_small.png"
+																				   alt="Sector_approach_small"/>3–5min</span>
+								<span class="indicator" title="Esposizione"><img height="14"
+																				 src="/images/icone/sector_orientation_small.png"
+																				 alt="Sector_orientation_small"/>SE</span>
+
+								<span class="indicator" title="Ripetizioni"><img height="14"
+																				 src="/images/icone/ascents_small.png"
+																				 alt="Ascents_small"/>584</span>
+							</div>
+						</li>
+
+						<li class="leafletshadow sectorleaflet ">
+
+							<a href="https://falesiaonline.it/settorefoto/238/cava-rossa-centro.html">
+								<div class="thumbnailframe">
+									<img alt="Cava Rossa (centro)" height="106"
+										 title="Cava Rossa (centro)"
+										 src="/images/falesie/Z-monsummano-cava-rossa-centro-small.jpg"/>
+								</div>
+							</a>
+
+							<div class="stars" id="stars_SECTOR_238_L"
+								 title="Per votare entra nel tuo profilo"><img alt="star" width="17"
+																			   height="17"
+																			   src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_full.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_half.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_void.png"/><img
+									alt="vote counter" id="L_SECTOR_238_votecounter" width="17"
+									height="17" src="/images/stelle/star_n.png"/>9
+							</div>
+							<h4><a href="/settorefoto/238/cava-rossa-centro.html">Cava Rossa
+								(centro)</a></h4>
+
+							<div class="indicatorrow firstrow">
+								<span class="indicator" title="Vie"><img height="16"
+																		 src="/images/icone/routes_small.png"
+																		 alt="Routes_small"/>28</span>
+								<span class="indicator">5a<div title="Grado medio 6c"
+															   style="background: #ff2b00"></div>8a</span>
+								<span class="indicator" title="Discussioni generali"><img
+										height="16" src="/images/icone/comments_small.png"
+										alt="Comments_small"/>31</span>
+								<span class="indicator" title="Discussioni su pericoli"><img
+										height="16" src="/images/icone/warnings_small.png"
+										alt="Warnings_small"/>9</span>
+							</div>
+							<div class="indicatorrow otherrows">
+																	<span class="indicator protection">
+						<img src="/images/protezioni/bolted_small.png" height="14" title="Ancoraggi fissi" />
+					</span>
+								<span class="indicator" title="Sviluppo delle vie"><img height="14"
+																						src="/images/icone/route_length_small.png"
+																						alt="Route_length_small"/>8–30m</span>
+
+								<span class="indicator" title="Avvicinamento"><img height="14"
+																				   src="/images/icone/sector_approach_small.png"
+																				   alt="Sector_approach_small"/>3–8min</span>
+								<span class="indicator" title="Esposizione"><img height="14"
+																				 src="/images/icone/sector_orientation_small.png"
+																				 alt="Sector_orientation_small"/>SE-S-SO</span>
+
+								<span class="indicator" title="Ripetizioni"><img height="14"
+																				 src="/images/icone/ascents_small.png"
+																				 alt="Ascents_small"/>328</span>
+							</div>
+						</li>
+
+						<li class="leafletshadow sectorleaflet ">
+
+							<a href="https://falesiaonline.it/settorefoto/242/cava-rossa-destra.html">
+								<div class="thumbnailframe">
+									<img alt="Cava Rossa (destra)" height="106"
+										 title="Cava Rossa (destra)"
+										 src="/images/falesie/Z-monsummano-cava-rossa-destra-small.jpg"/>
+								</div>
+							</a>
+
+							<div class="stars" id="stars_SECTOR_242_L"
+								 title="Per votare entra nel tuo profilo"><img alt="star" width="17"
+																			   height="17"
+																			   src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_full.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_full.png"/><img
+									alt="star" width="17" height="17"
+									src="/images/stelle/star_full.png"/><img alt="star" width="17"
+																			 height="17"
+																			 src="/images/stelle/star_void.png"/><img
+									alt="vote counter" id="L_SECTOR_242_votecounter" width="17"
+									height="17" src="/images/stelle/star_n.png"/>6
+							</div>
+							<h4><a href="/settorefoto/242/cava-rossa-destra.html">Cava Rossa
+								(destra)</a></h4>
+
+							<div class="indicatorrow firstrow">
+								<span class="indicator" title="Vie"><img height="16"
+																		 src="/images/icone/routes_small.png"
+																		 alt="Routes_small"/>32</span>
+								<span class="indicator">4c<div title="Grado medio 6a+"
+															   style="background: #ffaa00"></div>8b</span>
+								<span class="indicator" title="Discussioni generali"><img
+										height="16" src="/images/icone/comments_small.png"
+										alt="Comments_small"/>25</span>
+								<span class="indicator" title="Discussioni su pericoli"><img
+										height="16" src="/images/icone/warnings_small.png"
+										alt="Warnings_small"/>8</span>
+							</div>
+							<div class="indicatorrow otherrows">
+																	<span class="indicator protection">
+						<img src="/images/protezioni/bolted_small.png" height="14" title="Ancoraggi fissi" />
+					</span>
+								<span class="indicator" title="Sviluppo delle vie"><img height="14"
+																						src="/images/icone/route_length_small.png"
+																						alt="Route_length_small"/>8–28m</span>
+
+								<span class="indicator" title="Avvicinamento"><img height="14"
+																				   src="/images/icone/sector_approach_small.png"
+																				   alt="Sector_approach_small"/>3–8min</span>
+								<span class="indicator" title="Esposizione"><img height="14"
+																				 src="/images/icone/sector_orientation_small.png"
+																				 alt="Sector_orientation_small"/>SO-O</span>
+
+								<span class="indicator" title="Ripetizioni"><img height="14"
+																				 src="/images/icone/ascents_small.png"
+																				 alt="Ascents_small"/>418</span>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+
+		</main>
+
+		<aside class="sideColumn">
+
+
+			<div class="contextCommentsContainer">
+				<div class="header">Ultimi commenti in Monsummano</div>
+				<div class="contextCommentFrame"
+					 onclick="location.href='/settore/commenti/1069/settore-nascosto-centro.html'">
+					<div class="contextCommentTitle warning_generic">
+						<img src="/images/commenti/warning_generic.png"/>
+						<span>Via: </span>
+						? - 5a
+					</div>
+
+					<div class="contextCommentAuthor warning_generic">
+		<span>
+			Sebastiano Biagini					</span>
+
+						<span>
+			<img src="/images/commenti/comment_watch.png" />
+			2 settimane fa		</span>
+					</div>
+
+					<div class="contextCommentText warning_generic">
+						Pagina che merita un aggiornamento: praticamente la via senza nome &quot;?&quot;
+						&egrave; diventata...
+					</div>
+				</div>
+				<div class="contextCommentFrame"
+					 onclick="location.href='/settore/commenti/238/cava-rossa-centro.html'">
+					<div class="contextCommentTitle warning_generic">
+						<img src="/images/commenti/warning_generic.png"/>
+						<span>Via: </span>
+						Federica pulita (S2) - 6a+
+					</div>
+
+					<div class="contextCommentAuthor warning_generic">
+		<span>
+			Lorenzo Sarti					</span>
+
+						<span>
+			<img src="/images/commenti/comment_watch.png" />
+			9 mesi fa		</span>
+					</div>
+
+					<div class="contextCommentText warning_generic">
+						Dado allentato, mi pare su penultimo fix, Provato a stringere a mano perch&egrave;
+						non avevo...
+					</div>
+				</div>
+				<div class="contextCommentFrame"
+					 onclick="location.href='/settore/commenti/238/cava-rossa-centro.html'">
+					<div class="contextCommentTitle warning_rockfall">
+						<img src="/images/commenti/warning_rockfall.png"/>
+						<span>Via: </span>
+						Onda energetica - 6b
+					</div>
+
+					<div class="contextCommentAuthor warning_rockfall">
+		<span>
+			Lorenzo Sarti					</span>
+
+						<span>
+			<img src="/images/commenti/comment_watch.png" />
+			9 mesi fa		</span>
+					</div>
+
+					<div class="contextCommentText warning_rockfall">
+						Attenzione! Ultima presa prima della catena, a sx, masso abbastanza grande
+						che si muove decisamente....
+					</div>
+				</div>
+				<div class="contextCommentFrame"
+					 onclick="location.href='/settore/commenti/637/cava-grigia-destra.html'">
+					<div class="contextCommentTitle generic">
+						<img src="/images/commenti/generic.png"/>
+						<span>Settore: </span>
+						Cava Grigia (destra)
+					</div>
+
+					<div class="contextCommentAuthor generic">
+		<span>
+			Giorgio Edo Vannucci					</span>
+
+						<span>
+			<img src="/images/commenti/comment_watch.png" />
+			10 mesi fa		</span>
+					</div>
+
+					<div class="contextCommentText generic">
+						Subito a sinistra di Lupo Alberto c&#039;&egrave; un&#039;altro tiro con le
+						stesse caratteristiche...
+					</div>
+				</div>
+				<div class="contextCommentFrame"
+					 onclick="location.href='/settore/commenti/637/cava-grigia-destra.html'">
+					<div class="contextCommentTitle generic">
+						<img src="/images/commenti/generic.png"/>
+						<span>Via: </span>
+						Lupo Alberto - 6c
+					</div>
+
+					<div class="contextCommentAuthor generic">
+		<span>
+			Giorgio Edo Vannucci					</span>
+
+						<span>
+			<img src="/images/commenti/comment_watch.png" />
+			10 mesi fa		</span>
+					</div>
+
+					<div class="contextCommentText generic">
+						A mio avviso il grado &egrave; un po compresso,&egrave; un 6c pi&ugrave;
+						verso il 7a a patto di...
+					</div>
+				</div>
+				<div class="contextCommentFrame"
+					 onclick="location.href='/settore/commenti/1510/pilastro-rosso.html'">
+					<div class="contextCommentTitle warning_generic">
+						<img src="/images/commenti/warning_generic.png"/>
+						<span>Via: </span>
+						Ci sta!!! - 6c
+					</div>
+
+					<div class="contextCommentAuthor warning_generic">
+		<span>
+			Lorenzo Sarti					</span>
+
+						<span>
+			<img src="/images/commenti/comment_watch.png"/>
+			12 mesi fa		</span>
+					</div>
+
+					<div class="contextCommentText warning_generic">
+						Ieri siamo tornati al Pilastro e abbiamo ripetuto la via: quasi alla fine
+						della placca, prima di...
+					</div>
+				</div>
+				<div class="footer clickable"
+					 onclick="location.href='/falesia/tutti_i_commenti_annidati/monsummano.html'" ?>
+					Vedi tutti i commenti più recenti…
+				</div>
+			</div>
+
+			<div class="contextCommentsContainer">
+				<div class="header">Ultime ripetizioni in Monsummano</div>
+				<div class="contextCommentFrame"
+					 onclick="location.href='/sector_topo_sketch_or_photo_pitch/711/11870'">
+					<div class="contextAscentTitle">
+						<img src="/images/ripetizioni/onsight.png"/>
+						Diedro - 5b
+					</div>
+
+					<div class="contextAscentAuthor">
+		<span>
+										Sebastiano Biagini					</span>
+						<span>
+			<img src="/images/commenti/comment_watch.png" />
+			2 settimane fa		</span>
+					</div>
+				</div>
+				<div class="contextCommentFrame"
+					 onclick="location.href='/sector_topo_sketch_or_photo_pitch/1090/15379'">
+					<div class="contextAscentTitle">
+						<img src="/images/ripetizioni/onsight.png"/>
+						L1 (Il risveglio di Cava Grigia) - 4a
+					</div>
+
+					<div class="contextAscentAuthor">
+		<span>
+										Sebastiano Biagini					</span>
+						<span>
+			<img src="/images/commenti/comment_watch.png" />
+			2 settimane fa		</span>
+					</div>
+				</div>
+				<div class="contextCommentFrame"
+					 onclick="location.href='/sector_topo_sketch_or_photo_pitch/1069/15212'">
+					<div class="contextAscentTitle">
+						<img src="/images/ripetizioni/onsight.png"/>
+						La piccozza di Sonia - 4c
+					</div>
+
+					<div class="contextAscentAuthor">
+		<span>
+										Sebastiano Biagini					</span>
+						<span>
+			<img src="/images/commenti/comment_watch.png" />
+			2 settimane fa		</span>
+					</div>
+				</div>
+				<div class="contextCommentFrame"
+					 onclick="location.href='/sector_topo_sketch_or_photo_pitch/1070/15197'">
+					<div class="contextAscentTitle">
+						<img src="/images/ripetizioni/redpoint.png"/>
+						La paretina - 5b
+					</div>
+
+					<div class="contextAscentAuthor">
+		<span>
+										Sebastiano Biagini					</span>
+						<span>
+			<img src="/images/commenti/comment_watch.png" />
+			2 settimane fa		</span>
+					</div>
+				</div>
+				<div class="contextCommentFrame"
+					 onclick="location.href='/sector_topo_sketch_or_photo_pitch/1069/15214'">
+					<div class="contextAscentTitle">
+						<img src="/images/ripetizioni/redpoint.png"/>
+						? - 5a
+					</div>
+
+					<div class="contextAscentAuthor">
+		<span>
+										Sebastiano Biagini					</span>
+						<span>
+			<img src="/images/commenti/comment_watch.png" />
+			2 settimane fa		</span>
+					</div>
+				</div>
+				<div class="contextCommentFrame"
+					 onclick="location.href='/sector_topo_sketch_or_photo_pitch/12/12309'">
+					<div class="contextAscentTitle">
+						<img src="/images/ripetizioni/redpoint.png"/>
+						il Morso del ciuo - 7a
+					</div>
+
+					<div class="contextAscentAuthor">
+		<span>
+										Stefano Sigolo					</span>
+						<span>
+			<img src="/images/commenti/comment_watch.png" />
+			5 settimane fa		</span>
+					</div>
+				</div>
+				<div class="contextCommentFrame"
+					 onclick="location.href='/sector_topo_sketch_or_photo_pitch/637/13136'">
+					<div class="contextAscentTitle">
+						<img src="/images/ripetizioni/redpoint.png"/>
+						Lupo Alberto - 6c
+					</div>
+
+					<div class="contextAscentAuthor">
+		<span>
+										Lorenzo Sarti					</span>
+						<span>
+			<img src="/images/commenti/comment_watch.png" />
+			3 mesi fa		</span>
+					</div>
+				</div>
+				<div class="contextCommentFrame"
+					 onclick="location.href='/sector_topo_sketch_or_photo_pitch/238/7066'">
+					<div class="contextAscentTitle">
+						<img src="/images/ripetizioni/redpoint.png"/>
+						Sognando la California - 6b
+					</div>
+
+					<div class="contextAscentAuthor">
+		<span>
+										danib					</span>
+						<span>
+			<img src="/images/commenti/comment_watch.png" />
+			3 mesi fa		</span>
+					</div>
+				</div>
+				<div class="contextCommentFrame"
+					 onclick="location.href='/sector_topo_sketch_or_photo_pitch/242/7171'">
+					<div class="contextAscentTitle">
+						<img src="/images/ripetizioni/onsight.png"/>
+						Dormi Dario - 5c
+					</div>
+
+					<div class="contextAscentAuthor">
+		<span>
+										danib					</span>
+						<span>
+			<img src="/images/commenti/comment_watch.png" />
+			3 mesi fa		</span>
+					</div>
+				</div>
+				<div class="contextCommentFrame"
+					 onclick="location.href='/sector_topo_sketch_or_photo_pitch/54/6914'">
+					<div class="contextAscentTitle">
+						<img src="/images/ripetizioni/onsight.png"/>
+						Anime perse - 5c
+					</div>
+
+					<div class="contextAscentAuthor">
+		<span>
+										danib					</span>
+						<span>
+			<img src="/images/commenti/comment_watch.png" />
+			3 mesi fa		</span>
+					</div>
+				</div>
+			</div>
+
+
+			<div id="context_bolters">
+
+				<h3>Chiodatori e tracciatori in Monsummano</h3>
+
+				<p class="miniboltersList">
+					<a href="/chiodatore/557/bruno-barsuglia.html">Barsuglia B.</a>
+					<a href="/chiodatore/400/stefano-cambi.html">Cambi S.</a>
+					<a href="/chiodatore/310/maurizio-ciomei.html">Ciomei M.</a>
+					<a href="/chiodatore/425/alessandro-corsi.html">Corsi A.</a>
+					<a href="/chiodatore/705/massimo-fiesoli.html">Fiesoli M.</a>
+					<a href="/chiodatore/1032/roberto-palagi.html">Palagi R.</a>
+					<a href="/chiodatore/81/fausto-romei.html">Romei F.</a>
+					<a href="/chiodatore/210/alberto-tomasi.html">Tomasi A.</a>
+					<a href="/chiodatore/202/giorgio-edo-vannucci.html">Vannucci G.</a>
+				</p>
+
+			</div>
+		</aside>
+	</div>
+
+	<footer>
+
+		<ul>
+			<li class="allusers ">
+				<a href="/guide.html">Guide&#160;cartacee</a>
+			</li>
+
+			<li class="allusers ">
+				<a href="/chiodatori.html">Chiodatori&#160;e&#160;tracciatori</a>
+			</li>
+
+			<li class="">
+				<a href="/chi_siamo.html">Chi&#160;siamo</a>
+			</li>
+			<li class="">
+				<a href="/manifesto.html">Manifesto</a>
+			</li>
+			<li class="">
+				<a href="/licenza.html">Licenza</a>
+			</li>
+
+			<li class="">
+				<a href="/disclaimer.html">Disclaimer</a>
+			</li>
+
+			<li class="">
+				<a href="/privacy.html">Privacy</a>
+			</li>
+
+			<li class="">
+				<a href="/requisiti.html">Requisiti</a>
+			</li>
+
+			<li class="">
+				<a href="/contatti.html">Contatti</a>
+			</li>
+
+			<li class="">
+				<a href="/credits.html">Credits</a>
+			</li>
+
+			<li class="showOnMobile">
+				<a href="https://www.facebook.com/falesiaonline">Facebook</a>
+			</li>
+
+		</ul>
+
+		<div class="disclaimer">
+			<div>Avviso Importante!</div>
+			<p>I dati presentati su questo sito possono essere incompleti, fuorvianti o errati. E’
+				fondamentale quindi che l’arrampicatore valuti attentamente l’opportunità di recarsi
+				in una falesia e affrontare una via sulla base dei consigli di altri frequentatori,
+				della propria esperienza e di un'ispezione accurata della parete, valutandone la
+				solidità e le condizioni degli ancoraggi. Il progetto "falesiaonline" non fornisce
+				alcuna garanzia sulla validità dei dati presenti sul sito o sulla sicurezza dei
+				luoghi descritti, e non si assume alcuna responsabilità per eventuali danni causati
+				dall'utilizzo e dalla frequentazione degli stessi. Per ridurre gli inevitabili
+				rischi insiti nella pratica dell’arrampicata è indispensabile l’uso costante del
+				caschetto, anche per l’assicuratore, e l’impiego di un nodo di sicurezza in fondo
+				alla corda.</p>
+		</div>
+
+
+		<small>falesiaonline.it &copy;2026</small>
+	</footer>
+
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+        $('#onlineUsersCount').load('/it/sitewide/countOnlineUsers');
+    });
+</script>
+
+<script type="text/javascript" src="/js/tooltip_events.js"></script>
+<script type="text/javascript" src="/js/comment_events.js"></script>
+<script type="text/javascript" src="/js/stars_handling.js"></script>
+<script type="text/javascript" src="/js/fancyBox.js"></script>
+
+</body>
+</html>

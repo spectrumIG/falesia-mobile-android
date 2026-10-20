@@ -8,13 +8,18 @@ import io.mockk.every
 import io.mockk.mockk
 import it.softsamurai.domain.error.SyncError
 import it.softsamurai.domain.model.Falesia
+import it.softsamurai.domain.sync.DownloadMode
+import it.softsamurai.domain.sync.SyncStatus
+import it.softsamurai.domain.usecase.GetDownloadModeUseCase
 import it.softsamurai.domain.usecase.GetAllFalesieUseCase
+import it.softsamurai.domain.usecase.ObserveSyncStatusUseCase
 import it.softsamurai.domain.usecase.RefreshCragsUseCase
 import it.softsamurai.domain.usecase.RefreshOutcome
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -35,6 +40,7 @@ class FalesiaItemViewModelTest {
     private val falesieFlow = MutableSharedFlow<List<Falesia>>(replay = 1)
     private lateinit var getAllFalesie: GetAllFalesieUseCase
     private lateinit var refreshCrags: RefreshCragsUseCase
+    private val syncStatus = MutableStateFlow(SyncStatus.Running)
     private lateinit var viewModel: FalesiaItemViewModel
 
     @Before
@@ -42,7 +48,9 @@ class FalesiaItemViewModelTest {
         Dispatchers.setMain(testDispatcher)
         getAllFalesie = mockk<GetAllFalesieUseCase>().also { every { it() } returns falesieFlow }
         refreshCrags = mockk()
-        viewModel = FalesiaItemViewModel(getAllFalesie, refreshCrags)
+        val observeSyncStatus =
+            mockk<ObserveSyncStatusUseCase>().also { every { it() } returns syncStatus }
+        viewModel = FalesiaItemViewModel(getAllFalesie, refreshCrags, observeSyncStatus, downloadMode(DownloadMode.Automatic))
     }
 
     @After
@@ -180,4 +188,79 @@ class FalesiaItemViewModelTest {
         vie = emptyList(),
         lastUpdated = 0L,
     )
+
+    private fun downloadMode(mode: DownloadMode) = mockk<GetDownloadModeUseCase>().also { every { it() } returns mode }
+
+    @Test
+    fun `manual downloads follow the download mode`() {
+        assertFalse(viewModel.manualDownloads)
+        val debug = FalesiaItemViewModel(
+            getAllFalesie,
+            refreshCrags,
+            mockk<ObserveSyncStatusUseCase>().also { every { it() } returns syncStatus },
+            downloadMode(DownloadMode.Manual),
+        )
+        assertTrue(debug.manualDownloads)
+    }
+
+    // ── Empty DB and failed sync ──
+
+    @Test
+    fun `empty db with a failed startup sync shows the error instead of loading`() = runTest {
+        observeUiState()
+        falesieFlow.emit(emptyList())
+
+        syncStatus.value = SyncStatus.Failed
+
+        assertEquals(FalesiaItemUiState.SyncFailed, viewModel.uiState.value)
+    }
+
+    @Test
+    fun `empty db keeps loading while the sync is pending or running`() = runTest {
+        observeUiState()
+        falesieFlow.emit(emptyList())
+
+        listOf(SyncStatus.Pending, SyncStatus.Running, SyncStatus.Idle).forEach {
+            syncStatus.value = it
+            assertEquals(FalesiaItemUiState.Loading, viewModel.uiState.value)
+        }
+    }
+
+    @Test
+    fun `saved crags are shown even when the sync failed`() = runTest {
+        observeUiState()
+        syncStatus.value = SyncStatus.Failed
+
+        falesieFlow.emit(listOf(fakeFalesia("arco")))
+
+        assertTrue(viewModel.uiState.value is FalesiaItemUiState.Success)
+    }
+
+    @Test
+    fun `retry from the error loads, then shows the error again if it fails`() = runTest {
+        val pending = CompletableDeferred<Either<SyncError, RefreshOutcome>>()
+        coEvery { refreshCrags() } coAnswers { pending.await() }
+        observeUiState()
+        falesieFlow.emit(emptyList())
+        syncStatus.value = SyncStatus.Failed
+
+        viewModel.onRefresh()
+        assertEquals(FalesiaItemUiState.Loading, viewModel.uiState.value)
+        pending.complete(Either.Left(SyncError.NetworkFailure(RuntimeException("502"))))
+
+        assertEquals(FalesiaItemUiState.SyncFailed, viewModel.uiState.value)
+        coVerify(exactly = 1) { refreshCrags() }
+    }
+
+    @Test
+    fun `a failed retry shows the error even if the background sync is still pending`() = runTest {
+        coEvery { refreshCrags() } returns Either.Left(SyncError.NetworkFailure(RuntimeException("offline")))
+        observeUiState()
+        falesieFlow.emit(emptyList())
+        syncStatus.value = SyncStatus.Pending
+
+        viewModel.onRefresh()
+
+        assertEquals(FalesiaItemUiState.SyncFailed, viewModel.uiState.value)
+    }
 }

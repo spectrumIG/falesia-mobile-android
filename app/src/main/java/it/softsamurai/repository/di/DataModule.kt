@@ -5,10 +5,15 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import it.softsamurai.BuildConfig
 import it.softsamurai.core.di.IoDispatcher
 import it.softsamurai.domain.repository.FalesiaRepository
+import it.softsamurai.domain.sync.DownloadMode
+import it.softsamurai.domain.sync.DownloadModeProvider
 import it.softsamurai.domain.time.TimeProvider
 import it.softsamurai.repository.FalesiaRepositoryImpl
+import it.softsamurai.repository.fixture.AssetFixtureReader
+import it.softsamurai.repository.fixture.FixtureReader
 import it.softsamurai.repository.local.FalesiaLocalDataSource
 import it.softsamurai.repository.local.FalesiaLocalDataSourceImpl
 import it.softsamurai.repository.network.FalesiaNetDataSourceImpl
@@ -35,6 +40,9 @@ abstract class DataModule {
     @Singleton
     abstract fun bindFalesiaNetworkDataSource(impl: FalesiaNetDataSourceImpl): FalesiaNetworkDataSource
 
+    @Binds
+    abstract fun bindFixtureReader(impl: AssetFixtureReader): FixtureReader
+
     @Module
     @InstallIn(SingletonComponent::class)
     object DataProvides {
@@ -51,5 +59,13 @@ abstract class DataModule {
         @Provides
         @Singleton
         fun provideTimeProvider(): TimeProvider = TimeProvider { System.currentTimeMillis() }
+
+        /** Debug builds never download on their own (see [DownloadMode]). */
+        @Provides
+        @Singleton
+        fun provideDownloadModeProvider(): DownloadModeProvider {
+            val mode = if (BuildConfig.DEBUG) DownloadMode.Manual else DownloadMode.Automatic
+            return DownloadModeProvider { mode }
+        }
     }
 }
