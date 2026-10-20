@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
@@ -238,7 +239,7 @@ private fun CragDetailsContent(
             SectionHeader(
                 title = stringResource(R.string.featured_routes),
                 titleStyle = FalesiaTheme.typography.cardTitle,
-                actionLabel = stringResource(R.string.see_all).uppercase(Locale.getDefault())
+                actionLabel = stringResource(R.string.see_all).uppercase(LocalConfiguration.current.locales[0])
                     .takeIf { crag.vie.isNotEmpty() },
                 onActionClick = { onIntent(CragDetailsIntent.SeeAllRoutes) },
                 modifier = Modifier.padding(

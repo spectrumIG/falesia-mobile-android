@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -110,7 +111,8 @@ fun CragMap(
     val points = remember(crag, parking, settori) { listOfNotNull(crag, parking) + settori }
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(points) { cameraState.fitTo(points) }
+    val inspectionMode = LocalInspectionMode.current
+    LaunchedEffect(points) { if (!inspectionMode) cameraState.fitTo(points) }
 
     Column(
         modifier = modifier,
@@ -126,18 +128,22 @@ fun CragMap(
                 .testTag(TAG_CRAG_MAP)
                 .semantics { contentDescription = mapDescription },
         ) {
-            MaplibreMap(
-                modifier = Modifier.fillMaxSize(),
-                baseStyle = BaseStyle.Uri(if (colors.isDark) STYLE_DARK else STYLE_LIGHT),
-                cameraState = cameraState,
-                zoomRange = MIN_ZOOM.toFloat()..MAX_ZOOM.toFloat(),
-                // Attribution is the caption under the map: no built-in ornaments over the design's controls.
-                options = MapOptions(
-                    gestureOptions = GestureOptions.RotationLocked,
-                    ornamentOptions = OrnamentOptions.AllDisabled,
-                ),
-            ) {
-                MapPins(crag = crag, parking = parking, settori = settori)
+            // Previews and JVM screenshot tests cannot load MapLibre's native library: they show the empty
+            // map background with the overlays.
+            if (!inspectionMode) {
+                MaplibreMap(
+                    modifier = Modifier.fillMaxSize(),
+                    baseStyle = BaseStyle.Uri(if (colors.isDark) STYLE_DARK else STYLE_LIGHT),
+                    cameraState = cameraState,
+                    zoomRange = MIN_ZOOM.toFloat()..MAX_ZOOM.toFloat(),
+                    // Attribution is the caption under the map: no built-in ornaments over the design's controls.
+                    options = MapOptions(
+                        gestureOptions = GestureOptions.RotationLocked,
+                        ornamentOptions = OrnamentOptions.AllDisabled,
+                    ),
+                ) {
+                    MapPins(crag = crag, parking = parking, settori = settori)
+                }
             }
             MapChip(text = nome, modifier = Modifier.align(Alignment.TopStart))
             ZoomControls(

@@ -21,7 +21,7 @@ when a library is added, removed or upgraded significantly.
 | Map             | MapLibre Compose 0.14 (`org.maplibre.compose:maplibre-compose`, MapLibre Native Android SDK 13 underneath) with OpenFreeMap tiles                      | ✅ (Compose Multiplatform: Android/iOS beta)            |
 | Coroutines      | kotlinx-coroutines                                                                                                                                     | ✅                                                      |
 | Static analysis | detekt 1.23.8 (both modules, config `detekt.yml`), Compose stability analyzer                                                                          | —                                                       |
-| Tests           | JUnit4, MockK, Turbine, coroutines-test, Compose UI test, Hilt testing                                                                                 | Turbine/coroutines-test ✅, MockK ⚠️                    |
+| Tests           | JUnit4, MockK, Turbine, coroutines-test, Compose UI test, Hilt testing, Roborazzi + Robolectric (screenshots) | Turbine/coroutines-test ✅, MockK ⚠️, Roborazzi ✅ (Compose Multiplatform desktop/iOS) |
 
 ## Map
 

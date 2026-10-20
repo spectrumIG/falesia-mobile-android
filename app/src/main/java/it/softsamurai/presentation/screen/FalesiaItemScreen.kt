@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -69,7 +70,6 @@ import it.softsamurai.presentation.FalesiaItemUiState
 import it.softsamurai.presentation.FalesiaItemViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
-import java.util.Locale
 import it.softsamurai.core.ui.R as CoreUiR
 
 const val TAG_PULL_TO_REFRESH = "pull_to_refresh"
@@ -395,7 +395,7 @@ fun CragCard(
 private fun StatColumn(label: String, value: String) {
     Column {
         Text(
-            text = label.uppercase(Locale.getDefault()),
+            text = label.uppercase(LocalConfiguration.current.locales[0]),
             style = FalesiaTheme.typography.label,
             color = FalesiaTheme.colors.inkMuted,
         )
@@ -417,7 +417,7 @@ fun FalesiaItemRoute(
 
 // ──────────────────────── Previews ────────────────────────
 
-private val previewCrags = listOf(
+internal val previewCrags = listOf(
     Falesia(
         id = "monte-arrubiu",
         nome = "Monte Arrubiu",

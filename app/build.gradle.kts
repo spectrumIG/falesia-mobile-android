@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.kotlin.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     alias (libs.plugins.stability.analyzer)
+    alias(libs.plugins.roborazzi)
 }
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -28,6 +29,11 @@ detekt {
 // detekt derives its JVM target from the Gradle JVM by default; align it with the project's target.
 tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
     jvmTarget = JavaVersion.VERSION_17.toString()
+}
+
+// Screenshot tests: reference images are committed next to the tests (see doc/testing.md).
+roborazzi {
+    outputDir.set(file("src/test/snapshots"))
 }
 
 android {
@@ -112,6 +118,13 @@ android {
     //noinspection WrongGradleMethod
     ksp {
         arg("room.schemaLocation", "$projectDir/schemas")
+    }
+
+    // Robolectric (screenshot tests) needs the merged resources and manifest; on SDK 36 it also reads a
+    // JDK-internal class (ApplicationSharedMemory → FileDescriptor).
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+        unitTests.all { it.jvmArgs("--add-opens=java.base/jdk.internal.access=ALL-UNNAMED") }
     }
 
     useLibrary("org.apache.http.legacy")
@@ -200,6 +213,15 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.mockk)
     testImplementation(libs.turbine)
+
+    // Local screenshot tests: Compose on Robolectric, captured by Roborazzi
+    testImplementation(platform(libs.androidx.compose.bom))
+    testImplementation(libs.androidx.compose.ui.test.junit4)
+    testImplementation(libs.androidx.test.ext.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.roborazzi)
+    testImplementation(libs.roborazzi.compose)
+    testImplementation(libs.roborazzi.junit.rule)
 
     // Instrumented tests: jUnit rules and runners
     androidTestImplementation(libs.androidx.test.ext.junit)
