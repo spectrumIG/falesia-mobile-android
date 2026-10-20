@@ -68,6 +68,17 @@ class TopLevelNavigationTest {
     }
 
     @Test
+    fun `route list opens above the crag details and back returns to them`() {
+        val backStack = stackOf(AppRoute.Discover, AppRoute.CragDetails("arco"))
+
+        backStack.navigateTo(AppRoute.RouteList("arco"))
+        assertEquals(AppRoute.Discover, backStack.selectedTopLevel())
+        backStack.goBack()
+
+        assertEquals(listOf(AppRoute.Discover, AppRoute.CragDetails("arco")), backStack)
+    }
+
+    @Test
     fun `back from a tab returns to Discover`() {
         val backStack = stackOf(AppRoute.Discover, AppRoute.Logbook)
 

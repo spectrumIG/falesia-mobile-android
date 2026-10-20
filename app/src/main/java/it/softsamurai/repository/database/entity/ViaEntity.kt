@@ -14,12 +14,27 @@ import androidx.room.PrimaryKey
             childColumns = ["falesiaId"],
             onDelete = ForeignKey.CASCADE,
         ),
+        ForeignKey(
+            entity = SettoreEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["settoreId"],
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
-    indices = [Index("falesiaId")],
+    indices = [Index("falesiaId"), Index("settoreId")],
 )
 data class ViaEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0L,
+    /** falesiaonline.it route id. */
+    @PrimaryKey val id: Long,
     val falesiaId: String,
+    val settoreId: Long,
+    /** Order of the route on the sector page. */
+    val position: Int,
     val nome: String,
     val grado: String,
+    val rating: Double?,
+    val ratingCount: Int,
+    val length: String,
+    /** `ViaStyle` name. */
+    val style: String,
 )

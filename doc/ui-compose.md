@@ -40,10 +40,15 @@
   colors.
 - Components from the design system live in `core-ui/.../component/`: `FalesiaTopAppBar` (+
   `TopBarNavigation`),
-  `FalesiaIconButton`, `FalesiaSearchField`, `FalesiaFilterChip(Row)`, `SectionHeader`, `StyleTag`.
-  Shared icons (`ic_menu`, `ic_arrow_back`, `ic_search`, `ic_expand_more`, `ic_chevron_right`) are
-  in `:core-ui` resources; screen-specific icons stay in `:app`. Icons are Material Symbols
-  Outlined, `_filled` variants for active items.
+  `FalesiaIconButton`, `FalesiaSearchField`, `FalesiaFilterChip(Row)`, `SectionHeader`, `StyleTag`,
+  `CragHero` (photo slot), `InfoTile`, `RouteRow`, `RouteListItem`, `StarRating`,
+  `FalesiaPrimaryButton`. Shared icons (`ic_menu`, `ic_arrow_back`, `ic_search`, `ic_expand_more`,
+  `ic_chevron_right`,
+  `ic_location_on`, `ic_straighten`, `ic_star`, `ic_star_filled`, `ic_star_half_filled`) are in
+  `:core-ui` resources; screen-specific icons stay in `:app`. Icons are Material Symbols Outlined
+  (from google/material-design-icons, `symbols/android`), `_filled` variants for active items and
+  where the design fills them.
+- `FalesiaColors.isDark` tells content not drawn with tokens which theme is on (the map style).
 - Window background (`themes.xml`, DayNight) uses `bg` per theme (`values/colors.xml`,
   `values-night/colors.xml`).
 
@@ -60,10 +65,39 @@
   `selectedTopLevel`): Discover is always the root, another tab gives `[Discover, tab]`, so back
   from a tab returns to Discover.
 - Sections not built yet use `PlaceholderScreen` (top bar + page name): `LogbookScreen`,
-  `TicklistScreen`,
-  `ProfileScreen`, `CragDetailsPlaceholderScreen`.
+  `TicklistScreen`, `ProfileScreen`.
+- `NavDisplay` uses `rememberViewModelStoreNavEntryDecorator()`: ViewModels are scoped to their back
+  stack entry. Detail ViewModels take their id by Hilt assisted injection
+  (`hiltViewModel<VM, VM.Factory>(key = id) { it.create(id) }`), as `CragDetailsRoute` and
+  `RouteListRoute` do.
 - New destination = new `AppRoute` entry (with `topLevel`) + entry in `NavDisplay` + tests in
   `NavigationConfigTest` / `TopLevelNavigationTest`.
+
+## Crag details and route list
+
+- `CragDetailsScreen` (screens/CragDetails.dc.html) and `RouteListScreen`
+  (screens/RouteList.dc.html), state from `CragDetailsViewModel` / `RouteListViewModel`
+  ([mvi.md](mvi.md)).
+- The map is `presentation/screen/CragMap.kt` (MapLibre, OpenFreeMap light/dark style, see
+  [tech-stack.md](tech-stack.md)): crag pin with halo, sector dots and the parking "P" are map
+  layers; the crag name chip, zoom buttons, recenter and the parking chip are Compose views over the
+  map, as in the design. The attribution is the caption under the map (the built-in ornaments are
+  off). Previews show a gray box.
+- "Open navigation" opens a `geo:` URI with a labelled pin on the parking (or the crag), so any maps
+  app works; without one, a snackbar says so.
+- **Deviations from the design** (data or scope):
+    - no favourite button, no "+" FAB, no route Status filter or SENT/PROJECT tags (read-only app,
+      open issue 1);
+    - the WORLD CLASS badge shows the crag's rating and votes (`★ 4.5 · 15 VOTES`), only when it has
+      votes;
+    - the "Sun: Morning" tile is **Exposure** (the site has exposures, not sun hours): main
+      directions weighted by routes (`NE, SW`);
+    - grades are **French** (`6a+`), as the site writes them; the route list shows the length
+      instead of the bolt count (not on the site) and groups routes by sector;
+    - no approach path on the map (no data); the parking chip shows the sectors' approach range;
+    - the route list filters are Grade (bands `GradeBand`), Sector and Style, each a chip with a
+      menu; Sector and Style appear only when the crag has more than one.
+- The info tile value auto-sizes to one line (three tiles share the width).
 
 ## Design provenance
 - The current UI was derived from a **Stitch.io** mockup. Reference files live in `design/`:
@@ -100,7 +134,8 @@ Issues found while importing the Stitch export into Claude Design. Highest prior
 4. **Below 4.5:1 for small text:** `ink-faint` in light (dates, GRADE captions, 2.6:1), `ink-dim` in dark
    (route type, note timestamps, 3.3:1), `success` in light (SENT/FLASH tags, 3.3:1).
 5. **Sample content is placeholder:** English copy, US places, YDS (`5.12a`) and V (`V8`) grades, invented
-   counts. The implemented screens already use string resources (EN + IT) and falesiaonline.it data.
+   counts. The implemented screens use string resources (EN + IT), falesiaonline.it data and French
+   grades; Claude Design still shows YDS.
 6. **Inconsistencies inherited from Stitch:** three FAB shapes (16px, 24px, round); icons filled by
    default on crag details and topo but outlined elsewhere; info/stat tiles swap `primary-5`/`primary-10`
    between themes differently per screen; a different bottom bar in every screen (unified in Claude Design
@@ -110,8 +145,6 @@ Issues found while importing the Stitch export into Claude Design. Highest prior
 8. **Menu entries without a page:** Settings, Terms & conditions and Privacy policy in the menu bottom sheet
    have no screen yet; Terms and Privacy need the real legal text. The profile header shows only the guest
    state (the app has no sign-in).
-9. **Crag map:** Crag details has a Location section with an interactive map (crag pin, parking, approach
-   path, zoom and recenter) and an "Open navigation" button that should hand off to an external maps app. The
-   map in the design is a vector placeholder: pick a map library (KMP-friendly, e.g. Google Maps Compose vs
-   MapLibre) and get real coordinates first — the scraper does not extract them yet (known issue #10 in
-   [known-issues.md](known-issues.md)).
+9. **Crag details deviations not yet in Claude Design:** rating badge, Exposure tile, French grades,
+   no favourite/FAB, route list without Status (see "Crag details and route list" above). Bring the
+   design in line.

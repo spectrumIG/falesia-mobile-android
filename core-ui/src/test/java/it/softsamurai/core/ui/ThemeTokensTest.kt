@@ -51,6 +51,16 @@ class ThemeTokensTest {
     }
 
     @Test
+    fun `crag details tokens match the design`() {
+        listOf(darkFalesiaColors, lightFalesiaColors).forEach { colors ->
+            assertEquals(Color(0xFFE2E8F0), colors.inkOnPhotoMuted)
+            assertEquals(Color(0xCC221A10), colors.scrim)
+        }
+        assertEquals(Color(0x0DF49D25), darkFalesiaColors.surfaceRow)
+        assertEquals(Color(0xFFF8F7F5), lightFalesiaColors.surfaceRow)
+    }
+
+    @Test
     fun `crag card tokens match the design`() {
         assertEquals(Color(0x0DF49D25), darkFalesiaColors.surfaceCard)
         assertEquals(Color(0x1AF49D25), darkFalesiaColors.line)

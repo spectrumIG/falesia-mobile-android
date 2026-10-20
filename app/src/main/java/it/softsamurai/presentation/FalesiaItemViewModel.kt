@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.softsamurai.domain.model.Falesia
+import it.softsamurai.domain.sync.SyncStatus
 import it.softsamurai.domain.usecase.GetAllFalesieUseCase
+import it.softsamurai.domain.usecase.ObserveSyncStatusUseCase
 import it.softsamurai.domain.usecase.RefreshCragsUseCase
 import it.softsamurai.domain.usecase.RefreshOutcome
 import kotlinx.coroutines.channels.Channel
@@ -15,6 +17,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -24,9 +27,13 @@ import javax.inject.Inject
 class FalesiaItemViewModel @Inject constructor(
     getAllFalesie: GetAllFalesieUseCase,
     private val refreshCrags: RefreshCragsUseCase,
+    observeSyncStatus: ObserveSyncStatusUseCase,
 ) : ViewModel() {
 
     private val _isRefreshing = MutableStateFlow(false)
+
+    /** The last refresh started here (pull-to-refresh or Retry) failed. */
+    private val _refreshFailed = MutableStateFlow(false)
 
     private val _events = Channel<DiscoverEvent>(Channel.BUFFERED)
 
@@ -40,9 +47,13 @@ class FalesiaItemViewModel @Inject constructor(
     fun onRefresh() {
         if (_isRefreshing.value) return
         _isRefreshing.value = true
+        _refreshFailed.value = false
         viewModelScope.launch {
             refreshCrags().fold(
-                ifLeft = { _events.send(DiscoverEvent.SyncFailed) },
+                ifLeft = {
+                    _refreshFailed.value = true
+                    _events.send(DiscoverEvent.SyncFailed)
+                },
                 ifRight = { outcome ->
                     if (outcome == RefreshOutcome.AlreadyUpToDate) _events.send(DiscoverEvent.AlreadyUpToDate)
                 },
@@ -54,16 +65,31 @@ class FalesiaItemViewModel @Inject constructor(
     val uiState: StateFlow<FalesiaItemUiState> = combine(
         getAllFalesie(),
         _isRefreshing,
-    ) { falesie, isRefreshing ->
-        if (falesie.isEmpty()) FalesiaItemUiState.Loading
-        else FalesiaItemUiState.Success(falesie, isRefreshing)
-    }
+        _refreshFailed,
+        observeSyncStatus().onStart { emit(SyncStatus.Idle) },
+        ::reduceDiscover,
+    )
         .catch { emit(FalesiaItemUiState.Error(it, it.message ?: "Unknown error")) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = FalesiaItemUiState.Loading,
         )
+}
+
+/**
+ * Saved crags are always shown. Without any, the screen loads until a sync fails (the startup one or a
+ * Retry): then it shows the error with Retry instead of loading forever.
+ */
+internal fun reduceDiscover(
+    falesie: List<Falesia>,
+    isRefreshing: Boolean,
+    refreshFailed: Boolean,
+    syncStatus: SyncStatus,
+): FalesiaItemUiState = when {
+    falesie.isNotEmpty() -> FalesiaItemUiState.Success(falesie, isRefreshing)
+    !isRefreshing && (refreshFailed || syncStatus == SyncStatus.Failed) -> FalesiaItemUiState.SyncFailed
+    else -> FalesiaItemUiState.Loading
 }
 
 sealed interface DiscoverEvent {
@@ -77,6 +103,9 @@ sealed interface DiscoverEvent {
 @Stable
 sealed interface FalesiaItemUiState {
     data object Loading : FalesiaItemUiState
+
+    /** No saved crags and the sync failed: show the error and Retry. */
+    data object SyncFailed : FalesiaItemUiState
     data class Error(val throwable: Throwable? = null, val message: String) :
         FalesiaItemUiState
     data class Success(val data: List<Falesia>, val isRefreshing: Boolean = false) :

@@ -81,31 +81,12 @@ fun TicklistScreen(modifier: Modifier = Modifier) =
 @Composable
 fun ProfileScreen(modifier: Modifier = Modifier) = PlaceholderScreen(R.string.nav_profile, modifier)
 
-/** Placeholder for the crag details page: shows which crag was opened. */
-@Composable
-fun CragDetailsPlaceholderScreen(
-    falesiaId: String,
-    onBack: () -> Unit,
-    modifier: Modifier = Modifier,
-) = PlaceholderScreen(
-    titleRes = R.string.crag_details_title,
-    modifier = modifier,
-    subtitle = falesiaId,
-    navigation = TopBarNavigation.Back(stringResource(R.string.cd_back), onBack),
-)
-
 // ──────────────────────── Previews ────────────────────────
 
 @PreviewLightDark
 @Composable
 private fun LogbookScreenPreview() {
     AppTheme { LogbookScreen() }
-}
-
-@PreviewLightDark
-@Composable
-private fun CragDetailsPlaceholderScreenPreview() {
-    AppTheme { CragDetailsPlaceholderScreen(falesiaId = "monte-arrubiu", onBack = {}) }
 }
 
 @Preview(name = "Large font", showBackground = true, fontScale = 1.5f)

@@ -28,4 +28,7 @@ interface FalesiaRepository {
 
     // ── Sync (coordinates local + remote) ────────────────────────────────
     suspend fun syncFalesie(): Either<SyncError, Unit>
+
+    /** Downloads the routes of every sector of a crag and its parking (on demand, see `RefreshCragDetailsUseCase`). */
+    suspend fun refreshCragDetails(falesiaId: String): Either<SyncError, Unit>
 }

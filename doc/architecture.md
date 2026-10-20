@@ -5,21 +5,21 @@ Root package: `it.softsamurai` (module `:app`, see [modularization.md](modulariz
 
 ## Layers and packages
 
-| Layer | Package | Content |
-|---|---|---|
-| Domain | `domain.model` | Immutable domain models (`Falesia`, `Via`), annotated with Arrow `@optics` |
-| Domain | `domain.error` | Typed sealed errors (`FalesiaError`, `SyncError`) |
-| Domain | `domain.repository` | Repository interfaces (`FalesiaRepository`) |
-| Domain | `domain.usecase` | One use case per action, `operator fun invoke` (`GetAllFalesieUseCase`, `SyncCragsUseCase`, `CheckDbFreshnessUseCase`, …) |
-| Data | `repository` | `FalesiaRepositoryImpl` (implements the domain interface) |
-| Data | `repository.local` | `FalesiaLocalDataSource` over Room |
-| Data | `repository.database` | Room `AppDatabase`, `dao`, `entity`, `relation`, `di` |
-| Data | `repository.network` | `FalesiaNetworkDataSource` (ksoup scraping) + `network.model` |
-| Data | `repository.mapper` | Pure mapping functions network ↔ entity ↔ domain |
-| Data | `repository.di` | Hilt bindings (`DataModule`) |
-| Background | `sync` | WorkManager `SyncWorker`, `SyncScheduler` |
-| Presentation | `presentation` | ViewModels, `MainActivity`, `screen/` composables, `navigation/` |
-| Shared DI | `core.di` | Qualifiers (`@IoDispatcher`) |
+| Layer        | Package               | Content                                                                                                                                                                                                                                                                                       |
+|--------------|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Domain       | `domain.model`        | Immutable domain models (`Falesia`, `Settore`, `Via`, `GeoPoint`, `ViaStyle`, `Exposure`) annotated with Arrow `@optics`; `FrenchGrade`/`GradeBand`; derived facts as pure functions in `FalesiaStats.kt` (`gradeRange`, `approachRange`, `mainExposures`, `featuredVie`, `navigationTarget`) |
+| Domain       | `domain.error`        | Typed sealed errors (`FalesiaError`, `SyncError`)                                                                                                                                                                                                                                             |
+| Domain       | `domain.repository`   | Repository interfaces (`FalesiaRepository`)                                                                                                                                                                                                                                                   |
+| Domain       | `domain.usecase`      | One use case per action, `operator fun invoke` (`GetAllFalesieUseCase`, `SyncCragsUseCase`, `CheckDbFreshnessUseCase`, `RefreshCragDetailsUseCase`, …)                                                                                                                                        |
+| Data         | `repository`          | `FalesiaRepositoryImpl` (implements the domain interface)                                                                                                                                                                                                                                     |
+| Data         | `repository.local`    | `FalesiaLocalDataSource` over Room                                                                                                                                                                                                                                                            |
+| Data         | `repository.database` | Room `AppDatabase`, `dao`, `entity`, `relation`, `di`                                                                                                                                                                                                                                         |
+| Data         | `repository.network`  | `FalesiaNetworkDataSource` (ksoup scraping) + `network.model`                                                                                                                                                                                                                                 |
+| Data         | `repository.mapper`   | Pure mapping functions network ↔ entity ↔ domain                                                                                                                                                                                                                                              |
+| Data         | `repository.di`       | Hilt bindings (`DataModule`)                                                                                                                                                                                                                                                                  |
+| Background   | `sync`                | WorkManager `SyncWorker`, `SyncScheduler`                                                                                                                                                                                                                                                     |
+| Presentation | `presentation`        | ViewModels (`FalesiaItemViewModel`, `CragDetailsViewModel`, `RouteListViewModel`), `MainActivity`, `screen/` composables, `navigation/`                                                                                                                                                       |
+| Shared DI    | `core.di`             | Qualifiers (`@IoDispatcher`)                                                                                                                                                                                                                                                                  |
 
 Note: the data layer package is named `repository` (historical). Keep using it for new data code until a
 modularization step renames it (ask first).

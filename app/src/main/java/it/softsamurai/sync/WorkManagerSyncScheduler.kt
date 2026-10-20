@@ -10,7 +10,7 @@ import androidx.work.WorkManager
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-private const val IMMEDIATE_SYNC_WORK = "falesia_immediate_sync"
+internal const val IMMEDIATE_SYNC_WORK = "falesia_immediate_sync"
 private const val PERIODIC_SYNC_WORK = "falesia_periodic_sync"
 
 class WorkManagerSyncScheduler @Inject constructor(

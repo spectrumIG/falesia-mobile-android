@@ -41,6 +41,21 @@ class NavigationConfigTest {
     }
 
     @Test
+    fun `RouteList keeps Discover selected and survives serialization`() {
+        val route: AppRoute = AppRoute.RouteList("monsummano")
+
+        assertEquals(AppRoute.Discover, route.topLevel)
+        assertEquals(
+            route,
+            Json.decodeFromString(
+                AppRoute.serializer(),
+                Json.encodeToString(AppRoute.serializer(), route)
+            ),
+        )
+        assertNotEquals(AppRoute.CragDetails("monsummano") as AppRoute, route)
+    }
+
+    @Test
     fun `top-level routes survive serialization`() {
         bottomNavItems.map { it.route }.forEach { route ->
             val json = Json.encodeToString(AppRoute.serializer(), route)

@@ -136,6 +136,9 @@ dependencies {
     // Image loading
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+
+    // Map (MapLibre, OpenFreeMap tiles)
+    implementation(libs.maplibre.compose)
     implementation(libs.androidx.material3)
     ksp(libs.hilt.compiler)
     // Hilt and instrumented tests.
@@ -151,6 +154,7 @@ dependencies {
     // Arch Components
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 
     // Navigation 3
     implementation(libs.androidx.navigation3.ui)

@@ -41,6 +41,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,12 +55,14 @@ import it.softsamurai.core.ui.AppTheme
 import it.softsamurai.core.ui.FalesiaTheme
 import it.softsamurai.core.ui.component.FalesiaFilterChipRow
 import it.softsamurai.core.ui.component.FalesiaIconButton
+import it.softsamurai.core.ui.component.FalesiaPrimaryButton
 import it.softsamurai.core.ui.component.FalesiaSearchField
 import it.softsamurai.core.ui.component.FalesiaTopAppBar
 import it.softsamurai.core.ui.component.SectionHeader
 import it.softsamurai.core.ui.component.TopBarNavigation
 import it.softsamurai.domain.model.Falesia
 import it.softsamurai.domain.model.Via
+import it.softsamurai.domain.model.gradeRange
 import it.softsamurai.presentation.DiscoverEvent
 import it.softsamurai.presentation.FalesiaItemUiState
 import it.softsamurai.presentation.FalesiaItemViewModel
@@ -71,6 +74,7 @@ import it.softsamurai.core.ui.R as CoreUiR
 const val TAG_PULL_TO_REFRESH = "pull_to_refresh"
 const val TAG_CRAG_CARD = "crag_card"
 const val TAG_CRAG_LOCATION = "crag_location"
+const val TAG_SYNC_FAILED = "sync_failed"
 
 private const val CRAG_PHOTO_ASPECT_RATIO = 16f / 9f
 private val LocationIconSize = 14.dp
@@ -124,6 +128,7 @@ fun DiscoverScreen(
     ) { innerPadding ->
         when (uiState) {
             is FalesiaItemUiState.Loading -> LoadingContent(innerPadding)
+            is FalesiaItemUiState.SyncFailed -> SyncFailedContent(innerPadding, onRetry = onRefresh)
             is FalesiaItemUiState.Error -> ErrorContent(uiState, innerPadding)
             is FalesiaItemUiState.Success -> PullToRefreshBox(
                 isRefreshing = uiState.isRefreshing,
@@ -215,6 +220,31 @@ private fun LoadingContent(innerPadding: PaddingValues) {
     }
 }
 
+/** No saved crags and the download failed (site down, no network): explain it and offer Retry. */
+@Composable
+private fun SyncFailedContent(innerPadding: PaddingValues, onRetry: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+            .padding(FalesiaTheme.spacing.space6)
+            .testTag(TAG_SYNC_FAILED),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(
+            FalesiaTheme.spacing.space4,
+            Alignment.CenterVertically
+        ),
+    ) {
+        Text(
+            text = stringResource(R.string.crags_sync_failed),
+            style = FalesiaTheme.typography.body,
+            color = FalesiaTheme.colors.inkMuted,
+            textAlign = TextAlign.Center,
+        )
+        FalesiaPrimaryButton(text = stringResource(R.string.retry), onClick = onRetry)
+    }
+}
+
 @Composable
 private fun ErrorContent(uiState: FalesiaItemUiState.Error, innerPadding: PaddingValues) {
     Box(
@@ -286,7 +316,7 @@ fun CragCard(
                     horizontalArrangement = Arrangement.spacedBy(spacing.space1),
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_location_on),
+                        painter = painterResource(CoreUiR.drawable.ic_location_on),
                         contentDescription = null,
                         modifier = Modifier.size(LocationIconSize),
                         tint = colors.inkMuted,
@@ -316,10 +346,10 @@ fun CragCard(
                     label = stringResource(R.string.label_routes),
                     value = crag.numeroVie.toString(),
                 )
-                crag.vie.firstOrNull()?.let { via ->
+                crag.gradeRange()?.let { range ->
                     StatColumn(
-                        label = stringResource(R.string.label_best_grade),
-                        value = via.grado,
+                        label = stringResource(R.string.label_grades),
+                        value = with(range) { if (start == endInclusive) "$start" else "$start–$endInclusive" },
                     )
                 }
                 Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
@@ -409,6 +439,12 @@ private fun DiscoverScreenLoadingPreview() {
     AppTheme {
         DiscoverScreen(uiState = FalesiaItemUiState.Loading)
     }
+}
+
+@PreviewLightDark
+@Composable
+private fun DiscoverScreenSyncFailedPreview() {
+    AppTheme { DiscoverScreen(uiState = FalesiaItemUiState.SyncFailed) }
 }
 
 @PreviewLightDark

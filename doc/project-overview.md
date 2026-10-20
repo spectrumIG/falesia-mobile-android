@@ -8,7 +8,8 @@ routes (*vie*). Users do not create remote content; the app consumes public data
 - Data is **scraped** from [falesiaonline.it](https://www.falesiaonline.it), a public and free website.
 - Crag list: POST to `https://www.falesiaonline.it/falesie/sud-europa.html` (body
   `location_id=1&order=byinterest&shownnumberofcrags=110`, `Referer` header set).
-- Crag details (routes, photo, coordinates): one GET per crag detail page.
+- Crag details (description, photo, sectors, coordinates): one GET per crag detail page.
+- Routes and parking: one GET per sector page and one map page, downloaded when the crag is opened.
 - Details in [scraping.md](scraping.md).
 
 ## Core principles
@@ -20,13 +21,15 @@ routes (*vie*). Users do not create remote content; the app consumes public data
 - **Tested**: every feature ships with tests, unit tests first. See [testing.md](testing.md).
 
 ## Current features
-| Section (bottom bar) | Route                             | Status                                                                                   |
-|----------------------|-----------------------------------|------------------------------------------------------------------------------------------|
-| Discover             | `AppRoute.Discover`               | Implemented: crag list, pull-to-refresh, crag cards (design-system tokens, light + dark) |
-| ↳ Crag details       | `AppRoute.CragDetails(falesiaId)` | Placeholder (opened by tapping a crag card)                                              |
-| Logbook              | `AppRoute.Logbook`                | Placeholder (`PlaceholderScreen`)                                                        |
-| Ticklist             | `AppRoute.Ticklist`               | Placeholder (`PlaceholderScreen`)                                                        |
-| Profile              | `AppRoute.Profile`                | Placeholder (`PlaceholderScreen`)                                                        |
+
+| Section (bottom bar) | Route                             | Status                                                                                                         |
+|----------------------|-----------------------------------|----------------------------------------------------------------------------------------------------------------|
+| Discover             | `AppRoute.Discover`               | Implemented: crag list, pull-to-refresh, crag cards (design-system tokens, light + dark)                       |
+| ↳ Crag details       | `AppRoute.CragDetails(falesiaId)` | Implemented: hero, quick info, description, OSM map with sectors and parking, Open navigation, featured routes |
+| ↳ Route list         | `AppRoute.RouteList(falesiaId)`   | Implemented: routes by sector, search, grade/sector/style filters                                              |
+| Logbook              | `AppRoute.Logbook`                | Placeholder (`PlaceholderScreen`)                                                                              |
+| Ticklist             | `AppRoute.Ticklist`               | Placeholder (`PlaceholderScreen`)                                                                              |
+| Profile              | `AppRoute.Profile`                | Placeholder (`PlaceholderScreen`)                                                                              |
 
 UI languages: English (default, `values/`) and Italian (`values-it/`).
 

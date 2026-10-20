@@ -38,4 +38,10 @@ sealed interface AppRoute : NavKey {
     data class CragDetails(val falesiaId: String) : AppRoute {
         override val topLevel: AppRoute get() = Discover
     }
+
+    /** All the routes of one crag, reached from its details ("See all"). */
+    @Serializable
+    data class RouteList(val falesiaId: String) : AppRoute {
+        override val topLevel: AppRoute get() = Discover
+    }
 }

@@ -2,6 +2,9 @@ package it.softsamurai.repository.network
 
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.nodes.Document
+import it.softsamurai.domain.error.SyncError
+import it.softsamurai.domain.model.Exposure
+import it.softsamurai.domain.model.ViaStyle
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -42,6 +45,18 @@ class FalesiaHtmlParserTest {
     }
 
     @Test
+    fun `list page with crags is Right, an error page without crags is a parse failure`() {
+        assertEquals(
+            90,
+            parseElencoFalesieOrFail(fixture("AllCragsResponse.html")).getOrNull()?.size
+        )
+
+        val badGateway = parseElencoFalesieOrFail(html("<center><h1>502 Bad Gateway</h1></center>"))
+
+        assertTrue(badGateway.leftOrNull() is SyncError.ParseFailure)
+    }
+
+    @Test
     fun `list item without link or route counter falls back to defaults`() {
         val crags = parseElencoFalesie(
             html(
@@ -70,42 +85,203 @@ class FalesiaHtmlParserTest {
         assertEquals(0, crags.single().routeCount)
     }
 
-    // ── Crag detail ──
+    // ── Crag detail (saved page of Monsummano) ──
+
+    private val monsummano by lazy { parseDettagliFalesia(fixture("SingleCragPage.html")).getOrNull()!! }
 
     @Test
     fun `detail page photo is resolved to an absolute url`() {
-        val detail = parseDettagliFalesia(fixture("SingleCragPage.html"))
-
         assertEquals(
             "https://www.falesiaonline.it/uploads/assets/image/150224245784falesia_monsummano_.jpg",
-            detail.pictureUrl,
+            monsummano.pictureUrl,
         )
     }
 
     @Test
-    fun `routes are read from route-details blocks`() {
-        val detail = parseDettagliFalesia(
-            html(
-                """<div class="route-details"><span class="nome-via">Via del Sole</span>
-                <div class="route-grade">6a+</div></div>
-                <div class="route-details"><span class="nome-via">Placca</span></div>""",
-            ),
-        )
-
-        assertEquals(2, detail.vie.size)
-        assertEquals("Via del Sole", detail.vie[0].nome)
-        assertEquals("6a+", detail.vie[0].grado)
-        assertEquals("", detail.vie[1].grado)
+    fun `detail page has zone, rating, rock, seasons and description`() {
+        assertEquals("Toscana Nord Ovest, Toscana", monsummano.zona)
+        assertEquals(4.5, monsummano.rating)
+        assertEquals(15, monsummano.ratingCount)
+        assertEquals("Calcare", monsummano.rock)
+        assertEquals("Inverno, Mezze stagioni", monsummano.seasons)
+        assertTrue(monsummano.description.startsWith("Storica falesia invernale del Pistoiese"))
+        assertTrue(monsummano.description.contains("Cava Grigia"))
     }
 
     @Test
-    fun `detail without photo, routes or coordinates has empty values`() {
-        val detail = parseDettagliFalesia(html("<p>nothing here</p>"))
+    fun `detail page lists every sector in order`() {
+        assertEquals(14, monsummano.settori.size)
+        assertEquals("Pilastro Rosso", monsummano.settori.first().nome)
+        assertEquals("Cava Rossa (destra)", monsummano.settori.last().nome)
+        assertTrue(monsummano.settori.all { it.detailUrl.startsWith("https://www.falesiaonline.it/settore") })
+    }
+
+    @Test
+    fun `sector has id, link, routes, grades, length, approach, exposure, rating and style`() {
+        val pilastro = monsummano.settori.first()
+
+        assertEquals(1510L, pilastro.id)
+        assertEquals(
+            "https://www.falesiaonline.it/settorefoto/1510/pilastro-rosso.html",
+            pilastro.detailUrl
+        )
+        assertEquals(20, pilastro.routeCount)
+        assertEquals("6a+", pilastro.gradoMin)
+        assertEquals("7c+", pilastro.gradoMax)
+        assertEquals("13–28m", pilastro.length)
+        assertEquals(6, pilastro.approachMinMinutes)
+        assertEquals(15, pilastro.approachMaxMinutes)
+        assertEquals(listOf(Exposure.NE), pilastro.exposures)
+        assertEquals(4.0, pilastro.rating)
+        assertEquals(1, pilastro.ratingCount)
+        assertEquals(ViaStyle.Sport, pilastro.style)
+    }
+
+    @Test
+    fun `sector position comes from its map marker`() {
+        val cavaRossaDestra = monsummano.settori.last()
+
+        assertEquals(43.868677704799, cavaRossaDestra.latitude!!, 1e-9)
+        assertEquals(10.830212831497, cavaRossaDestra.longitude!!, 1e-9)
+        assertTrue(monsummano.settori.all { it.latitude != null && it.longitude != null })
+    }
+
+    @Test
+    fun `sector with several exposures keeps them all`() {
+        val cavaRossaCentro = monsummano.settori.first { it.nome == "Cava Rossa (centro)" }
+
+        assertEquals(listOf(Exposure.SE, Exposure.S, Exposure.SW), cavaRossaCentro.exposures)
+    }
+
+    @Test
+    fun `crag position is the centre of its sectors`() {
+        val lat = monsummano.settori.mapNotNull { it.latitude }.average()
+        val lng = monsummano.settori.mapNotNull { it.longitude }.average()
+
+        assertEquals(lat, monsummano.latitude!!, 1e-9)
+        assertEquals(lng, monsummano.longitude!!, 1e-9)
+    }
+
+    @Test
+    fun `page without crag title is a parse failure`() {
+        val result = parseDettagliFalesia(html("<p>nothing here</p>"))
+
+        assertTrue(result.leftOrNull() is SyncError.ParseFailure)
+    }
+
+    @Test
+    fun `minimal crag page has empty values`() {
+        val detail = parseDettagliFalesia(html("<h1>Falesia: X</h1>")).getOrNull()!!
 
         assertNull(detail.pictureUrl)
         assertNull(detail.latitude)
-        assertNull(detail.longitude)
-        assertTrue(detail.vie.isEmpty())
+        assertNull(detail.rating)
+        assertEquals("", detail.zona)
+        assertEquals("", detail.description)
+        assertTrue(detail.settori.isEmpty())
+    }
+
+    @Test
+    fun `sector without votes, grades or approach falls back to defaults`() {
+        val detail = parseDettagliFalesia(
+            html(
+                """<h1>Falesia: X</h1><ul><li class="leafletshadow sectorleaflet">
+                <div class="stars"><img src="/images/stelle/star_void.png"/>0</div>
+                <h4><a href="/settoredisegno/7/nuovo.html">Nuovo</a></h4>
+                <div class="indicatorrow firstrow"><span class="indicator" title="Vie">0</span></div>
+                </li><li class="leafletshadow sectorleaflet"><h4><a href="/altro.html">Senza id</a></h4></li></ul>""",
+            ),
+        ).getOrNull()!!
+
+        val settore = detail.settori.single()
+        assertEquals(7L, settore.id)
+        assertEquals("", settore.gradoMin)
+        assertNull(settore.approachMinMinutes)
+        assertNull(settore.rating)
+        assertEquals(0, settore.ratingCount)
+        assertEquals(ViaStyle.Unknown, settore.style)
+        assertNull(settore.latitude)
+    }
+
+    // ── Sector page (saved page of a sector with 16 routes) ──
+
+    private val sectorRoutes by lazy { parseVieSettore(fixture("SectorPage.html")).getOrNull()!! }
+
+    @Test
+    fun `sector page yields every route in order`() {
+        assertEquals(16, sectorRoutes.size)
+        assertEquals("Sanguisughe", sectorRoutes.first().nome)
+        assertEquals("Rimmel", sectorRoutes.last().nome)
+    }
+
+    @Test
+    fun `route has id, French grade, rating, votes, length and style`() {
+        val first = sectorRoutes.first()
+
+        assertEquals(9899L, first.id)
+        assertEquals("6c", first.grado)
+        assertEquals(3.0, first.rating)
+        assertEquals(5, first.ratingCount)
+        assertEquals("15–20m", first.length)
+        assertEquals(ViaStyle.Sport, first.style)
+    }
+
+    @Test
+    fun `route stars of the list row ignore the detail pane`() {
+        // Rimmel is followed by the route detail pane, which repeats the stars of every route.
+        val rimmel = sectorRoutes.last()
+
+        assertEquals(2.5, rimmel.rating)
+        assertEquals(3, rimmel.ratingCount)
+    }
+
+    @Test
+    fun `route with a warning counter keeps grade and length`() {
+        val autoerotismo = sectorRoutes.first { it.nome == "Autoerotismo" }
+
+        assertEquals("5a", autoerotismo.grado)
+        assertEquals("18–22m", autoerotismo.length)
+    }
+
+    @Test
+    fun `page without route list is a parse failure`() {
+        val result = parseVieSettore(html("<p>topo only</p>"))
+
+        assertTrue(result.leftOrNull() is SyncError.ParseFailure)
+    }
+
+    // ── Crag map page ──
+
+    @Test
+    fun `map page has the parking`() {
+        assertEquals(
+            42.884588547781 to 11.579203605652,
+            parseParcheggio(fixture("CragMapPage.html"))
+        )
+    }
+
+    @Test
+    fun `map page without parking returns null`() {
+        assertNull(parseParcheggio(html("<script>var map = 1;</script>")))
+    }
+
+    @Test
+    fun `map url is derived from the detail url`() {
+        assertEquals(
+            "https://www.falesiaonline.it/falesia/map/monsummano.html",
+            mapUrlFromDetailUrl("https://www.falesiaonline.it/falesia/monsummano.html"),
+        )
+    }
+
+    // ── Exposures ──
+
+    @Test
+    fun `Italian exposures are mapped to compass directions`() {
+        assertEquals(listOf(Exposure.SW, Exposure.W), parseExposures("SO-O"))
+        assertEquals(listOf(Exposure.NE, Exposure.E), parseExposures("NE-E"))
+        assertEquals(listOf(Exposure.NW, Exposure.N), parseExposures("NO-N-NO"))
+        assertTrue(parseExposures("").isEmpty())
+        assertTrue(parseExposures("variabile").isEmpty())
     }
 
     // ── Coordinates ──

@@ -21,6 +21,7 @@ import it.softsamurai.presentation.screen.TAG_CRAG_LOCATION
 import it.softsamurai.presentation.screen.TAG_PULL_TO_REFRESH
 import kotlinx.coroutines.flow.MutableSharedFlow
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import java.util.Locale
@@ -49,6 +50,23 @@ class DiscoverScreenTest {
                 onCragClick = onCragClick
             )
         }
+    }
+
+    @Test
+    fun syncFailed_showsMessage_andRetryRefreshes() {
+        var refreshed = false
+        composeRule.setContent {
+            AppTheme {
+                DiscoverScreen(
+                    uiState = FalesiaItemUiState.SyncFailed,
+                    onRefresh = { refreshed = true })
+            }
+        }
+
+        composeRule.onNodeWithText(string(R.string.crags_sync_failed)).assertIsDisplayed()
+        composeRule.onNodeWithText(string(R.string.retry)).performClick()
+
+        assertTrue(refreshed)
     }
 
     @Test

@@ -3,16 +3,19 @@ package it.softsamurai.repository.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import it.softsamurai.repository.database.dao.FalesiaDao
+import it.softsamurai.repository.database.dao.SettoreDao
 import it.softsamurai.repository.database.dao.ViaDao
 import it.softsamurai.repository.database.entity.FalesiaEntity
+import it.softsamurai.repository.database.entity.SettoreEntity
 import it.softsamurai.repository.database.entity.ViaEntity
 
 @Database(
-    entities = [FalesiaEntity::class, ViaEntity::class],
-    version = 2,
+    entities = [FalesiaEntity::class, SettoreEntity::class, ViaEntity::class],
+    version = 3,
     exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun falesiaDao(): FalesiaDao
+    abstract fun settoreDao(): SettoreDao
     abstract fun viaDao(): ViaDao
 }
