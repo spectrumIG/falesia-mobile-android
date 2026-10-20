@@ -104,6 +104,95 @@
       "w": 390,
       "x": 1410,
       "y": 1980
+    },
+    "Errors.dc.html": {
+      "x": 3400,
+      "y": 0,
+      "w": 1280,
+      "h": 3500,
+      "title": "Errors & feedback"
+    },
+    "ErrorsLight.dc.html": {
+      "x": 4800,
+      "y": 0,
+      "w": 1280,
+      "h": 3500,
+      "title": "Errors & feedback · Light"
+    },
+    "Onboarding.dc.html": {
+      "x": 0,
+      "y": 3900,
+      "w": 390,
+      "h": 844,
+      "title": "Tour 1 · Welcome",
+      "is_interactive": true
+    },
+    "OnboardingLight.dc.html": {
+      "x": 0,
+      "y": 5124,
+      "w": 390,
+      "h": 844,
+      "title": "Tour 1 · Welcome · Light"
+    },
+    "OnboardingStep2.dc.html": {
+      "x": 470,
+      "y": 3900,
+      "w": 390,
+      "h": 844,
+      "title": "Tour 2 · Find a crag",
+      "is_interactive": true
+    },
+    "OnboardingStep2Light.dc.html": {
+      "x": 470,
+      "y": 5124,
+      "w": 390,
+      "h": 844,
+      "title": "Tour 2 · Find a crag · Light"
+    },
+    "OnboardingStep3.dc.html": {
+      "x": 940,
+      "y": 3900,
+      "w": 390,
+      "h": 844,
+      "title": "Tour 3 · Offline",
+      "is_interactive": true
+    },
+    "OnboardingStep3Light.dc.html": {
+      "x": 940,
+      "y": 5124,
+      "w": 390,
+      "h": 844,
+      "title": "Tour 3 · Offline · Light"
+    },
+    "OnboardingStep4.dc.html": {
+      "x": 1410,
+      "y": 3900,
+      "w": 390,
+      "h": 844,
+      "title": "Tour 4 · First launch",
+      "is_interactive": true
+    },
+    "OnboardingStep4Light.dc.html": {
+      "x": 1410,
+      "y": 5124,
+      "w": 390,
+      "h": 844,
+      "title": "Tour 4 · First launch · Light"
+    },
+    "FirstSync.dc.html": {
+      "x": 1880,
+      "y": 3900,
+      "w": 390,
+      "h": 844,
+      "title": "First download",
+      "is_interactive": true
+    },
+    "FirstSyncLight.dc.html": {
+      "x": 1880,
+      "y": 5124,
+      "w": 390,
+      "h": 844,
+      "title": "First download · Light"
     }
   },
   "createdOnFiles": {
@@ -113,10 +202,10 @@
   "designSystems": [
     {
       "artifact": "https://claude.ai/artifact/RAbZEfFEBx8kRkw5syHe4A",
-      "copiedAt": "2026-10-19T12:45:00Z",
+      "copiedAt": "2026-10-20T10:05:00Z",
       "namespace": "falesiamobile",
       "title": "Falesia Mobile",
-      "version": "1792412325-2196"
+      "version": "1792494843-3248"
     }
   ],
   "launch": {
@@ -154,6 +243,30 @@
       "w": 240,
       "x": 2350,
       "y": 1680
+    },
+    "titleErrors": {
+      "kind": "title1",
+      "maxW": 2680,
+      "text": "Errors & feedback",
+      "w": 240,
+      "x": 3400,
+      "y": -300
+    },
+    "titleTour": {
+      "kind": "title1",
+      "maxW": 2270,
+      "text": "Onboarding tour & first launch",
+      "w": 240,
+      "x": 0,
+      "y": 3600
+    },
+    "titleTourLight": {
+      "kind": "title1",
+      "maxW": 2270,
+      "text": "Onboarding tour & first launch · Light",
+      "w": 240,
+      "x": 0,
+      "y": 4824
     }
   },
   "order": [
@@ -170,7 +283,19 @@
     "RouteTopoLight.dc.html",
     "LogbookLight.dc.html",
     "MenuLight.dc.html",
-    "LicensesLight.dc.html"
+    "LicensesLight.dc.html",
+    "Errors.dc.html",
+    "ErrorsLight.dc.html",
+    "Onboarding.dc.html",
+    "OnboardingStep2.dc.html",
+    "OnboardingStep3.dc.html",
+    "OnboardingStep4.dc.html",
+    "FirstSync.dc.html",
+    "OnboardingLight.dc.html",
+    "OnboardingStep2Light.dc.html",
+    "OnboardingStep3Light.dc.html",
+    "OnboardingStep4Light.dc.html",
+    "FirstSyncLight.dc.html"
   ],
   "pages": [],
   "title": "Falesia Mobile UI"
