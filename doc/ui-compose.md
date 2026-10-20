@@ -110,3 +110,8 @@ Issues found while importing the Stitch export into Claude Design. Highest prior
 8. **Menu entries without a page:** Settings, Terms & conditions and Privacy policy in the menu bottom sheet
    have no screen yet; Terms and Privacy need the real legal text. The profile header shows only the guest
    state (the app has no sign-in).
+9. **Crag map:** Crag details has a Location section with an interactive map (crag pin, parking, approach
+   path, zoom and recenter) and an "Open navigation" button that should hand off to an external maps app. The
+   map in the design is a vector placeholder: pick a map library (KMP-friendly, e.g. Google Maps Compose vs
+   MapLibre) and get real coordinates first — the scraper does not extract them yet (known issue #10 in
+   [known-issues.md](known-issues.md)).
