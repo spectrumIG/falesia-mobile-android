@@ -83,6 +83,17 @@ Instrumented tests run on `it.softsamurai.core.testing.HiltTestRunner` (`app/src
 - Screenshots complement, not replace, the instrumented tests: they check the look, the Compose tests check
   behavior and the manual visual check below the match with the design.
 
+## Release smoke test (manual, after changing R8 rules or dependencies)
+R8 problems only show at runtime on a release build. On an emulator, one clean install of the signed release
+(`./gradlew :app:assembleRelease`, `adb install app/build/outputs/apk/release/app-release.apk`; it runs the real
+first sync: 1 list request + one page per crag, so do it once, not in a loop), launched from the launcher, then:
+- first sync fills Discover with photos; open a crag: routes, parking, map with pins, "Open navigation";
+- route list search and filters; dark mode and rotation;
+- process death: open a crag, Home, `adb shell am kill it.softsamurai`, reopen from the launcher → the same
+  screen comes back and Back goes to Discover (Navigation 3 keys under R8);
+- `adb logcat -b crash` stays empty; retrace any trace with `mapping.txt`. Uninstall the release app at the
+  end (it uses the production application id).
+
 ## Visual check (manual, before merging UI changes)
 Tests do not prove the app looks like the design. On an emulator, install the debug build and compare each changed
 screen with `design/claude-design/` (screen markup, `tokens.json`, component READMEs) in all four combinations:

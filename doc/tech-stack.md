@@ -61,5 +61,17 @@ when a library is added, removed or upgraded significantly.
 - detekt tasks use `jvmTarget = 17` explicitly (by default they would use the daemon's JVM version).
 - Build types: `debug` (`.debug` suffix), `release` (minify + shrink, signed with `keystore.properties`),
   `debugRelease`.
+- **R8 on release** (`isMinifyEnabled` + `isShrinkResources`): code is shrunk, optimized and obfuscated.
+  Libraries bring their own consumer rules; `app/proguard-rules.pro` only holds what the app reaches by
+  reflection:
+  - the Navigation 3 destinations `AppRoute$*`: the back stack is saved by class name and restored with
+    `Class.forName` + their serializers;
+  - line numbers for stack traces (`SourceFile,LineNumberTable`, source file renamed).
+  Never add blanket rules (`-keep class kotlin.** { *; }` and the like): add a rule only for a class reached
+  by reflection, with a comment, and check it on a release build (see the release smoke test in
+  [testing.md](testing.md)). R8 must build with no missing-class warnings (no `-dontwarn` today).
+- Each release build writes `app/build/outputs/mapping/release/mapping.txt`: keep it with the release
+  (the AAB carries it to Play) and decode obfuscated traces with
+  `$ANDROID_HOME/cmdline-tools/latest/bin/retrace mapping.txt stacktrace.txt`.
 - Commands: `./gradlew assembleDebug`, `./gradlew :app:compileDebugKotlin`, `./gradlew :app:testDebugUnitTest`,
   `./gradlew detekt`.

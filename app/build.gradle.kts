@@ -64,8 +64,9 @@ android {
     buildTypes {
 
         getByName("release") {
-            isMinifyEnabled = true // Abilitato minify per la release
-            isShrinkResources = true // Opzionale: riduce le risorse inutilizzate
+            // R8: shrink, optimize and obfuscate code, then remove unused resources (rules: proguard-rules.pro).
+            isMinifyEnabled = true
+            isShrinkResources = true
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -76,8 +77,8 @@ android {
         getByName("debug") {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
-            isMinifyEnabled = false // Disabilitato minify per il debug
-            isShrinkResources = false // Disabilitato riduzione risorse per il debug
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
 
         create("debugRelease") {
@@ -127,7 +128,6 @@ android {
         unitTests.all { it.jvmArgs("--add-opens=java.base/jdk.internal.access=ALL-UNNAMED") }
     }
 
-    useLibrary("org.apache.http.legacy")
     lint {
         baseline = file("lint-baseline.xml")
         disable += setOf("NullSafeMutableLiveData")
@@ -139,7 +139,6 @@ dependencies {
 
     // Core Android dependencies
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
 
@@ -226,4 +225,5 @@ dependencies {
     // Instrumented tests: jUnit rules and runners
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.espresso.core)
 }
