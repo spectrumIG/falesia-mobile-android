@@ -4,7 +4,7 @@ A copy of the app's design as it lives in Claude Design, so agents and people wo
 without access to claude.ai. **The source of truth is the Claude Design artifacts below; this folder is a
 snapshot.** When the design changes there, re-export it here in the same PR as the code that follows it.
 
-- Snapshot of: 2026-10-19
+- Snapshot of: 2026-10-20
 - Design system "Falesia Mobile": https://claude.ai/artifact/RAbZEfFEBx8kRkw5syHe4A
 - Screens "Falesia Mobile UI": https://claude.ai/artifact/M6Zfv3snFfotKZtua44WQz
 - Origin: 1:1 import of the Stitch export in [`../stitch_crag_discovery.zip`](../stitch_crag_discovery.zip).
@@ -33,7 +33,7 @@ readable as a spec.
 | File | Screen | Stitch source |
 |---|---|---|
 | `Main.dc.html` | Discover (crag list) | `crag_discovery_2` |
-| `CragDetails.dc.html` | Crag details | `crag_details_2` |
+| `CragDetails.dc.html` | Crag details, with a Location section (interactive map, Open navigation) | `crag_details_2` + map section, not in Stitch |
 | `RouteList.dc.html` | Route list of a crag | `route_list_2` |
 | `RouteTopo.dc.html` | Route detail with topo | `route_detail_topo_2` |
 | `Logbook.dc.html` | Logbook | `logbook_2` |
@@ -43,5 +43,9 @@ readable as a spec.
 All screens use the app's bottom bar: Discover, Logbook, Ticklist, Profile.
 
 The menu button on Discover and Logbook opens `Menu.dc.html`; its "Open source licenses" row opens
-`Licenses.dc.html`. The license list mirrors the runtime libraries in `gradle/libs.versions.toml`: update it when
-dependencies change.
+`Licenses.dc.html`. The map button that Stitch put in the route list header now lives in Crag details as
+"Open navigation" (opens the user's maps app with directions to the parking). The map itself is a vector
+placeholder: zoom in/out and recenter work in Claude Design's Play mode.
+
+The license list mirrors the runtime libraries in `gradle/libs.versions.toml`: update it when dependencies
+change.
