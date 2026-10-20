@@ -22,7 +22,7 @@ object DatabaseModule {
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase =
         // The DB is a cache of falesiaonline.it: a schema change drops it and the next sync downloads it again.
         Room.databaseBuilder(context, AppDatabase::class.java, "falesia_db")
-            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigration(dropAllTables = false)
             .build()
 
     @Provides

@@ -1,6 +1,6 @@
 package it.softsamurai.presentation.screenshot
 
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import it.softsamurai.domain.model.GradeBand

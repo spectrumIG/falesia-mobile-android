@@ -46,6 +46,9 @@
 ## Tooling & style
 - JUnit4, **MockK** (`mockk`, `coEvery`), **Turbine** (`flow.test { }`) and `kotlinx-coroutines-test`
   (`runTest`, `Dispatchers.setMain(UnconfinedTestDispatcher())` / `resetMain()`).
+- Compose tests use the **v2** rules (`androidx.compose.ui.test.junit4.v2.createComposeRule` /
+  `createAndroidComposeRule`): effects run on a `StandardTestDispatcher`, so work is queued until the test
+  waits for idle (`waitForIdle`, assertions, `mainClock`). The v1 rules are deprecated since Compose 1.12.
 - Prefer fakes over mocks for repositories/data sources when they grow complex.
 - Inject dispatchers instead of using `Dispatchers.IO` directly so tests stay deterministic.
 - Test names in backticks describing behavior: `` `getFalesiaById returns Left NotFound when crag is missing` ``.
