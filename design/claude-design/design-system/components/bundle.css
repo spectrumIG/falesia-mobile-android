@@ -186,3 +186,39 @@ body { margin: 0; font-family: var(--font-display); background: var(--bg); color
 .fm-nav-item { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); color: var(--nav-inactive); text-decoration: none; font-size: 12px; line-height: 16px; font-weight: 500; min-width: 64px; }
 .fm-nav-item[aria-current="page"] { color: var(--primary); font-weight: 600; }
 .fm-nav-item[aria-current="page"] .fm-icon { font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24; }
+
+/* ── Feedback & errors (added 2026-10-20, not in Stitch) ── */
+
+/* Snackbar: one-shot feedback above the bottom bar */
+.fm-snackbar { box-sizing: border-box; display: flex; align-items: center; gap: var(--space-3); min-height: 48px; padding: var(--space-3) var(--space-2) var(--space-3) var(--space-4); border-radius: var(--radius-lg); background: var(--inverse-surface); color: var(--on-inverse); box-shadow: var(--shadow-lg); font-size: 14px; line-height: 20px; }
+.fm-snackbar .fm-icon { font-size: 20px; flex-shrink: 0; }
+.fm-snackbar-text { flex: 1; min-width: 0; }
+.fm-snackbar-action { flex-shrink: 0; border: 0; background: none; padding: var(--space-2) var(--space-3); border-radius: var(--radius-full); color: var(--inverse-primary); font: inherit; font-size: 14px; line-height: 20px; font-weight: 700; cursor: pointer; }
+.fm-snackbar-success .fm-icon { color: var(--inverse-success); }
+.fm-snackbar-error .fm-icon { color: var(--inverse-danger); }
+.fm-snackbar-info .fm-icon { color: var(--inverse-info); }
+
+/* Banner: persistent, inline at the top of a list */
+.fm-banner { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-radius: var(--radius-xl); background: var(--note); border: 1px solid var(--note-line); font-size: 14px; line-height: 20px; }
+.fm-banner .fm-icon { font-size: 20px; color: var(--ink-muted); flex-shrink: 0; }
+.fm-banner-body { flex: 1; min-width: 0; }
+.fm-banner-title { margin: 0; font-weight: 600; }
+.fm-banner-text { margin: 0; color: var(--ink-muted); font-size: 12px; line-height: 16px; }
+.fm-banner-warning { background: var(--primary-10); border-color: var(--primary-20); }
+.fm-banner-warning .fm-icon { color: var(--primary); }
+.fm-banner-error { background: var(--danger-soft); border-color: var(--danger-line); }
+.fm-banner-error .fm-icon { color: var(--danger); }
+
+/* State panel: full-screen or in-section empty / error state */
+.fm-state { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--space-3); padding: var(--space-6) var(--space-4); }
+.fm-state-icon { width: 72px; height: 72px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; background: var(--primary-10); color: var(--primary); }
+.fm-state-icon .fm-icon { font-size: 36px; }
+.fm-state-error .fm-state-icon { background: var(--danger-soft); color: var(--danger); }
+.fm-state-title { margin: 0; font-size: 20px; line-height: 28px; font-weight: 700; }
+.fm-state-text { margin: 0; max-width: 300px; color: var(--ink-body); font-size: 14px; line-height: 22.75px; }
+.fm-state-actions { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-2); width: 100%; max-width: 280px; margin-top: var(--space-2); }
+
+/* Progress bar: determinate progress, e.g. the first download */
+.fm-progress { height: 8px; border-radius: var(--radius-full); background: var(--primary-10); overflow: hidden; }
+.fm-progress-fill { height: 100%; border-radius: var(--radius-full); background: var(--primary); }
+.fm-progress-meta { display: flex; justify-content: space-between; color: var(--ink-muted); font-size: 12px; line-height: 16px; font-weight: 500; }

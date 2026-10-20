@@ -24,6 +24,13 @@ Falesia Mobile is an Android app for climbers: a catalogue of crags (*falesie*) 
 - Numbers: `grade-xl` (900) in the route list, `stat-xl` in logbook tiles, `tile-value` in topo tiles, `stat` elsewhere.
 - Running text is `body` (16/26) for descriptions and `body-sm` (14/20) for metadata.
 
+## Feedback and errors
+
+- Added on 2026-10-20 (not in Stitch): `danger`, `danger-soft`, `danger-line` for errors and the `inverse-*` tokens for snackbars. Components: `Snackbar`, `Banner`, `StatePanel`, `ProgressBar`.
+- One-shot results (refresh failed, already up to date, no maps app) are snackbars above the bottom bar. Lasting conditions (offline, data older than a week, background sync failed) are banners at the top of the list. When a screen has nothing to show, a `StatePanel` replaces its content.
+- Copy says what happened and what the user still has, in one sentence: "Couldn't refresh. Showing saved data." Never show raw exception messages or error codes.
+- Offer at most one action: Retry when trying again can help, Settings when the user must change something.
+
 ## Shape and space
 
 - Tailwind's 4px scale: `space-4` is the screen side padding, `space-6` between cards and sections, `space-3` between rows and chips.

@@ -111,7 +111,8 @@
   - Design system "Falesia Mobile": https://claude.ai/artifact/RAbZEfFEBx8kRkw5syHe4A (tokens, type scale,
     16 component specs, contrast notes).
   - Screens "Falesia Mobile UI": https://claude.ai/artifact/M6Zfv3snFfotKZtua44WQz (Discover, Crag details,
-    Route list, Route detail/topo, Logbook, Menu bottom sheet, Open source licenses).
+    Route list, Route detail/topo, Logbook, Menu bottom sheet, Open source licenses, onboarding tour, first
+    download, Errors & feedback catalog).
   - A snapshot of both, readable without claude.ai, lives in
     [`design/claude-design/`](../design/claude-design/README.md): tokens (`tokens.json`), usage rules, component
     specs and screen markup. Read it for any UI work; re-export it when the design changes.
@@ -144,10 +145,18 @@ Issues found while importing the Stitch export into Claude Design. Highest prior
    between themes differently per screen; a different bottom bar in every screen (unified in Claude Design
    to Discover / Logbook / Ticklist / Profile). Pick one rule for each.
 7. **Placeholder photos:** the canvas uses low-resolution crops of Stitch's screenshots (the original
-   images were not in the export). Replace with real crag photos.
+   images were not in the export). Replace with real crag photos. The onboarding illustrations (`tour-*`)
+   come from the project owner's `risorse/` folder: check their license before shipping them.
 8. **Menu entries without a page:** Settings, Terms & conditions and Privacy policy in the menu bottom sheet
    have no screen yet; Terms and Privacy need the real legal text. The profile header shows only the guest
    state (the app has no sign-in).
 9. **Crag details deviations not yet in Claude Design:** rating badge, Exposure tile, French grades,
    no favourite/FAB, route list without Status (see "Crag details and route list" above). Bring the
    design in line.
+10. **Errors & feedback and onboarding are design only.** The catalog (`Errors.dc.html`) marks each message
+    `Exists` or `New`; the `New` ones, the onboarding tour and the first download screen need code first:
+    progress reporting from `SyncWorker` (`setProgress`, read through `WorkInfo`), a connectivity monitor for
+    the offline banner and snackbar, surfacing a background sync that gave up (known issue #17), a Retry
+    action on the refresh snackbar, a readable `FalesiaItemUiState.Error` instead of the raw message, and a
+    "first launch done" flag (e.g. DataStore) so the tour shows once. The danger and inverse color tokens and the Snackbar, Banner,
+    StatePanel and ProgressBar components are new in the design system and not yet in `:core-ui`.
