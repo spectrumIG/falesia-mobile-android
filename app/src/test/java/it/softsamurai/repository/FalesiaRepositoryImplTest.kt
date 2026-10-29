@@ -16,13 +16,19 @@ import it.softsamurai.domain.model.ViaStyle
 import it.softsamurai.repository.database.entity.FalesiaEntity
 import it.softsamurai.repository.database.entity.FalesiaSyncEntity
 import it.softsamurai.repository.database.entity.SettoreEntity
+import it.softsamurai.repository.database.entity.TopoEntity
+import it.softsamurai.repository.database.entity.TopoLineEntity
 import it.softsamurai.repository.database.entity.ViaEntity
 import it.softsamurai.repository.database.relation.FalesiaWithVie
+import it.softsamurai.repository.database.relation.TopoWithLines
 import it.softsamurai.repository.local.FalesiaLocalDataSource
 import it.softsamurai.repository.network.FalesiaNetworkDataSource
 import it.softsamurai.repository.network.model.FalesiaDetailNetworkModel
 import it.softsamurai.repository.network.model.FalesiaListItemNetworkModel
 import it.softsamurai.repository.network.model.SettoreNetworkModel
+import it.softsamurai.repository.network.model.SettorePageNetworkModel
+import it.softsamurai.repository.network.model.TopoLineNetworkModel
+import it.softsamurai.repository.network.model.TopoNetworkModel
 import it.softsamurai.repository.network.model.ViaNetworkModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
@@ -243,7 +249,16 @@ class FalesiaRepositoryImplTest {
         repository.syncFalesie()
 
         coVerify(exactly = 0) { localDataSource.upsertFalesiaWithVie(any(), any(), any()) }
-        coVerify(exactly = 0) { localDataSource.replaceDettagli(any(), any(), any(), any()) }
+        coVerify(exactly = 0) {
+            localDataSource.replaceDettagli(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        }
     }
 
     @Test
@@ -290,10 +305,17 @@ class FalesiaRepositoryImplTest {
                             fakeSettoreEntity(1, position = 0)
                         )
                     )
-            coEvery { networkDataSource.fetchVieSettore("https://www.falesiaonline.it/settorefoto/1/s.html") } returns
-                    Either.Right(listOf(fakeViaNetwork(10), fakeViaNetwork(11)))
-            coEvery { networkDataSource.fetchVieSettore("https://www.falesiaonline.it/settorefoto/2/s.html") } returns
-                    Either.Right(listOf(fakeViaNetwork(20)))
+            coEvery { networkDataSource.fetchSettore("https://www.falesiaonline.it/settorefoto/1/s.html") } returns
+                    Either.Right(
+                        SettorePageNetworkModel(
+                            listOf(
+                                fakeViaNetwork(10),
+                                fakeViaNetwork(11)
+                            )
+                        )
+                    )
+            coEvery { networkDataSource.fetchSettore("https://www.falesiaonline.it/settorefoto/2/s.html") } returns
+                    Either.Right(SettorePageNetworkModel(listOf(fakeViaNetwork(20))))
             coEvery { networkDataSource.fetchParcheggio("https://example.com/arco") } returns Either.Right(
                 45.0 to 10.0
             )
@@ -302,6 +324,8 @@ class FalesiaRepositoryImplTest {
                 localDataSource.replaceDettagli(
                     "arco",
                     capture(vie),
+                    emptyList(),
+                    emptyList(),
                     45.0 to 10.0,
                     NOW
                 )
@@ -326,18 +350,97 @@ class FalesiaRepositoryImplTest {
                         fakeSettoreEntity(2, position = 1)
                     )
                 )
-        coEvery { networkDataSource.fetchVieSettore(any()) } returns Either.Right(
-            listOf(
-                fakeViaNetwork(10)
-            )
+        coEvery { networkDataSource.fetchSettore(any()) } returns Either.Right(
+            SettorePageNetworkModel(listOf(fakeViaNetwork(10)))
         )
         coEvery { networkDataSource.fetchParcheggio(any()) } returns Either.Right(null)
         val vie = slot<List<ViaEntity>>()
-        coEvery { localDataSource.replaceDettagli("arco", capture(vie), null, NOW) } returns Unit
+        coEvery {
+            localDataSource.replaceDettagli(
+                "arco",
+                capture(vie),
+                emptyList(),
+                emptyList(),
+                null,
+                NOW
+            )
+        } returns Unit
 
         repository.refreshCragDetails("arco")
 
         assertEquals(1L, vie.captured.single().settoreId)
+    }
+
+    @Test
+    fun `refreshCragDetails stores the topo of each sector that has one, with its lines`() =
+        runTest {
+            coEvery { localDataSource.getFalesiaWithVieById("arco") } returns
+                    fakeWithVie(
+                        "arco",
+                        settori = listOf(
+                            fakeSettoreEntity(1, position = 0),
+                            fakeSettoreEntity(2, position = 1)
+                        ),
+                    )
+            coEvery { networkDataSource.fetchSettore("https://www.falesiaonline.it/settorefoto/1/s.html") } returns
+                    Either.Right(
+                        SettorePageNetworkModel(
+                            listOf(fakeViaNetwork(10)),
+                            fakeTopoNetwork()
+                        )
+                    )
+            coEvery { networkDataSource.fetchSettore("https://www.falesiaonline.it/settorefoto/2/s.html") } returns
+                    Either.Right(SettorePageNetworkModel(listOf(fakeViaNetwork(20)), topo = null))
+            coEvery { networkDataSource.fetchParcheggio(any()) } returns Either.Right(null)
+            val topi = slot<List<TopoEntity>>()
+            val lines = slot<List<TopoLineEntity>>()
+            coEvery {
+                localDataSource.replaceDettagli(
+                    "arco",
+                    any(),
+                    capture(topi),
+                    capture(lines),
+                    null,
+                    NOW
+                )
+            } returns Unit
+
+            repository.refreshCragDetails("arco")
+
+            val topo = topi.captured.single()
+            assertEquals(1L, topo.settoreId)
+            assertEquals("arco", topo.falesiaId)
+            assertEquals("https://www.falesiaonline.it/uploads/wall.jpg", topo.imageUrl)
+            assertEquals(400.0, topo.viewBoxWidth, 0.0)
+            // The pitch drawn twice on the page is stored once.
+            assertEquals(listOf(10L to 1, 10L to 2), lines.captured.map { it.viaId to it.segment })
+            assertTrue(lines.captured.all { it.settoreId == 1L })
+        }
+
+    // ── observeTopo ──────────────────────────────────────────────────
+
+    @Test
+    fun `observeTopo groups the lines by route with the pitches in order`() = runTest {
+        val topo = TopoEntity(
+            settoreId = 1, falesiaId = "arco", imageUrl = null,
+            viewBoxX = 0.0, viewBoxY = 0.0, viewBoxWidth = 400.0, viewBoxHeight = 300.0,
+            imageX = 0.0, imageY = 0.0, imageWidth = 400.0, imageHeight = 300.0,
+        )
+        val lines = listOf(
+            TopoLineEntity(1, viaId = 10, segment = 2, pathData = "M2"),
+            TopoLineEntity(1, viaId = 11, segment = 1, pathData = "M3"),
+            TopoLineEntity(1, viaId = 10, segment = 1, pathData = "M1"),
+        )
+        every { localDataSource.observeTopo(1) } returns flowOf(TopoWithLines(topo, lines), null)
+
+        repository.observeTopo(1).test {
+            val domain = awaitItem()!!
+            assertEquals(listOf("M1", "M2"), domain.lineOf(10)?.segments)
+            assertEquals(listOf("M3"), domain.lineOf(11)?.segments)
+            assertEquals(300.0, domain.frame.height, 0.0)
+            assertEquals(null, awaitItem())
+            awaitComplete()
+        }
     }
 
     @Test
@@ -350,12 +453,30 @@ class FalesiaRepositoryImplTest {
         )
         coEvery { networkDataSource.fetchParcheggio(any()) } returns
                 Either.Left(SyncError.NetworkFailure(RuntimeException("timeout")))
-        coEvery { localDataSource.replaceDettagli(any(), any(), any(), any()) } returns Unit
+        coEvery {
+            localDataSource.replaceDettagli(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns Unit
 
         val result = repository.refreshCragDetails("arco")
 
         assertTrue(result.isRight())
-        coVerify { localDataSource.replaceDettagli("arco", emptyList(), 44.0 to 9.0, NOW) }
+        coVerify {
+            localDataSource.replaceDettagli(
+                "arco",
+                emptyList(),
+                emptyList(),
+                emptyList(),
+                44.0 to 9.0,
+                NOW
+            )
+        }
     }
 
     @Test
@@ -363,13 +484,22 @@ class FalesiaRepositoryImplTest {
         val error = SyncError.ParseFailure("Sector page without route list")
         coEvery { localDataSource.getFalesiaWithVieById("arco") } returns
                 fakeWithVie("arco", settori = listOf(fakeSettoreEntity(1, position = 0)))
-        coEvery { networkDataSource.fetchVieSettore(any()) } returns Either.Left(error)
+        coEvery { networkDataSource.fetchSettore(any()) } returns Either.Left(error)
         coEvery { networkDataSource.fetchParcheggio(any()) } returns Either.Right(null)
 
         val result = repository.refreshCragDetails("arco")
 
         assertEquals(error, result.leftOrNull())
-        coVerify(exactly = 0) { localDataSource.replaceDettagli(any(), any(), any(), any()) }
+        coVerify(exactly = 0) {
+            localDataSource.replaceDettagli(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        }
     }
 
     @Test
@@ -386,12 +516,7 @@ class FalesiaRepositoryImplTest {
         coEvery { localDataSource.getFalesiaWithVieById("arco") } returns fakeWithVie("arco")
         coEvery { networkDataSource.fetchParcheggio(any()) } returns Either.Right(null)
         coEvery {
-            localDataSource.replaceDettagli(
-                any(),
-                any(),
-                any(),
-                any()
-            )
+            localDataSource.replaceDettagli(any(), any(), any(), any(), any(), any())
         } throws RuntimeException("disk full")
 
         val result = repository.refreshCragDetails("arco")
@@ -546,6 +671,18 @@ class FalesiaRepositoryImplTest {
     )
 
     private fun fakeViaNetwork(id: Long) = ViaNetworkModel(id = id, nome = "Via $id", grado = "6a")
+
+    /** A topo with route 10 in two pitches, the first one drawn twice. */
+    private fun fakeTopoNetwork() = TopoNetworkModel(
+        imageUrl = "https://www.falesiaonline.it/uploads/wall.jpg",
+        viewBoxX = 0.0, viewBoxY = 0.0, viewBoxWidth = 400.0, viewBoxHeight = 300.0,
+        imageX = 0.0, imageY = 0.0, imageWidth = 400.0, imageHeight = 300.0,
+        lines = listOf(
+            TopoLineNetworkModel(viaId = 10, segment = 1, pathData = "M0,0L10,10"),
+            TopoLineNetworkModel(viaId = 10, segment = 2, pathData = "M10,10L20,0"),
+            TopoLineNetworkModel(viaId = 10, segment = 1, pathData = "M0,0L10,10"),
+        ),
+    )
 
     @Suppress("DEPRECATION")
     private fun String.capitalize() = replaceFirstChar { it.uppercase() }

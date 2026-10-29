@@ -3,14 +3,18 @@ package it.softsamurai.repository.local
 import it.softsamurai.repository.database.entity.FalesiaEntity
 import it.softsamurai.repository.database.entity.FalesiaSyncEntity
 import it.softsamurai.repository.database.entity.SettoreEntity
+import it.softsamurai.repository.database.entity.TopoEntity
+import it.softsamurai.repository.database.entity.TopoLineEntity
 import it.softsamurai.repository.database.entity.ViaEntity
 import it.softsamurai.repository.database.relation.FalesiaWithVie
+import it.softsamurai.repository.database.relation.TopoWithLines
 import kotlinx.coroutines.flow.Flow
 
 interface FalesiaLocalDataSource {
 
     fun observeAllFalesieWithVie(): Flow<List<FalesiaWithVie>>
     fun observeFalesiaWithVie(falesiaId: String): Flow<FalesiaWithVie?>
+    fun observeTopo(settoreId: Long): Flow<TopoWithLines?>
 
     suspend fun getFalesiaWithVieById(falesiaId: String): FalesiaWithVie?
     suspend fun countFalesie(): Int
@@ -33,12 +37,14 @@ interface FalesiaLocalDataSource {
     suspend fun upsertFalesiaFromSync(entity: FalesiaSyncEntity, settori: List<SettoreEntity>)
 
     /**
-     * On-demand details of one crag, atomically: replaces its routes with [vie] and stores the parking and
-     * [updatedAt].
+     * On-demand details of one crag, atomically: replaces its routes with [vie], its sectors' topi with [topi]
+     * and their [lines], and stores the parking and [updatedAt].
      */
     suspend fun replaceDettagli(
         falesiaId: String,
         vie: List<ViaEntity>,
+        topi: List<TopoEntity>,
+        lines: List<TopoLineEntity>,
         parking: Pair<Double, Double>?,
         updatedAt: Long,
     )

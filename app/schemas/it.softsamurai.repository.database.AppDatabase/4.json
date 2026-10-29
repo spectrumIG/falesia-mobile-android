@@ -1,0 +1,520 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 4,
+    "identityHash": "1d80f414821c4818c8402417529eee77",
+    "entities": [
+      {
+        "tableName": "falesie",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `nome` TEXT NOT NULL, `zona` TEXT NOT NULL, `pictureUrl` TEXT, `latitude` REAL, `longitude` REAL, `numeroVie` INTEGER NOT NULL, `linkDettagli` TEXT NOT NULL, `lastUpdated` INTEGER NOT NULL, `description` TEXT NOT NULL, `rating` REAL, `ratingCount` INTEGER NOT NULL, `rock` TEXT NOT NULL, `seasons` TEXT NOT NULL, `parkingLatitude` REAL, `parkingLongitude` REAL, `vieUpdatedAt` INTEGER, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nome",
+            "columnName": "nome",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "zona",
+            "columnName": "zona",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pictureUrl",
+            "columnName": "pictureUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "numeroVie",
+            "columnName": "numeroVie",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "linkDettagli",
+            "columnName": "linkDettagli",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastUpdated",
+            "columnName": "lastUpdated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rating",
+            "columnName": "rating",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "ratingCount",
+            "columnName": "ratingCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rock",
+            "columnName": "rock",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "seasons",
+            "columnName": "seasons",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "parkingLatitude",
+            "columnName": "parkingLatitude",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "parkingLongitude",
+            "columnName": "parkingLongitude",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "vieUpdatedAt",
+            "columnName": "vieUpdatedAt",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "settori",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `falesiaId` TEXT NOT NULL, `position` INTEGER NOT NULL, `nome` TEXT NOT NULL, `numeroVie` INTEGER NOT NULL, `gradoMin` TEXT NOT NULL, `gradoMax` TEXT NOT NULL, `length` TEXT NOT NULL, `approachMinMinutes` INTEGER, `approachMaxMinutes` INTEGER, `exposures` TEXT NOT NULL, `rating` REAL, `ratingCount` INTEGER NOT NULL, `style` TEXT NOT NULL, `latitude` REAL, `longitude` REAL, `linkDettagli` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`falesiaId`) REFERENCES `falesie`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "falesiaId",
+            "columnName": "falesiaId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nome",
+            "columnName": "nome",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numeroVie",
+            "columnName": "numeroVie",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gradoMin",
+            "columnName": "gradoMin",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gradoMax",
+            "columnName": "gradoMax",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "length",
+            "columnName": "length",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "approachMinMinutes",
+            "columnName": "approachMinMinutes",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "approachMaxMinutes",
+            "columnName": "approachMaxMinutes",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "exposures",
+            "columnName": "exposures",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rating",
+            "columnName": "rating",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "ratingCount",
+            "columnName": "ratingCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "style",
+            "columnName": "style",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "linkDettagli",
+            "columnName": "linkDettagli",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_settori_falesiaId",
+            "unique": false,
+            "columnNames": [
+              "falesiaId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_settori_falesiaId` ON `${TABLE_NAME}` (`falesiaId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "falesie",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "falesiaId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "vie",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `falesiaId` TEXT NOT NULL, `settoreId` INTEGER NOT NULL, `position` INTEGER NOT NULL, `nome` TEXT NOT NULL, `grado` TEXT NOT NULL, `rating` REAL, `ratingCount` INTEGER NOT NULL, `length` TEXT NOT NULL, `style` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`falesiaId`) REFERENCES `falesie`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`settoreId`) REFERENCES `settori`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "falesiaId",
+            "columnName": "falesiaId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "settoreId",
+            "columnName": "settoreId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nome",
+            "columnName": "nome",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "grado",
+            "columnName": "grado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rating",
+            "columnName": "rating",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "ratingCount",
+            "columnName": "ratingCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "length",
+            "columnName": "length",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "style",
+            "columnName": "style",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_vie_falesiaId",
+            "unique": false,
+            "columnNames": [
+              "falesiaId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_vie_falesiaId` ON `${TABLE_NAME}` (`falesiaId`)"
+          },
+          {
+            "name": "index_vie_settoreId",
+            "unique": false,
+            "columnNames": [
+              "settoreId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_vie_settoreId` ON `${TABLE_NAME}` (`settoreId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "falesie",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "falesiaId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "settori",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "settoreId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "topi",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`settoreId` INTEGER NOT NULL, `falesiaId` TEXT NOT NULL, `imageUrl` TEXT, `viewBoxX` REAL NOT NULL, `viewBoxY` REAL NOT NULL, `viewBoxWidth` REAL NOT NULL, `viewBoxHeight` REAL NOT NULL, `imageX` REAL NOT NULL, `imageY` REAL NOT NULL, `imageWidth` REAL NOT NULL, `imageHeight` REAL NOT NULL, PRIMARY KEY(`settoreId`), FOREIGN KEY(`settoreId`) REFERENCES `settori`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "settoreId",
+            "columnName": "settoreId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "falesiaId",
+            "columnName": "falesiaId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imageUrl",
+            "columnName": "imageUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "viewBoxX",
+            "columnName": "viewBoxX",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "viewBoxY",
+            "columnName": "viewBoxY",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "viewBoxWidth",
+            "columnName": "viewBoxWidth",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "viewBoxHeight",
+            "columnName": "viewBoxHeight",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imageX",
+            "columnName": "imageX",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imageY",
+            "columnName": "imageY",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imageWidth",
+            "columnName": "imageWidth",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imageHeight",
+            "columnName": "imageHeight",
+            "affinity": "REAL",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "settoreId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_topi_falesiaId",
+            "unique": false,
+            "columnNames": [
+              "falesiaId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_topi_falesiaId` ON `${TABLE_NAME}` (`falesiaId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "settori",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "settoreId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "topo_lines",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`settoreId` INTEGER NOT NULL, `viaId` INTEGER NOT NULL, `segment` INTEGER NOT NULL, `pathData` TEXT NOT NULL, PRIMARY KEY(`settoreId`, `viaId`, `segment`), FOREIGN KEY(`settoreId`) REFERENCES `topi`(`settoreId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "settoreId",
+            "columnName": "settoreId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "viaId",
+            "columnName": "viaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "segment",
+            "columnName": "segment",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pathData",
+            "columnName": "pathData",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "settoreId",
+            "viaId",
+            "segment"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "topi",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "settoreId"
+            ],
+            "referencedColumns": [
+              "settoreId"
+            ]
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1d80f414821c4818c8402417529eee77')"
+    ]
+  }
+}

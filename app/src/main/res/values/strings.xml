@@ -82,6 +82,20 @@
     <string name="label_grade">Grade</string>
     <string name="route_list_no_match">No routes match the filters.</string>
     <string name="clear_filters">Clear filters</string>
+
+    <!-- Route detail -->
+    <string name="route_detail_title">Route</string>
+    <string name="route_not_found">This route is no longer in the saved data.</string>
+    <string name="route_subtitle">%1$s • %2$s</string>
+    <string name="topo_label">Topo</string>
+    <string name="topo_missing">falesiaonline.it has no topo for this sector.</string>
+    <string name="cd_topo">Topo of %1$s with its routes, route %2$s highlighted</string>
+    <string name="cd_zoom_topo">Open the topo full screen</string>
+    <string name="cd_close">Close</string>
+    <string name="info_length">Length</string>
+    <string name="info_style">Style</string>
+    <string name="info_rating">Rating</string>
+    <string name="sector_routes">Routes in this sector</string>
     <plurals name="crag_rating_badge">
         <item quantity="one">%1$s · %2$d vote</item>
         <item quantity="other">%1$s · %2$d votes</item>

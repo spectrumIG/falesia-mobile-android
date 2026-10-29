@@ -4,16 +4,23 @@ import it.softsamurai.domain.model.Exposure
 import it.softsamurai.domain.model.Falesia
 import it.softsamurai.domain.model.GeoPoint
 import it.softsamurai.domain.model.Settore
+import it.softsamurai.domain.model.Topo
+import it.softsamurai.domain.model.TopoLine
+import it.softsamurai.domain.model.TopoRect
 import it.softsamurai.domain.model.Via
 import it.softsamurai.domain.model.ViaStyle
 import it.softsamurai.repository.database.entity.FalesiaEntity
 import it.softsamurai.repository.database.entity.FalesiaSyncEntity
 import it.softsamurai.repository.database.entity.SettoreEntity
+import it.softsamurai.repository.database.entity.TopoEntity
+import it.softsamurai.repository.database.entity.TopoLineEntity
 import it.softsamurai.repository.database.entity.ViaEntity
 import it.softsamurai.repository.database.relation.FalesiaWithVie
+import it.softsamurai.repository.database.relation.TopoWithLines
 import it.softsamurai.repository.network.model.FalesiaDetailNetworkModel
 import it.softsamurai.repository.network.model.FalesiaListItemNetworkModel
 import it.softsamurai.repository.network.model.SettoreNetworkModel
+import it.softsamurai.repository.network.model.TopoNetworkModel
 import it.softsamurai.repository.network.model.ViaNetworkModel
 
 private const val EXPOSURE_SEPARATOR = ","
@@ -77,6 +84,17 @@ fun ViaEntity.toDomain(): Via = Via(
     ratingCount = ratingCount,
     length = length,
     style = styleOf(style),
+)
+
+/** Room relations have no order: lines grouped by route in the order they were saved, pitches by number. */
+fun TopoWithLines.toDomain(): Topo = Topo(
+    settoreId = topo.settoreId,
+    imageUrl = topo.imageUrl,
+    frame = TopoRect(topo.viewBoxX, topo.viewBoxY, topo.viewBoxWidth, topo.viewBoxHeight),
+    image = TopoRect(topo.imageX, topo.imageY, topo.imageWidth, topo.imageHeight),
+    lines = lines.groupBy { it.viaId }.map { (viaId, segments) ->
+        TopoLine(viaId = viaId, segments = segments.sortedBy { it.segment }.map { it.pathData })
+    },
 )
 
 // ── Domain → Entity ──────────────────────────────────────────────────────────
@@ -196,6 +214,32 @@ fun ViaNetworkModel.toEntity(falesiaId: String, settoreId: Long, position: Int):
         length = length,
         style = style.name,
 )
+
+fun TopoNetworkModel.toEntity(falesiaId: String, settoreId: Long): TopoEntity = TopoEntity(
+    settoreId = settoreId,
+    falesiaId = falesiaId,
+    imageUrl = imageUrl,
+    viewBoxX = viewBoxX,
+    viewBoxY = viewBoxY,
+    viewBoxWidth = viewBoxWidth,
+    viewBoxHeight = viewBoxHeight,
+    imageX = imageX,
+    imageY = imageY,
+    imageWidth = imageWidth,
+    imageHeight = imageHeight,
+)
+
+/** The topo's lines; a pitch drawn twice on the page is stored once. */
+fun TopoNetworkModel.lineEntities(settoreId: Long): List<TopoLineEntity> =
+    lines.distinctBy { it.viaId to it.segment }
+        .map {
+            TopoLineEntity(
+                settoreId = settoreId,
+                viaId = it.viaId,
+                segment = it.segment,
+                pathData = it.pathData
+            )
+        }
 
 private fun geoPointOf(latitude: Double?, longitude: Double?): GeoPoint? =
     if (latitude != null && longitude != null) GeoPoint(latitude, longitude) else null

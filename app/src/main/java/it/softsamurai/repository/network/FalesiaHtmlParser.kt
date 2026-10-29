@@ -12,6 +12,9 @@ import it.softsamurai.domain.model.ViaStyle
 import it.softsamurai.repository.network.model.FalesiaDetailNetworkModel
 import it.softsamurai.repository.network.model.FalesiaListItemNetworkModel
 import it.softsamurai.repository.network.model.SettoreNetworkModel
+import it.softsamurai.repository.network.model.SettorePageNetworkModel
+import it.softsamurai.repository.network.model.TopoLineNetworkModel
+import it.softsamurai.repository.network.model.TopoNetworkModel
 import it.softsamurai.repository.network.model.ViaNetworkModel
 
 // Pure HTML → network model parsing for falesiaonline.it pages. All selector knowledge lives here, apart
@@ -39,6 +42,26 @@ private val SECTOR_ID_PATTERN = Regex("""/settore[a-z_]*/(\d+)/""")
 private const val ROUTE_ELEMENT_PREFIX = "routeslist_element_"
 private val MINUTES_PATTERN = Regex("""(\d+)(?:\s*[–-]\s*(\d+))?\s*min""")
 private val LENGTH_PATTERN = Regex("""\d+(?:\s*[–-]\s*\d+)?\s*m\b""")
+
+/** Topo SVG `viewBox="0 0 936.141 528.686"`: min x, min y, width, height. */
+private val VIEW_BOX_SEPARATOR = Regex("""[\s,]+""")
+private const val VIEW_BOX_VALUES = 4
+private const val VIEW_BOX_WIDTH = 2
+private const val VIEW_BOX_HEIGHT = 3
+
+/** Topo photo `transform="matrix(a b c d e f)"`: scale a, d and translation e, f (no rotation on the site). */
+private val MATRIX_PATTERN = Regex("""matrix\(([^)]*)\)""")
+private const val MATRIX_VALUES = 6
+private const val MATRIX_SCALE_Y = 3
+private const val MATRIX_TRANSLATE_X = 4
+private const val MATRIX_TRANSLATE_Y = 5
+
+/** A route line of the topo: `route_<route id>_<pitch>`. */
+private val ROUTE_PATH_ID_PATTERN = Regex("""^route_(\d+)_(\d+)$""")
+
+/** Abseil lines are hidden on the site (`display: none`) and are not routes. */
+private const val ABSEIL_CLASS = "abseil"
+private const val DISPLAY_NONE = "display:none"
 
 /** Breadcrumb levels skipped before the zone: the continent ("Sud Europa"). */
 private const val BREADCRUMB_CONTINENT_LEVELS = 1
@@ -129,6 +152,8 @@ internal fun parseVieSettore(document: Document): Either<SyncError, List<ViaNetw
         list.select("div.routelistinnerelement").mapNotNull { element ->
             val id = element.id().removePrefix(ROUTE_ELEMENT_PREFIX).toLongOrNull()
                 ?: return@mapNotNull null
+            // Descents ("Accesso/Discesa n.1", grade "Calata") are in the list but are not routes.
+            if (element.selectFirst(".descentroutename") != null) return@mapNotNull null
             val nameBlock = element.selectFirst(".starsandroutename")
             val details = element.selectFirst(".routedetails")
             val detailsText = details?.ownText()?.replace(' ', ' ')?.trim().orEmpty()
@@ -144,6 +169,59 @@ internal fun parseVieSettore(document: Document): Either<SyncError, List<ViaNetw
             )
         }
     }
+
+/** Parses a sector page: its routes ([parseVieSettore]) and its topo ([parseTopo]), from one download. */
+internal fun parseSettore(document: Document): Either<SyncError, SettorePageNetworkModel> =
+    parseVieSettore(document).map { vie ->
+        SettorePageNetworkModel(
+            vie = vie,
+            topo = parseTopo(document)
+        )
+    }
+
+/**
+ * Parses the topo of a sector page: the SVG `#topoSvgContent` with the photo (`g#Foto image`, placed by its
+ * `transform` matrix) and one path per pitch (`g#Route_Paths path#route_<id>_<pitch>`). Abseil lines are left
+ * out. Null when the page has no topo or its viewBox is unreadable.
+ */
+internal fun parseTopo(document: Document): TopoNetworkModel? {
+    val svg = document.selectFirst("svg#topoSvgContent") ?: return null
+    val viewBox =
+        svg.attr("viewBox").trim().split(VIEW_BOX_SEPARATOR).mapNotNull { it.toDoubleOrNull() }
+    if (viewBox.size != VIEW_BOX_VALUES || viewBox[VIEW_BOX_WIDTH] <= 0.0 || viewBox[VIEW_BOX_HEIGHT] <= 0.0) {
+        return null
+    }
+    val image = svg.selectFirst("g#Foto image") ?: svg.selectFirst("image")
+    val href = image?.attr("xlink:href")?.ifBlank { image.attr("href") }.orEmpty()
+    val matrix = image?.attr("transform").parseMatrix()
+    val lines = svg.select("path[id^=route_]").mapNotNull { path ->
+        val hidden = path.hasClass(ABSEIL_CLASS) || path.attr("style").replace(" ", "")
+            .contains(DISPLAY_NONE)
+        val match = ROUTE_PATH_ID_PATTERN.find(path.id())
+        val pathData = path.attr("d").trim()
+        if (hidden || match == null || pathData.isEmpty()) return@mapNotNull null
+        TopoLineNetworkModel(
+            viaId = match.groupValues[1].toLong(),
+            segment = match.groupValues[2].toInt(),
+            pathData = pathData,
+        )
+    }
+    return TopoNetworkModel(
+        imageUrl = resolveImageUrl(href),
+        viewBoxX = viewBox[0],
+        viewBoxY = viewBox[1],
+        viewBoxWidth = viewBox[VIEW_BOX_WIDTH],
+        viewBoxHeight = viewBox[VIEW_BOX_HEIGHT],
+        imageX = matrix.translateX,
+        imageY = matrix.translateY,
+        // Without its own size the photo fills the viewBox.
+        imageWidth = image?.attr("width")?.toDoubleOrNull()?.times(matrix.scaleX)
+            ?: viewBox[VIEW_BOX_WIDTH],
+        imageHeight = image?.attr("height")?.toDoubleOrNull()?.times(matrix.scaleY)
+            ?: viewBox[VIEW_BOX_HEIGHT],
+        lines = lines,
+    )
+}
 
 /** Parses the crag map page (`/falesia/map/…`): the parking position, null when the crag has none. */
 internal fun parseParcheggio(document: Document): Pair<Double, Double>? {
@@ -298,6 +376,27 @@ private fun Element?.parseStars(): Pair<Double?, Int> {
     val full = select("img[src*=star_full]").size
     val half = select("img[src*=star_half]").size
     return (full + half * HALF_STAR) to votes
+}
+
+/** Scale and translation of an SVG `matrix(a b c d e f)` transform. */
+private data class ScaleTranslate(
+    val scaleX: Double = 1.0,
+    val scaleY: Double = 1.0,
+    val translateX: Double = 0.0,
+    val translateY: Double = 0.0,
+)
+
+/** A missing or unreadable `matrix(…)` is the identity. */
+private fun String?.parseMatrix(): ScaleTranslate {
+    val values = this?.let(MATRIX_PATTERN::find)?.groupValues?.get(1)
+        ?.trim()?.split(VIEW_BOX_SEPARATOR)?.mapNotNull { it.toDoubleOrNull() }
+    if (values == null || values.size != MATRIX_VALUES) return ScaleTranslate()
+    return ScaleTranslate(
+        scaleX = values[0],
+        scaleY = values[MATRIX_SCALE_Y],
+        translateX = values[MATRIX_TRANSLATE_X],
+        translateY = values[MATRIX_TRANSLATE_Y],
+    )
 }
 
 /** Protection icon (`/images/protezioni/bolted_small.png`, title "Ancoraggi fissi") → route style. */

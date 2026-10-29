@@ -24,8 +24,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -69,6 +70,7 @@ const val TAG_FILTER_STYLE = "filter_style"
 fun RouteListRoute(
     falesiaId: String,
     onBack: () -> Unit,
+    onRouteClick: (falesiaId: String, viaId: Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: RouteListViewModel =
         hiltViewModel<RouteListViewModel, RouteListViewModel.Factory>(key = falesiaId) {
@@ -82,6 +84,7 @@ fun RouteListRoute(
         uiState = uiState,
         onIntent = viewModel::onIntent,
         onBack = onBack,
+        onRouteClick = onRouteClick,
         effects = viewModel.effects,
         manualDownloads = viewModel.manualDownloads,
         modifier = modifier,
@@ -91,7 +94,7 @@ fun RouteListRoute(
 /**
  * Route list of a crag (screens/RouteList.dc.html): search, filters by grade, sector and style, routes
  * grouped by sector. The design's Status filter, SENT/PROJECT tags and "+" FAB are left out (read-only app).
- * With [manualDownloads] (debug) the top bar has a download button.
+ * With [manualDownloads] (debug) the top bar has a download button. A route opens its detail.
  */
 @Composable
 fun RouteListScreen(
@@ -99,6 +102,7 @@ fun RouteListScreen(
     onIntent: (RouteListIntent) -> Unit,
     modifier: Modifier = Modifier,
     onBack: () -> Unit = {},
+    onRouteClick: (falesiaId: String, viaId: Long) -> Unit = { _, _ -> },
     effects: Flow<RouteListEffect> = emptyFlow(),
     manualDownloads: Boolean = false,
 ) {
@@ -106,14 +110,17 @@ fun RouteListScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val syncFailed = stringResource(R.string.sync_error_snackbar)
     val upToDate = stringResource(R.string.refresh_up_to_date)
+    val currentOnRouteClick by rememberUpdatedState(onRouteClick)
     LaunchedEffect(effects) {
         effects.collect { effect ->
-            snackbarHostState.showSnackbar(
-                when (effect) {
-                    RouteListEffect.SyncFailed -> syncFailed
-                    RouteListEffect.AlreadyUpToDate -> upToDate
-                },
-            )
+            when (effect) {
+                RouteListEffect.SyncFailed -> snackbarHostState.showSnackbar(syncFailed)
+                RouteListEffect.AlreadyUpToDate -> snackbarHostState.showSnackbar(upToDate)
+                is RouteListEffect.NavigateToRoute -> currentOnRouteClick(
+                    effect.falesiaId,
+                    effect.viaId
+                )
+            }
         }
     }
     Scaffold(
@@ -300,6 +307,7 @@ private fun RouteListContent(
                         length = via.length.ifBlank { null },
                         rating = via.rating?.let(::ratingText),
                         style = via.style.label(),
+                        onClick = { onIntent(RouteListIntent.RouteClicked(via.id)) },
                         modifier = Modifier.testTag(TAG_ROUTE_ITEM),
                     )
                 }

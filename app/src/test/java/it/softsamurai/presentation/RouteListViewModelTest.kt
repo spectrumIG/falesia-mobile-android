@@ -204,6 +204,16 @@ class RouteListViewModelTest {
         }
     }
 
+    @Test
+    fun `a route click navigates to its detail`() = runTest {
+        val viewModel = viewModel()
+
+        viewModel.effects.test {
+            viewModel.onIntent(RouteListIntent.RouteClicked(2))
+            assertEquals(RouteListEffect.NavigateToRoute("arco", 2), awaitItem())
+        }
+    }
+
     private fun viewModel(mode: DownloadMode = DownloadMode.Automatic) = RouteListViewModel(
         "arco",
         getFalesia,

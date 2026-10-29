@@ -63,3 +63,34 @@ data class ViaNetworkModel(
     val length: String = "",
     val style: ViaStyle = ViaStyle.Unknown,
 )
+
+/** What a sector page gives: its routes and, when the sector has one, its topo. */
+data class SettorePageNetworkModel(
+    val vie: List<ViaNetworkModel>,
+    val topo: TopoNetworkModel? = null,
+)
+
+/**
+ * The topo of a sector: the photo and the route lines of the page's SVG. Every coordinate is in the SVG's
+ * viewBox units; the image rectangle is where the photo sits in it.
+ */
+data class TopoNetworkModel(
+    val imageUrl: String?,
+    val viewBoxX: Double,
+    val viewBoxY: Double,
+    val viewBoxWidth: Double,
+    val viewBoxHeight: Double,
+    val imageX: Double,
+    val imageY: Double,
+    val imageWidth: Double,
+    val imageHeight: Double,
+    val lines: List<TopoLineNetworkModel>,
+)
+
+/** One drawn segment of a route (one pitch of a multi-pitch route): SVG path data in viewBox units. */
+data class TopoLineNetworkModel(
+    val viaId: Long,
+    /** Pitch number, from 1 (`route_<viaId>_<segment>`). */
+    val segment: Int,
+    val pathData: String,
+)

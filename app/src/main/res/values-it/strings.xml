@@ -82,6 +82,20 @@
     <string name="label_grade">Grado</string>
     <string name="route_list_no_match">Nessuna via corrisponde ai filtri.</string>
     <string name="clear_filters">Azzera filtri</string>
+
+    <!-- Dettaglio via -->
+    <string name="route_detail_title">Via</string>
+    <string name="route_not_found">Questa via non è più nei dati salvati.</string>
+    <string name="route_subtitle">%1$s • %2$s</string>
+    <string name="topo_label">Topo</string>
+    <string name="topo_missing">falesiaonline.it non ha una topo di questo settore.</string>
+    <string name="cd_topo">Topo di %1$s con le sue vie, evidenziata la via %2$s</string>
+    <string name="cd_zoom_topo">Apri la topo a schermo intero</string>
+    <string name="cd_close">Chiudi</string>
+    <string name="info_length">Lunghezza</string>
+    <string name="info_style">Stile</string>
+    <string name="info_rating">Valutazione</string>
+    <string name="sector_routes">Vie del settore</string>
     <plurals name="crag_rating_badge">
         <item quantity="one">%1$s · %2$d voto</item>
         <item quantity="other">%1$s · %2$d voti</item>

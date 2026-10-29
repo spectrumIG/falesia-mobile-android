@@ -90,6 +90,7 @@ fun CragDetailsRoute(
     falesiaId: String,
     onBack: () -> Unit,
     onSeeAllRoutes: (falesiaId: String) -> Unit,
+    onRouteClick: (falesiaId: String, viaId: Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CragDetailsViewModel =
         hiltViewModel<CragDetailsViewModel, CragDetailsViewModel.Factory>(key = falesiaId) {
@@ -104,6 +105,7 @@ fun CragDetailsRoute(
         onIntent = viewModel::onIntent,
         onBack = onBack,
         onSeeAllRoutes = onSeeAllRoutes,
+        onRouteClick = onRouteClick,
         effects = viewModel.effects,
         manualDownloads = viewModel.manualDownloads,
         modifier = modifier,
@@ -122,6 +124,7 @@ fun CragDetailsScreen(
     modifier: Modifier = Modifier,
     onBack: () -> Unit = {},
     onSeeAllRoutes: (falesiaId: String) -> Unit = {},
+    onRouteClick: (falesiaId: String, viaId: Long) -> Unit = { _, _ -> },
     effects: Flow<CragDetailsEffect> = emptyFlow(),
     manualDownloads: Boolean = false,
 ) {
@@ -131,6 +134,7 @@ fun CragDetailsScreen(
     val upToDate = stringResource(R.string.refresh_up_to_date)
     val noMapsApp = stringResource(R.string.no_maps_app)
     val currentOnSeeAll by rememberUpdatedState(onSeeAllRoutes)
+    val currentOnRouteClick by rememberUpdatedState(onRouteClick)
 
     LaunchedEffect(effects) {
         effects.collect { effect ->
@@ -138,6 +142,10 @@ fun CragDetailsScreen(
                 CragDetailsEffect.SyncFailed -> snackbarHostState.showSnackbar(syncFailed)
                 CragDetailsEffect.AlreadyUpToDate -> snackbarHostState.showSnackbar(upToDate)
                 is CragDetailsEffect.NavigateToRouteList -> currentOnSeeAll(effect.falesiaId)
+                is CragDetailsEffect.NavigateToRoute -> currentOnRouteClick(
+                    effect.falesiaId,
+                    effect.viaId
+                )
                 is CragDetailsEffect.OpenMaps ->
                     if (!context.openMaps(
                             effect.destination,
@@ -267,7 +275,11 @@ private fun CragDetailsContent(
             else -> items(state.featured, key = { it.id }) { via ->
                 FeaturedRoute(
                     via,
-                    Modifier.padding(horizontal = spacing.space4, vertical = spacing.space1Half)
+                    onClick = { onIntent(CragDetailsIntent.RouteClicked(via.id)) },
+                    modifier = Modifier.padding(
+                        horizontal = spacing.space4,
+                        vertical = spacing.space1Half
+                    ),
                 )
             }
         }
@@ -424,7 +436,7 @@ private fun LocationSection(
 }
 
 @Composable
-private fun FeaturedRoute(via: Via, modifier: Modifier = Modifier) {
+private fun FeaturedRoute(via: Via, onClick: () -> Unit, modifier: Modifier = Modifier) {
     RouteRow(
         grade = via.grado.ifBlank { stringResource(R.string.value_unknown) },
         name = via.nome,
@@ -433,6 +445,7 @@ private fun FeaturedRoute(via: Via, modifier: Modifier = Modifier) {
         ratingDescription = via.rating?.let { ratingDescription(it, via.ratingCount) }.orEmpty(),
         type = via.style.label(),
         length = via.length.ifBlank { null },
+        onClick = onClick,
         modifier = modifier.testTag(TAG_FEATURED_ROUTE),
     )
 }

@@ -4,6 +4,7 @@ import arrow.core.Either
 import it.softsamurai.domain.error.FalesiaError
 import it.softsamurai.domain.error.SyncError
 import it.softsamurai.domain.model.Falesia
+import it.softsamurai.domain.model.Topo
 import kotlinx.coroutines.flow.Flow
 
 interface FalesiaRepository {
@@ -11,6 +12,9 @@ interface FalesiaRepository {
     // ── Observe (reactive, local DB) ─────────────────────────────────────
     fun observeAllFalesie(): Flow<List<Falesia>>
     fun observeFalesiaWithVie(falesiaId: String): Flow<Falesia?>
+
+    /** The topo of a sector, downloaded with the crag's routes; null when the sector has none. */
+    fun observeTopo(settoreId: Long): Flow<Topo?>
 
     // ── Read (one-shot, local DB) ─────────────────────────────────────────
     suspend fun getFalesiaById(falesiaId: String): Either<FalesiaError, Falesia>
@@ -29,6 +33,9 @@ interface FalesiaRepository {
     // ── Sync (coordinates local + remote) ────────────────────────────────
     suspend fun syncFalesie(): Either<SyncError, Unit>
 
-    /** Downloads the routes of every sector of a crag and its parking (on demand, see `RefreshCragDetailsUseCase`). */
+    /**
+     * Downloads the routes and the topo of every sector of a crag, and its parking (on demand, see
+     * `RefreshCragDetailsUseCase`).
+     */
     suspend fun refreshCragDetails(falesiaId: String): Either<SyncError, Unit>
 }

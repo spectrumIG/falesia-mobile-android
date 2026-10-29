@@ -10,6 +10,7 @@ import dagger.hilt.components.SingletonComponent
 import it.softsamurai.repository.database.AppDatabase
 import it.softsamurai.repository.database.dao.FalesiaDao
 import it.softsamurai.repository.database.dao.SettoreDao
+import it.softsamurai.repository.database.dao.TopoDao
 import it.softsamurai.repository.database.dao.ViaDao
 import javax.inject.Singleton
 
@@ -33,4 +34,7 @@ object DatabaseModule {
 
     @Provides
     fun provideViaDao(db: AppDatabase): ViaDao = db.viaDao()
+
+    @Provides
+    fun provideTopoDao(db: AppDatabase): TopoDao = db.topoDao()
 }

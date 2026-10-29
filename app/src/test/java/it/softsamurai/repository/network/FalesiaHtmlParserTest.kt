@@ -6,9 +6,12 @@ import it.softsamurai.domain.error.SyncError
 import it.softsamurai.domain.model.Exposure
 import it.softsamurai.domain.model.ViaStyle
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.io.File
 
 class FalesiaHtmlParserTest {
 
@@ -248,6 +251,106 @@ class FalesiaHtmlParserTest {
         val result = parseVieSettore(html("<p>topo only</p>"))
 
         assertTrue(result.leftOrNull() is SyncError.ParseFailure)
+    }
+
+    // ── Sector topo (SVG of the sector page) ──
+
+    private val sectorTopo by lazy { parseTopo(fixture("SectorPage.html"))!! }
+
+    /** A multi-pitch sector with abseils and descents (Monsummano, Cava Grigia), saved for the debug build. */
+    private val multiPitchPage by lazy {
+        Ksoup.parse(File("src/debug/assets/fixtures/settore/1090.html").readText())
+    }
+
+    @Test
+    fun `topo has the viewBox and the photo placed by its transform matrix`() {
+        assertEquals(0.0, sectorTopo.viewBoxX, 0.0)
+        assertEquals(936.141, sectorTopo.viewBoxWidth, 0.0)
+        assertEquals(528.686, sectorTopo.viewBoxHeight, 0.0)
+        assertEquals(
+            "https://www.falesiaonline.it/uploads/assets/image/159130980856Parete-principale.jpg",
+            sectorTopo.imageUrl,
+        )
+        // 2050 × 1158 px scaled by 0.45665414634146: the photo fills the viewBox.
+        assertEquals(936.141, sectorTopo.imageWidth, 0.001)
+        assertEquals(528.805, sectorTopo.imageHeight, 0.001)
+        assertEquals(0.0, sectorTopo.imageX, 0.0)
+    }
+
+    @Test
+    fun `topo has one line per route, with the route id and its path`() {
+        assertEquals(16, sectorTopo.lines.size)
+        assertEquals(sectorRoutes.map { it.id }.toSet(), sectorTopo.lines.map { it.viaId }.toSet())
+        val first = sectorTopo.lines.first()
+        assertEquals(9899L, first.viaId)
+        assertEquals(1, first.segment)
+        assertTrue(first.pathData.startsWith("M38.07,284.543c0,0-6.5,30-12.5,48.5"))
+    }
+
+    @Test
+    fun `multi-pitch routes have one segment per pitch and abseils are left out`() {
+        val topo = parseTopo(multiPitchPage)!!
+
+        assertEquals(listOf(1, 2, 3), topo.lines.filter { it.viaId == 11014L }.map { it.segment })
+        assertEquals(
+            listOf(1, 2, 3, 4),
+            topo.lines.filter { it.viaId == 11020L }.map { it.segment })
+        // 11015 and 11017 are abseils: hidden on the site.
+        assertFalse(topo.lines.any { it.viaId == 11015L || it.viaId == 11017L })
+    }
+
+    @Test
+    fun `descents in the route list are not routes`() {
+        val vie = parseVieSettore(multiPitchPage).getOrNull()!!
+
+        assertFalse(vie.any { it.id == 11015L || it.grado == "Calata" || it.nome.isBlank() })
+        assertTrue(vie.any { it.id == 11014L && it.nome == "Rossano picchia piano" })
+    }
+
+    @Test
+    fun `sector page gives routes and topo together`() {
+        val page = parseSettore(fixture("SectorPage.html")).getOrNull()!!
+
+        assertEquals(16, page.vie.size)
+        assertNotNull(page.topo)
+    }
+
+    @Test
+    fun `page without topo has none and is still a sector page`() {
+        val page = parseSettore(html("""<div id="routes_list"></div>""")).getOrNull()!!
+
+        assertNull(page.topo)
+        assertTrue(page.vie.isEmpty())
+    }
+
+    @Test
+    fun `topo with an unreadable viewBox is ignored`() {
+        assertNull(parseTopo(html("""<svg id="topoSvgContent" viewBox="0 0 abc"></svg>""")))
+        assertNull(parseTopo(html("""<svg id="topoSvgContent" viewBox="0 0 0 300"></svg>""")))
+    }
+
+    @Test
+    fun `photo without a readable matrix fills the viewBox, empty and unnamed paths are skipped`() {
+        val topo = parseTopo(
+            html(
+                """
+                <svg id="topoSvgContent" viewBox="0 0 400 300">
+                  <g id="Foto"><image xlink:href="/uploads/wall.jpg" transform="rotate(3)"></image></g>
+                  <g id="Route_Paths">
+                    <path id="route_7_1" d="M0,0L10,10"></path>
+                    <path id="route_8_1" d=" "></path>
+                    <path id="route_x_1" d="M0,0L5,5"></path>
+                    <path id="route_9_1" style="display: none;" d="M0,0L5,5"></path>
+                  </g>
+                </svg>
+                """.trimIndent(),
+            ),
+        )!!
+
+        assertEquals("https://www.falesiaonline.it/uploads/wall.jpg", topo.imageUrl)
+        assertEquals(400.0, topo.imageWidth, 0.0)
+        assertEquals(300.0, topo.imageHeight, 0.0)
+        assertEquals(listOf(7L), topo.lines.map { it.viaId })
     }
 
     // ── Crag map page ──

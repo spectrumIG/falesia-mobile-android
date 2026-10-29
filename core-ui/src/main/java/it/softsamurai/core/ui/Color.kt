@@ -74,6 +74,12 @@ data class FalesiaColors(
     val special: Color,
     val specialSoft: Color,
     val scrim: Color,
+    /** Topo badge backdrop over a photo. */
+    val overlay: Color = Color.Black.alpha(40),
+    /** Pills drawn on the topo (route numbers). */
+    val overlayStrong: Color = Color.Black.alpha(60),
+    /** Border of the topo badge. */
+    val overlayLine: Color = Color.White.alpha(10),
 )
 
 val darkFalesiaColors = FalesiaColors(

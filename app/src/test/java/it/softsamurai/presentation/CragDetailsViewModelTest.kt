@@ -252,6 +252,17 @@ class CragDetailsViewModelTest {
         }
     }
 
+    @Test
+    fun `a featured route opens its detail`() = runTest {
+        val viewModel = viewModel()
+        observe(viewModel)
+
+        viewModel.effects.test {
+            viewModel.onIntent(CragDetailsIntent.RouteClicked(7))
+            assertEquals(CragDetailsEffect.NavigateToRoute("arco", 7), awaitItem())
+        }
+    }
+
     // ── Manual downloads (debug) ──
 
     @Test

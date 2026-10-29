@@ -53,6 +53,7 @@ sealed interface RouteListIntent {
     data class StyleSelected(val style: ViaStyle?) : RouteListIntent
     data object ClearFilters : RouteListIntent
     data object Retry : RouteListIntent
+    data class RouteClicked(val viaId: Long) : RouteListIntent
 
     /** Debug download button: download the routes again unless they are very recent. */
     data object Download : RouteListIntent
@@ -61,6 +62,7 @@ sealed interface RouteListIntent {
 sealed interface RouteListEffect {
     data object SyncFailed : RouteListEffect
     data object AlreadyUpToDate : RouteListEffect
+    data class NavigateToRoute(val falesiaId: String, val viaId: Long) : RouteListEffect
 }
 
 @Immutable
@@ -154,7 +156,7 @@ class RouteListViewModel @AssistedInject constructor(
     private val isDownloading = MutableStateFlow(false)
     private val _effects = Channel<RouteListEffect>(Channel.BUFFERED)
 
-    /** One-shot UI effects of the download button (snackbars). */
+    /** One-shot UI effects: snackbars of the download button, navigation to a route. */
     val effects: Flow<RouteListEffect> = _effects.receiveAsFlow()
 
     val uiState: StateFlow<RouteListUiState> =
@@ -204,6 +206,9 @@ class RouteListViewModel @AssistedInject constructor(
             RouteListIntent.ClearFilters -> filters.value = RouteFilters()
             RouteListIntent.Retry -> download()
             RouteListIntent.Download -> forceDownload()
+            is RouteListIntent.RouteClicked -> viewModelScope.launch {
+                _effects.send(RouteListEffect.NavigateToRoute(falesiaId, intent.viaId))
+            }
         }
     }
 

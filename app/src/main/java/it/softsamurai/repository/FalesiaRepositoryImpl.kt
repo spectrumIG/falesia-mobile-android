@@ -8,17 +8,19 @@ import it.softsamurai.core.di.IoDispatcher
 import it.softsamurai.domain.error.FalesiaError
 import it.softsamurai.domain.error.SyncError
 import it.softsamurai.domain.model.Falesia
+import it.softsamurai.domain.model.Topo
 import it.softsamurai.domain.repository.FalesiaRepository
 import it.softsamurai.domain.time.TimeProvider
 import it.softsamurai.repository.database.entity.SettoreEntity
 import it.softsamurai.repository.local.FalesiaLocalDataSource
 import it.softsamurai.repository.mapper.idFromUrl
+import it.softsamurai.repository.mapper.lineEntities
 import it.softsamurai.repository.mapper.toDomain
 import it.softsamurai.repository.mapper.toEntity
 import it.softsamurai.repository.network.FalesiaNetworkDataSource
 import it.softsamurai.repository.network.model.FalesiaDetailNetworkModel
 import it.softsamurai.repository.network.model.FalesiaListItemNetworkModel
-import it.softsamurai.repository.network.model.ViaNetworkModel
+import it.softsamurai.repository.network.model.SettorePageNetworkModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -44,6 +46,9 @@ class FalesiaRepositoryImpl @Inject constructor(
 
     override fun observeFalesiaWithVie(falesiaId: String): Flow<Falesia?> =
         localDataSource.observeFalesiaWithVie(falesiaId).map { it?.toDomain() }
+
+    override fun observeTopo(settoreId: Long): Flow<Topo?> =
+        localDataSource.observeTopo(settoreId).map { it?.toDomain() }
 
     // ── Read ──────────────────────────────────────────────────────────────
 
@@ -136,8 +141,9 @@ class FalesiaRepositoryImpl @Inject constructor(
                 SyncError.CragNotFound(falesiaId)
             }
 
-            // Step 1: fetch every sector page, SYNC_CONCURRENCY at a time; first failure short-circuits
-            val results: List<Either<SyncError, Pair<SettoreEntity, List<ViaNetworkModel>>>> =
+            // Step 1: fetch every sector page (routes and topo), SYNC_CONCURRENCY at a time; first failure
+            // short-circuits
+            val results: List<Either<SyncError, Pair<SettoreEntity, SettorePageNetworkModel>>> =
                 buildList {
                     for (chunk in saved.settori.sortedBy { it.position }
                         .chunked(SYNC_CONCURRENCY)) {
@@ -145,29 +151,38 @@ class FalesiaRepositoryImpl @Inject constructor(
                             coroutineScope {
                                 chunk.map { settore ->
                                     async {
-                                        networkDataSource.fetchVieSettore(settore.linkDettagli)
-                                            .map { vie -> settore to vie }
+                                        networkDataSource.fetchSettore(settore.linkDettagli)
+                                            .map { page -> settore to page }
                                     }
                                 }.awaitAll()
                             }
                         )
                     }
                 }
-            val vie = results.map { it.bind() }
-                .flatMap { (settore, vie) ->
-                    vie.mapIndexed { index, via -> via.toEntity(falesiaId, settore.id, index) }
+            val pages = results.map { it.bind() }
+            val vie = pages
+                .flatMap { (settore, page) ->
+                    page.vie.mapIndexed { index, via -> via.toEntity(falesiaId, settore.id, index) }
                 }
                 // A route listed in two sectors is stored once, in the first one.
                 .distinctBy { it.id }
+            val topi = pages.mapNotNull { (settore, page) -> page.topo?.let { settore.id to it } }
 
             // Step 2: the parking is optional: if the map page fails, keep the one already saved
             val parking = networkDataSource.fetchParcheggio(saved.falesia.linkDettagli).getOrElse {
                 saved.falesia.parkingLatitude?.let { lat -> saved.falesia.parkingLongitude?.let { lng -> lat to lng } }
             }
 
-            // Step 3: persist routes, parking and timestamp atomically
+            // Step 3: persist routes, topi, parking and timestamp atomically
             Either.catch {
-                localDataSource.replaceDettagli(falesiaId, vie, parking, timeProvider.nowMillis())
+                localDataSource.replaceDettagli(
+                    falesiaId = falesiaId,
+                    vie = vie,
+                    topi = topi.map { (settoreId, topo) -> topo.toEntity(falesiaId, settoreId) },
+                    lines = topi.flatMap { (settoreId, topo) -> topo.lineEntities(settoreId) },
+                    parking = parking,
+                    updatedAt = timeProvider.nowMillis(),
+                )
             }.mapLeft { SyncError.StorageFailure(it) }.bind()
         }
     }

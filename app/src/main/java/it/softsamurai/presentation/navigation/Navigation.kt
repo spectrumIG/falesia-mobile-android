@@ -15,6 +15,7 @@ import it.softsamurai.presentation.screen.CragDetailsRoute
 import it.softsamurai.presentation.screen.DiscoverRoute
 import it.softsamurai.presentation.screen.LogbookScreen
 import it.softsamurai.presentation.screen.ProfileScreen
+import it.softsamurai.presentation.screen.RouteDetailRoute
 import it.softsamurai.presentation.screen.RouteListRoute
 import it.softsamurai.presentation.screen.TicklistScreen
 
@@ -54,10 +55,35 @@ fun AppNavigation() {
                         falesiaId = key.falesiaId,
                         onBack = { backStack.goBack() },
                         onSeeAllRoutes = { id -> backStack.navigateTo(AppRoute.RouteList(id)) },
+                        onRouteClick = { id, viaId ->
+                            backStack.navigateTo(
+                                AppRoute.RouteDetail(
+                                    id,
+                                    viaId
+                                )
+                            )
+                        },
                     )
                 }
                 entry<AppRoute.RouteList> { key ->
-                    RouteListRoute(falesiaId = key.falesiaId, onBack = { backStack.goBack() })
+                    RouteListRoute(
+                        falesiaId = key.falesiaId,
+                        onBack = { backStack.goBack() },
+                        onRouteClick = { id, viaId ->
+                            backStack.navigateTo(
+                                AppRoute.RouteDetail(
+                                    id,
+                                    viaId
+                                )
+                            )
+                        },
+                    )
+                }
+                entry<AppRoute.RouteDetail> { key ->
+                    RouteDetailRoute(
+                        falesiaId = key.falesiaId,
+                        viaId = key.viaId,
+                        onBack = { backStack.goBack() })
                 }
             },
         )

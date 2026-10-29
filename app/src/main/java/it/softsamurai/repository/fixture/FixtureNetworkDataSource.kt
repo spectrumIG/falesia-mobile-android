@@ -11,11 +11,11 @@ import it.softsamurai.domain.error.SyncError
 import it.softsamurai.repository.network.FalesiaNetworkDataSource
 import it.softsamurai.repository.network.model.FalesiaDetailNetworkModel
 import it.softsamurai.repository.network.model.FalesiaListItemNetworkModel
-import it.softsamurai.repository.network.model.ViaNetworkModel
+import it.softsamurai.repository.network.model.SettorePageNetworkModel
 import it.softsamurai.repository.network.parseDettagliFalesia
 import it.softsamurai.repository.network.parseElencoFalesie
 import it.softsamurai.repository.network.parseParcheggio
-import it.softsamurai.repository.network.parseVieSettore
+import it.softsamurai.repository.network.parseSettore
 import java.io.IOException
 import javax.inject.Inject
 
@@ -43,7 +43,7 @@ class AssetFixtureReader @Inject constructor(
  * the same parsers run, so the sample data goes through the real pipeline.
  *
  * Layout: `elenco.html` (crag list), `falesia/<slug>.html`, `map/<slug>.html`, `settore/<id>.html`. The list
- * keeps only the crags whose page is saved; a sector without a saved page has no routes.
+ * keeps only the crags whose page is saved; a sector without a saved page has no routes and no topo.
  */
 class FixtureNetworkDataSource @Inject constructor(
     private val reader: FixtureReader,
@@ -57,10 +57,12 @@ class FixtureNetworkDataSource @Inject constructor(
     override suspend fun fetchDettagliFalesia(url: String): Either<SyncError, FalesiaDetailNetworkModel> =
         page("falesia/${slug(url)}.html").flatMap(::parseDettagliFalesia)
 
-    override suspend fun fetchVieSettore(url: String): Either<SyncError, List<ViaNetworkModel>> {
+    override suspend fun fetchSettore(url: String): Either<SyncError, SettorePageNetworkModel> {
         val id = SECTOR_ID.find(url)?.groupValues?.get(1)
-        val html = id?.let { reader.read("settore/$it.html") } ?: return emptyList<ViaNetworkModel>().right()
-        return parseVieSettore(Ksoup.parse(html))
+        val html = id?.let { reader.read("settore/$it.html") } ?: return SettorePageNetworkModel(
+            emptyList()
+        ).right()
+        return parseSettore(Ksoup.parse(html))
     }
 
     override suspend fun fetchParcheggio(detailUrl: String): Either<SyncError, Pair<Double, Double>?> =

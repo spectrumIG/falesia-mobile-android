@@ -42,6 +42,7 @@ sealed interface CragDetailsIntent {
     data object Retry : CragDetailsIntent
     data object OpenNavigation : CragDetailsIntent
     data object SeeAllRoutes : CragDetailsIntent
+    data class RouteClicked(val viaId: Long) : CragDetailsIntent
 }
 
 sealed interface CragDetailsEffect {
@@ -51,6 +52,7 @@ sealed interface CragDetailsEffect {
     /** Open the user's maps app on [destination]. */
     data class OpenMaps(val destination: GeoPoint, val label: String) : CragDetailsEffect
     data class NavigateToRouteList(val falesiaId: String) : CragDetailsEffect
+    data class NavigateToRoute(val falesiaId: String, val viaId: Long) : CragDetailsEffect
 }
 
 @Immutable
@@ -143,6 +145,12 @@ class CragDetailsViewModel @AssistedInject constructor(
             CragDetailsIntent.Retry -> download()
             CragDetailsIntent.OpenNavigation -> openNavigation()
             CragDetailsIntent.SeeAllRoutes -> send(CragDetailsEffect.NavigateToRouteList(falesiaId))
+            is CragDetailsIntent.RouteClicked -> send(
+                CragDetailsEffect.NavigateToRoute(
+                    falesiaId,
+                    intent.viaId
+                )
+            )
         }
     }
 

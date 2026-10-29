@@ -12,15 +12,17 @@ import io.ktor.http.HttpHeaders
 import it.softsamurai.domain.error.SyncError
 import it.softsamurai.repository.network.model.FalesiaDetailNetworkModel
 import it.softsamurai.repository.network.model.FalesiaListItemNetworkModel
-import it.softsamurai.repository.network.model.ViaNetworkModel
+import it.softsamurai.repository.network.model.SettorePageNetworkModel
 import javax.inject.Inject
 
 interface FalesiaNetworkDataSource {
     suspend fun fetchElencoFalesie(): Either<SyncError, List<FalesiaListItemNetworkModel>>
     suspend fun fetchDettagliFalesia(url: String): Either<SyncError, FalesiaDetailNetworkModel>
 
-    /** Routes of one sector, from its page ([it.softsamurai.repository.network.model.SettoreNetworkModel.detailUrl]). */
-    suspend fun fetchVieSettore(url: String): Either<SyncError, List<ViaNetworkModel>>
+    /**
+     * Routes and topo of one sector, from its page ([it.softsamurai.repository.network.model.SettoreNetworkModel.detailUrl]).
+     */
+    suspend fun fetchSettore(url: String): Either<SyncError, SettorePageNetworkModel>
 
     /** Parking position (lat to lng) from the map page of the crag at [detailUrl]; null when it has none. */
     suspend fun fetchParcheggio(detailUrl: String): Either<SyncError, Pair<Double, Double>?>
@@ -47,8 +49,8 @@ class FalesiaNetDataSourceImpl @Inject constructor(
     override suspend fun fetchDettagliFalesia(url: String): Either<SyncError, FalesiaDetailNetworkModel> =
         get(url).flatMap(::parseDettagliFalesia)
 
-    override suspend fun fetchVieSettore(url: String): Either<SyncError, List<ViaNetworkModel>> =
-        get(url).flatMap(::parseVieSettore)
+    override suspend fun fetchSettore(url: String): Either<SyncError, SettorePageNetworkModel> =
+        get(url).flatMap(::parseSettore)
 
     override suspend fun fetchParcheggio(detailUrl: String): Either<SyncError, Pair<Double, Double>?> =
         get(mapUrlFromDetailUrl(detailUrl)).map(::parseParcheggio)
